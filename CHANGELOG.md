@@ -7,7 +7,27 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Changed
+- Constituição 1.0.0 → **1.1.0** (Emenda 1, 2026-08-28): novos Princípios XI (Entrega
+  Vertical com Validação Visual — feature pronta = API documentada + tela 100% no front +
+  testes back/front aprovados + validação visual do Ícaro antes da próxima feature) e XII
+  (Usabilidade Universal — design interativo, simples e acessível a todos os perfis,
+  incluindo idosos); Princípio IV expandido (frontend desacoplado consumindo só a API
+  pública; prontidão mobile — app quando o site tiver boa aceitação); Princípio IX
+  expandido (testes automatizados também no frontend).
+- **Bora** promovido de nome de trabalho a **nome oficial da solução** (registro INPI
+  segue no backlog); iBar permanece só como codinome de repositório. `vision.md`,
+  `brand.md`, `CLAUDE.md`, `development-workflow.md` e `linear-import.md` sincronizados.
+- Design do Figma original oficialmente aposentado — substituído pelos requisitos de
+  `docs/product/ux-requirements.md`.
+- `development-workflow.md`: ciclo ganha o passo de validação visual e a Definition of
+  Done da feature; estrutura passa a prever `api/` e `web/`.
+
 ### Added
+- ADR-0002 — frontend desacoplado no mesmo repositório (`api/` + `web/`), comunicação
+  exclusivamente via API pública.
+- `docs/product/ux-requirements.md` — requisitos vinculantes de UX e acessibilidade
+  (WCAG 2.1 AA, alvos de toque, linguagem simples, foco em idosos).
 - Constituição 1.0.0 ratificada: Princípios I–X (conta única multi-papel, gratuidade do
   usuário final, conformidade de conteúdo de terceiros, API-first, segurança, assíncrono,
   simplicidade, auditoria, qualidade verificável, preservação de histórico) e stack

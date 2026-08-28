@@ -1,4 +1,4 @@
-# Bora (iBar) — Modelo de Negócio e Monetização
+# Bora — Modelo de Negócio e Monetização
 
 Status: modelo **Freemium B2B em fases** aprovado por Ícaro em 2026-08-28. Premissa
 inegociável: **gratuito para o usuário final** (constituição, Princípio II). Preços abaixo

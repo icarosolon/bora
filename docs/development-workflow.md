@@ -1,4 +1,4 @@
-# Bora (iBar) — Método de Desenvolvimento
+# Bora — Método de Desenvolvimento
 
 Status: ratificado (espelha o método do Nexa — mesmo time, mesma maneira de trabalhar).
 **Spec Kit é a espinha dorsal**; as skills próprias cobrem só as lacunas. A spec tem
@@ -27,16 +27,33 @@ Status: ratificado (espelha o método do Nexa — mesmo time, mesma maneira de t
 
 ```
 constituição / emenda
-      → /specify        (escreve a spec)
+      → /specify        (escreve a spec — inclui a tela e seus critérios de UX)
       → /spec-check      (portão: pronta para implementar? sim/não)
-      → /plan            (plano técnico)
+      → /plan            (plano técnico — API e frontend)
       → /tasks           (quebra em tarefas)
-      → implementar      (Clean Code + testes)
+      → implementar      (API-first DENTRO da feature: API + testes → tela + testes)
+      → validação visual (Ícaro aprova a tela — Princípio XI)
       → /doc-sync        (atualiza docs + commita; push é manual)
 ```
 Nenhum código antes de spec aprovada pelo portão. O portão reprova spec sem cenários de
-erro e limites, sem teste para cada `RN-<CTX>-NNN` referenciada, ou sem teste que prove o
-bloqueio de todo princípio NON-NEGOTIABLE que a feature tocar (Constituição, Princípio IX).
+erro e limites, sem teste para cada `RN-<CTX>-NNN` referenciada, sem teste que prove o
+bloqueio de todo princípio NON-NEGOTIABLE que a feature tocar (Constituição, Princípio
+IX), ou com tela que não referencie `docs/product/ux-requirements.md` nos critérios de
+aceite (Princípio XII).
+
+### Definition of Done da feature (Princípio XI — inegociável)
+
+Uma feature só é dada como pronta quando **tudo** abaixo vale:
+
+1. **API-first:** a API da feature está completa, funcional e **documentada**, pronta para
+   ser consumida pelo futuro app mobile sem mudança estrutural.
+2. **Front desacoplado:** a tela está **100% implementada** no `web/`, consumindo
+   exclusivamente a API pública — nada é "pronto só no backend".
+3. **Usabilidade:** a tela atende `docs/product/ux-requirements.md` (simples, interativa,
+   acessível a todos os perfis, incluindo idosos).
+4. **Testes:** testes automatizados de **backend e frontend** executados e aprovados.
+5. **Validação visual:** a tela foi apresentada ao Ícaro e **validada por ele**. A próxima
+   feature só começa depois dessa validação.
 
 ## 4. Rastreio no Linear
 
@@ -51,7 +68,9 @@ separado, time igual). Convenções:
 ## 5. Estrutura de documentação
 
 ```
-specs/NNN-feature/{spec,plan,tasks}.md   # Spec Kit — fonte única da spec
+api/                                     # Laravel — API REST pública (ADR-0002)
+web/                                     # frontend desacoplado (framework PENDENTE)
+specs/NNN-feature/{spec,plan,tasks}.md   # Spec Kit — fonte única da spec (API + tela)
 .specify/memory/constitution.md          # Spec Kit — constituição
 docs/
 ├─ development-workflow.md               # este documento
@@ -59,7 +78,8 @@ docs/
 │  ├─ vision.md                          # visão de produto (aprovada)
 │  ├─ monetization.md                    # modelo de negócio
 │  ├─ brand.md                           # nome, cores, logo
-│  ├─ design/figma/                      # telas originais do Figma (referência histórica)
+│  ├─ ux-requirements.md                 # requisitos vinculantes de UX/acessibilidade
+│  ├─ design/figma/                      # telas do Figma antigo (só registro histórico)
 │  └─ user-guide/screens/<tela>.md       # screen-help
 ├─ domain/<contexto>.md                  # domain-rule (RN-<CTX>-NNN)
 ├─ adr/NNNN-<slug>.md                    # adr-new

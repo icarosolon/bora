@@ -1,13 +1,16 @@
-# Bora (iBar) — Contexto do projeto (Claude Code)
+# Bora — Contexto do projeto (Claude Code)
 
 Carregado automaticamente em toda sessão. Manter curto e atual.
 
 ## Produto
-Bora (nome de trabalho; registro de marca PENDENTE — codinome interno: iBar) é uma
-**plataforma web de três lados**: público (rolezeiros), estabelecimentos (bares e
-restaurantes) e artistas/bandas, em torno de eventos de música ao vivo. Responde "onde tem
-rolê hoje?". Lançamento como **site** (login Google ou cadastro próprio); app nativo vem
-depois. Validação em **Juazeiro-BA e Petrolina-PE**; cadastro é self-service e aberto.
+**Bora** (nome oficial da solução; codinome de repositório/Linear: iBar; registro INPI
+PENDENTE) é uma **plataforma web de três lados**: público (rolezeiros), estabelecimentos
+(bares e restaurantes) e artistas/bandas, em torno de eventos de música ao vivo. Responde
+"onde tem rolê hoje?". Lançamento como **site** (login Google ou cadastro próprio); o
+**app mobile será lançado quando o site tiver boa aceitação**, consumindo a mesma API sem
+mudança estrutural no backend. Este repositório abriga **API (`api/`) e frontend
+(`web/`), desacoplados** — ver ADR-0002. Validação em **Juazeiro-BA e Petrolina-PE**;
+cadastro é self-service e aberto.
 Visão aprovada em `docs/product/vision.md` (2026-08-28) — leia antes de assumir escopo.
 Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** —
 `docs/product/monetization.md`.
@@ -25,11 +28,20 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
 ## Arquitetura
 - **A constituição é a autoridade** (`.specify/memory/constitution.md`): conta única
   multi-papel, gratuidade do usuário final, conformidade de conteúdo de terceiros (LGPD +
-  ToS — scraping proibido), API-first, segurança por padrão, assíncrono, auditoria de
-  escrita, histórico preservado (inativar/anonimizar, não excluir), stack ratificada
-  (Laravel 13, MySQL, **banco único — sem multi-tenancy**, ver ADR-0001).
+  ToS — scraping proibido), API-first com **frontend desacoplado consumindo só a API
+  pública** e **prontidão mobile**, segurança por padrão, assíncrono, auditoria de
+  escrita, histórico preservado, **entrega vertical com validação visual (XI)**,
+  **usabilidade universal (XII)** — stack ratificada (Laravel 13, MySQL, **banco único —
+  sem multi-tenancy**, ADR-0001; front separado no mesmo repo, ADR-0002; framework do
+  front PENDENTE).
 - Complementos: **portas & adapters** (domínio nunca importa SDK externo); **Clean Code**
   (funções pequenas, SRP, erro explícito, núcleo testável sem framework).
+
+## Entrega de feature (Princípio XI — inegociável)
+Feature pronta = API completa e documentada **+ tela 100% no frontend** (conforme
+`docs/product/ux-requirements.md`) **+ testes automatizados de back e front aprovados**
+**+ validação visual do Ícaro**. Não abrir a próxima feature antes da validação da atual.
+Nada é "pronto só no backend".
 
 ## Onde ficam as regras de negócio
 - No código: entidades (invariantes) + casos de uso. Bordas não têm regra.

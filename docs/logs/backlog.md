@@ -10,7 +10,9 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Item | Bloqueia | Fonte |
 |---|---|---|
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento | `brand.md` |
-| Framework de frontend (**SEO do catálogo é critério eliminatório**) | qualquer tela | constituição, ADR-0001 |
+| Framework de frontend (**SEO e acessibilidade são critérios eliminatórios**) | primeira tela (Princípio XI) | constituição, ADR-0002 |
+| Setup de CORS/Sanctum SPA e padrão de documentação da API (OpenAPI) | primeira feature | ADR-0002, Princípio IV |
+| Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem | deploy | constituição |
 | Fluxo de confirmação ao unir credenciais Google ↔ e-mail/senha | cadastro/login | `RN-PLAT-002` |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
@@ -47,3 +49,5 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 Escolher a primeira feature e rodar `/specify`. Candidato natural: **fundação de contas e
 autenticação** (conta única multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que
 todo o resto pressupõe. Segunda na fila: cadastro/perfil de local, que destrava o catálogo.
+Atenção ao Princípio XI: a primeira spec já inclui a **tela** (login/cadastro) — o que
+torna a decisão do framework de frontend pré-requisito imediato.

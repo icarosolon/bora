@@ -1,7 +1,8 @@
-# Bora (iBar) — Visão de Produto
+# Bora — Visão de Produto
 
 Status: aprovado. Ideia extraída do Figma "App Rolezeiros" e das anotações do Ícaro;
-decisões de nome, stack e monetização confirmadas por Ícaro em 2026-08-28.
+decisões de nome, stack e monetização confirmadas por Ícaro em 2026-08-28. **Bora é o nome
+oficial da solução** (registro INPI pendente; codinome de repositório: iBar).
 
 ## O que é
 
@@ -15,8 +16,20 @@ restaurantes com música ao vivo e aos artistas que tocam neles. Três lados:
 - **Artista/banda** — mantém perfil com gêneros, agenda e avaliações; confirma participação
   em eventos.
 
-Lançamento como **site responsivo** com login via Google ou cadastro na plataforma. O app
-nativo (origem do layout no Figma) fica para fase posterior, consumindo a mesma API.
+Lançamento como **site responsivo** com login via Google ou cadastro na plataforma —
+frontend e API construídos **juntos neste projeto, porém desacoplados** (ADR-0002): o site
+consome exclusivamente a API pública. O **app mobile será lançado quando o site tiver boa
+aceitação**, consumindo a mesma API sem mudança estrutural no backend (Constituição,
+Princípio IV).
+
+**Design:** o layout do Figma original foi aposentado. O requisito vigente é um design
+**interativo, simples e muito fácil de usar para todos os públicos** — inclusive quem tem
+pouca familiaridade com celular, como idosos. Requisitos vinculantes em
+`ux-requirements.md` (Constituição, Princípio XII).
+
+**Entrega:** nenhuma funcionalidade é considerada pronta "só no backend" — cada feature
+sai com API + tela + testes automatizados (back e front) e é validada visualmente pelo
+Ícaro antes da próxima começar (Constituição, Princípio XI).
 
 ## Onde começa
 
@@ -64,8 +77,8 @@ cidade podem se cadastrar sozinhos — a expansão não depende de operação no
    Juazeiro/Petrolina.
 2. **Fase 2 — Monetização B2B:** plano pago para estabelecimentos (destaque, eventos
    ilimitados, analytics) + destaque patrocinado no feed. Ver `monetization.md`.
-3. **Fase 3 — Bilheteria e app:** venda de ingresso/couvert com comissão, app nativo
-   consumindo a API existente.
+3. **Fase 3 — Bilheteria e app:** venda de ingresso/couvert com comissão; **app mobile**
+   (gatilho: boa aceitação do site) consumindo a API existente sem retrabalho de backend.
 
 ## Fora de escopo agora
 

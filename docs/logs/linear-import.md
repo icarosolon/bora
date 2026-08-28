@@ -1,9 +1,9 @@
-# Linear — estrutura a criar (aguardando autenticação do conector)
+# Linear — estrutura do projeto (criada em 2026-08-28)
 
-Decisão do Ícaro (2026-08-28): projeto **"iBar"** no **mesmo time do Nexa** (mesmo time de
-pessoas, produto separado). Este arquivo é o roteiro de importação: quando o conector do
-Linear estiver autorizado, criar exatamente o que está abaixo e marcar aqui o que foi
-criado.
+Decisão do Ícaro (2026-08-28): projeto **Bora** no **mesmo time do Nexa** (workspace
+`icasst`, time `Nexa`/NEX). **Importação executada em 2026-08-28** — projeto:
+<https://linear.app/icasst/project/bora-f0ad76fe7e09>. Este arquivo registra a estrutura e
+as convenções contínuas.
 
 ## Projeto
 
@@ -44,7 +44,8 @@ correspondente ao que ela bloqueia.
 
 ## Estado
 
-- [ ] Projeto criado no Linear
-- [ ] Marcos criados
-- [ ] Issues de decisão criadas
-- [ ] Issues de setup criadas
+- [x] Projeto criado no Linear — **Bora** (team Nexa, lead Ícaro)
+- [x] Marcos criados — M0 a M5
+- [x] Issues de decisão criadas — NEX-11..NEX-39 (label `decisao-pendente`; uma por linha
+      da tabela do backlog; gateway de pagamento sem marco por ser Fase 3)
+- [x] Issues de setup criadas — NEX-9 (repositório api/+web/), NEX-10 (Spec 001)

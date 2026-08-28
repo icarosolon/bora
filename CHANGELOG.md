@@ -24,6 +24,8 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   Done da feature; estrutura passa a prever `api/` e `web/`.
 
 ### Added
+- Projeto **Bora** criado no Linear (time Nexa) com marcos M0–M5, issues de setup
+  (NEX-9, NEX-10) e issues `decisao-pendente` espelhando o backlog (NEX-11..NEX-39).
 - ADR-0002 — frontend desacoplado no mesmo repositório (`api/` + `web/`), comunicação
   exclusivamente via API pública.
 - `docs/product/ux-requirements.md` — requisitos vinculantes de UX e acessibilidade

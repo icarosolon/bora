@@ -41,8 +41,10 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 
 ## Infra do método
 
-- **Linear**: conector não autenticado na sessão de setup — estrutura pronta em
-  `docs/logs/linear-import.md`; criar projeto e issues quando o Ícaro autorizar o conector.
+- **Linear**: projeto **Bora** criado em 2026-08-28 no time Nexa
+  (<https://linear.app/icasst/project/bora-f0ad76fe7e09>), com marcos M0–M5 e uma issue
+  `decisao-pendente` por item da tabela acima (NEX-11..NEX-39) + setup (NEX-9, NEX-10).
+  Ver `docs/logs/linear-import.md`.
 
 ## Próximo passo
 

@@ -8,6 +8,13 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Changed
+- **Linear: o Bora passou a ter time próprio** — time `Bora`, key `BORA` (2026-08-29),
+  revendo a decisão de usar o time do Nexa. No Linear o prefixo do identificador vem do
+  time, não do projeto: dentro do time Nexa as issues saíam como `NEX-nn` e não
+  identificavam o produto. As 31 issues migraram sem perda (projeto, marcos M0–M5,
+  prioridades, status e label `decisao-pendente` preservados); a renumeração ficou
+  invertida — `BORA-n` = `NEX-(40−n)`. `CLAUDE.md`, `development-workflow.md`,
+  `backlog.md` e `linear-import.md` atualizados.
 - **Repositório renomeado de `ibar` para `bora`** (`C:\wamp64\www\bora`), aposentando o
   codinome de trabalho. Referências atualizadas em `CLAUDE.md`, `vision.md`, `brand.md`,
   `development-workflow.md`, `linear-import.md` e ADR-0001; constituição 1.1.0 → **1.1.1**
@@ -31,8 +38,9 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - `docs/product/investment-plan.md` — orçamento de 18 meses (R$ 350 mil), cronograma
   M0–M5 em 12 meses, TAM/SAM/SOM, dados de campo das duas cidades (IBGE 2025, guia
   comercial) e a lista de premissas ainda não validadas. Base do pitch para anjo.
-- Projeto **Bora** criado no Linear (time Nexa) com marcos M0–M5, issues de setup
-  (NEX-9, NEX-10) e issues `decisao-pendente` espelhando o backlog (NEX-11..NEX-39).
+- Projeto **Bora** criado no Linear com marcos M0–M5, issues de setup e issues
+  `decisao-pendente` espelhando o backlog (31 issues; hoje `BORA-1..BORA-31` — ver a
+  migração de time em *Changed*).
 - ADR-0002 — frontend desacoplado no mesmo repositório (`api/` + `web/`), comunicação
   exclusivamente via API pública.
 - `docs/product/ux-requirements.md` — requisitos vinculantes de UX e acessibilidade

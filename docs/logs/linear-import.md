@@ -1,9 +1,20 @@
 # Linear — estrutura do projeto (criada em 2026-08-28)
 
-Decisão do Ícaro (2026-08-28): projeto **Bora** no **mesmo time do Nexa** (workspace
-`icasst`, time `Nexa`/NEX). **Importação executada em 2026-08-28** — projeto:
+Decisão do Ícaro (2026-08-29, revendo a de 2026-08-28): o Bora tem **time próprio no
+Linear** — workspace `icasst`, time `Bora`, key **`BORA`**. Motivo: no Linear o prefixo do
+identificador vem do time, não do projeto; com o Bora dentro do time Nexa as issues saíam
+como `NEX-nn` e não dava para saber de qual produto era a tarefa. **Importação executada em
+2026-08-28** e **migrada de time em 2026-08-29** — projeto:
 <https://linear.app/icasst/project/bora-f0ad76fe7e09>. Este arquivo registra a estrutura e
 as convenções contínuas.
+
+## Migração NEX → BORA (2026-08-29)
+
+Trocar o time do projeto no Linear moveu as 31 issues automaticamente, preservando projeto,
+marcos, prioridades, status e a label `decisao-pendente`. A numeração foi refeita pelo
+Linear **em ordem inversa** à criação: `BORA-n` corresponde a `NEX-(40−n)` — ou seja,
+`BORA-1` = NEX-39 (gateway de pagamento) e `BORA-31` = NEX-9 (setup do repositório). Os
+identificadores antigos continuam resolvendo por redirect do Linear.
 
 ## Projeto
 
@@ -45,8 +56,9 @@ correspondente ao que ela bloqueia.
 
 ## Estado
 
-- [x] Projeto criado no Linear — **Bora** (team Nexa, lead Ícaro)
+- [x] Projeto criado no Linear — **Bora** (lead Ícaro)
+- [x] Time próprio criado — **Bora**/`BORA`, único time do projeto (2026-08-29)
 - [x] Marcos criados — M0 a M5
-- [x] Issues de decisão criadas — NEX-11..NEX-39 (label `decisao-pendente`; uma por linha
-      da tabela do backlog; gateway de pagamento sem marco por ser Fase 3)
-- [x] Issues de setup criadas — NEX-9 (repositório api/+web/), NEX-10 (Spec 001)
+- [x] Issues de decisão — BORA-1..BORA-29 (label `decisao-pendente`; uma por linha
+      da tabela do backlog; gateway de pagamento — BORA-1 — sem marco por ser Fase 3)
+- [x] Issues de setup — BORA-31 (repositório api/+web/), BORA-30 (Spec 001)

@@ -22,8 +22,8 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
   O `/doc-sync` atualiza a doc e **commita**; o `git push` é sempre manual do Ícaro.
 - Constituição ratificada e **vinculante**: `.specify/memory/constitution.md` (muda só por emenda).
 - Skills complementares: `spec-check` (portão), `domain-rule`, `adr-new`, `screen-help`, `doc-sync`.
-- Rastreio de trabalho no **Linear**: projeto "Bora" no mesmo time do Nexa (produto
-  separado, time igual). Estrutura em `docs/logs/linear-import.md`.
+- Rastreio de trabalho no **Linear**: **time próprio "Bora"** (key `BORA` — as issues saem
+  como `BORA-nn`), projeto "Bora". Estrutura em `docs/logs/linear-import.md`.
 - Método completo: @docs/development-workflow.md
 
 ## Arquitetura

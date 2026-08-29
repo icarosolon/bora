@@ -43,9 +43,10 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 
 ## Infra do método
 
-- **Linear**: projeto **Bora** criado em 2026-08-28 no time Nexa
-  (<https://linear.app/icasst/project/bora-f0ad76fe7e09>), com marcos M0–M5 e uma issue
-  `decisao-pendente` por item da tabela acima (NEX-11..NEX-39) + setup (NEX-9, NEX-10).
+- **Linear**: projeto **Bora** criado em 2026-08-28
+  (<https://linear.app/icasst/project/bora-f0ad76fe7e09>), migrado em 2026-08-29 para o
+  **time próprio `Bora`/BORA**, com marcos M0–M5 e uma issue `decisao-pendente` por item da
+  tabela acima (BORA-1..BORA-29) + setup (BORA-30, BORA-31).
   Ver `docs/logs/linear-import.md`.
 
 ## Próximo passo

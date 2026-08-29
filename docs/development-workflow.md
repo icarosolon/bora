@@ -1,6 +1,7 @@
 # Bora — Método de Desenvolvimento
 
-Status: ratificado (espelha o método do Nexa — mesmo time, mesma maneira de trabalhar).
+Status: ratificado (espelha o método do Nexa — as mesmas pessoas, a mesma maneira de
+trabalhar; no Linear, porém, cada produto tem seu próprio time).
 **Spec Kit é a espinha dorsal**; as skills próprias cobrem só as lacunas. A spec tem
 **uma única fonte da verdade: o Spec Kit**.
 
@@ -57,8 +58,9 @@ Uma feature só é dada como pronta quando **tudo** abaixo vale:
 
 ## 4. Rastreio no Linear
 
-O trabalho é rastreado no **Linear**, projeto **Bora**, no mesmo time do Nexa (produto
-separado, time igual). Convenções:
+O trabalho é rastreado no **Linear**, no **time `Bora` (key `BORA`)**, projeto **Bora**.
+O time é próprio do produto — as issues saem como `BORA-nn`, o que identifica o projeto no
+próprio ID. Convenções:
 
 - Cada spec do Spec Kit vira um conjunto de issues no Linear a partir do `tasks.md`
   (título `T001: <descrição>`, como no padrão do Nexa; deduplicar por ID antes de criar).

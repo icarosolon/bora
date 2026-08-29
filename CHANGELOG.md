@@ -8,6 +8,30 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spike descartável de frontend concluído** (BORA-32, 2026-08-29). No `api/`,
+  `php artisan install:api` (Sanctum 4.3.3, `routes/api.php`, migration
+  `personal_access_tokens`) e o endpoint **andaime** `GET /api/v1/eventos` com 3 eventos
+  fixos, sem banco e sem auth (`app/Http/Controllers/Spike/EventoSpikeController.php`).
+  No `web/`, a página `/eventos` renderizada no servidor, com um componente cliente só
+  para provar CORS. **Código descartável, fora da Definition of Done** (Princípio XI):
+  não é feature, não tem teste e **não define padrão de tela** — isso é da spec 001.
+  As quatro perguntas do spike foram respondidas com evidência (comando + saída no
+  comentário de fechamento da BORA-32):
+  1. **SSR confirmado** — os três nomes aparecem no HTML cru de
+     `curl -s http://localhost:3000/eventos`. O `await fetch` fica direto no componente de
+     página, **sem `<Suspense>`**: os docs do Next 16 instalado dizem que `fetch` não é
+     cacheado por padrão e bloqueia a renderização, e Suspense mandaria o conteúdo por
+     streaming, fora do HTML inicial.
+  2. **CORS do navegador OK sem configurar nada** — `Access-Control-Allow-Origin: *` vem
+     do default do framework (`paths => ["api/*"]`), com `HandleCors` já no stack global.
+     **Isso não fecha** o item de backlog "Setup de CORS/Sanctum SPA": `allowed_origins: *`
+     não convive com `supports_credentials: true`, que o Sanctum vai exigir na spec 001.
+  3. **360px sem rolagem horizontal** (`scrollWidth == clientWidth == 360`, nenhum elemento
+     estourando); idem a 1280.
+  4. **Fronteira servidor/cliente entendida** — **o Next fica**; não se aciona a
+     alternativa React Router v7 prevista no ADR-0003.
+- `web/src/app/layout.tsx`: `lang="en"` → `lang="pt-BR"`, para o leitor de tela anunciar o
+  idioma certo (`ux-requirements.md`, acessibilidade técnica).
 - **Projetos `api/` e `web/` criados** (BORA-31, 2026-08-29). `api/`: Laravel 13.29.0 sobre
   PHP 8.4.15 do WAMP, MySQL 8.4.7 (base `bora`), migrações rodadas, tabelas em InnoDB.
   `web/`: Next 16.3.3, React 19.2.8, TypeScript 5, Tailwind 4, App Router com `src/` e alias
@@ -29,6 +53,11 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   segue sendo `CLAUDE.md` da raiz + constituição.
 
 ### Fixed
+- **`artisan install:api` revertia a instalação do Sanctum** (E-004): o `composer.bat` do
+  Windows roda `php composer.phar`, e o único `php` no PATH da máquina era o do XAMPP
+  8.2.4, que não satisfaz o `"php": "^8.3"` do projeto. Ícaro trocou a entrada do PATH de
+  `C:\xampp\php` para `C:\wamp64\bin\php\php8.4.15`. Desinstalar o XAMPP foi avaliado e
+  descartado — ver E-004.
 - **Migrações quebravam por MyISAM** (E-003): o MySQL do WAMP tem
   `default_storage_engine = MyISAM`, que limita índice a 1000 bytes e não tem transação nem
   chave estrangeira. Corrigido com `'engine' => 'InnoDB'` em `api/config/database.php` — no

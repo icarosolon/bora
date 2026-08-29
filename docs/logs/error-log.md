@@ -3,6 +3,36 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-004 — `artisan install:api` revertia a instalação do Sanctum: PHP errado no PATH (2026-08-29)
+
+- **Sintoma:** `php artisan install:api` publicava `routes/api.php` e rodava a migration,
+  mas a instalação do pacote falhava com
+  `laravel/framework v13.29.0 requires php ^8.3 -> your php version (8.2.4) does not satisfy
+  that requirement` e terminava em
+  `Installation failed, reverting ./composer.json and ./composer.lock`. O Sanctum não
+  aparecia em `vendor/`.
+- **Causa:** o `findComposer()` do Laravel (lido em
+  `vendor/laravel/framework/src/Illuminate/Support/Composer.php`) devolve `[composer]`
+  quando não há `composer.phar` no projeto, e o `composer.bat` do Windows é literalmente
+  `php "%~dp0composer.phar" %*` — ou seja, usa o `php` do **PATH**. E o PATH da máquina
+  tinha só `C:\xampp\php` (PHP 8.2.4); o PHP 8.4.15 do WAMP **não estava no PATH**.
+  Verificado por `which -a php` (retornava apenas `/c/xampp/php/php`) e por
+  `[Environment]::GetEnvironmentVariable("Path","Machine")`.
+- **Resolução:** o Ícaro trocou a entrada do PATH da máquina de `C:\xampp\php` para
+  `C:\wamp64\bin\php\php8.4.15`. Verificado em terminal com o PATH novo: `php -v` →
+  8.4.15; `composer --version` → Composer 2.10.3 sobre PHP 8.4.15;
+  `composer check-platform-reqs` → `php 8.4.15 success`; `composer require --dry-run
+  laravel/sanctum` roda limpo. **Desinstalar o XAMPP foi avaliado e descartado:** ele era o
+  único `php` do PATH, então removê-lo deixaria o composer sem PHP nenhum — e
+  `C:\xampp\htdocs` guarda ~20 projetos antigos (incluindo `rolezeiros-api`, embrião do
+  Bora) e bases em `C:\xampp\mysql\data`. O XAMPP segue instalado, só fora do PATH.
+- **Status:** resolvido e verificado.
+- **Lição:** a mesma do E-003, em outra roupa — **conferir qual binário o PATH está
+  entregando antes de culpar a ferramenta**. O `install:api` não estava quebrado; ele
+  chamava um `composer` que rodava sobre o PHP errado. Em máquina com dois stacks (WAMP e
+  XAMPP), `which -a` antes de depurar. Efeito colateral aceito: `php` global passa a ser
+  8.4.15 para todos os projetos da máquina; os antigos do `htdocs` não serão mais mexidos
+  (decisão do Ícaro, 2026-08-29) e o WAMP tem `php8.2.29` se algum precisar.
 ## E-003 — Migrações falhavam: MySQL do WAMP com MyISAM como engine padrão (2026-08-29)
 
 - **Sintoma:** `php artisan migrate` quebrava na primeira migration com

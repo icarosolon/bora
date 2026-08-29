@@ -158,7 +158,10 @@ experiência)
   de troca mais barata, por ser o mesmo React.
 
 ## Action items
-- [ ] Spike descartável no M0 (página pública consumindo `GET` da API; sem login, sem DoD)
+- [x] Spike descartável no M0 (página pública consumindo `GET` da API; sem login, sem DoD)
+      — **feito em 2026-08-29 (BORA-32)**. As quatro perguntas foram respondidas com
+      evidência; a curva do App Router se mostrou suportável, então **a alternativa
+      React Router v7 não é acionada**. Medição de 3G segue pendente. Ver backlog.
 - [ ] Decidir hospedagem considerando o processo Node — BORA-27
 - [ ] Definir na spec 001 o setup de CORS/Sanctum e o padrão de token da área logada
       (herdado do action item do ADR-0002)

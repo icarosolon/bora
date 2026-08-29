@@ -96,6 +96,46 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Spike do frontend concluído — o Next fica** (BORA-32, 2026-08-29). As quatro perguntas
+  do spike foram respondidas com evidência (detalhe no comentário de fechamento da
+  BORA-32):
+  1. **Renderização no servidor funciona:** os três eventos aparecem no HTML cru de
+     `curl -s http://localhost:3000/eventos`. A razão principal da escolha do Next se
+     cumpriu. Detalhe verificado nos docs do Next 16 instalado: `fetch` não é cacheado por
+     padrão e bloqueia a renderização, então o `await` vai direto no componente de página;
+     **`<Suspense>` mandaria o conteúdo por streaming e o tiraria do HTML inicial** — é a
+     armadilha a evitar nas páginas de catálogo.
+  2. **CORS resolvido para o caso anônimo, sem configurar nada.** O `HandleCors` já está no
+     stack global e o default do framework é `paths => ["api/*"]`,
+     `allowed_origins => ["*"]`, `supports_credentials => false`. Não existe
+     `config/cors.php` publicado neste projeto.
+  3. **360px sem rolagem horizontal**, medido no navegador (`scrollWidth == clientWidth`,
+     nenhum elemento estourando); idem a 1280. Os critérios de mobile-first do
+     `ux-requirements.md` são implementáveis — o documento não precisa mudar.
+  4. **A fronteira servidor/cliente ficou clara.** Regra prática que o spike fixou: arquivo
+     sem `"use client"` roda só no servidor e o navegador nunca recebe esse código; o
+     `"use client"` é **fronteira, não etiqueta** — tudo abaixo dele vai para o navegador.
+     Consequência verificada no HTML: **props que cruzam a fronteira são serializadas na
+     página** (o endpoint aparece literal no payload RSC), logo **nenhum segredo pode
+     atravessar essa linha** — atenção na spec 001, que terá token.
+  **Consequência:** a alternativa React Router v7 prevista no ADR-0003 **não é acionada**.
+  O que fica no repositório: `install:api` (Sanctum 4.3.3, `routes/api.php`, migration
+  `personal_access_tokens`) e o `lang="pt-BR"` no layout raiz. O que é descartável e sai
+  quando o spike morrer: `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` no fim de
+  `api/routes/api.php` e `web/src/app/eventos/`.
+  **Ressalva registrada:** isso **não** fecha o item "Setup de CORS/Sanctum SPA" da tabela
+  acima — `allowed_origins: "*"` não convive com `supports_credentials: true`, que a área
+  logada vai exigir. O spike é anônimo; a política de CORS continua sendo assunto da
+  spec 001.
+- **PATH da máquina corrigido: `php` global passa a ser o 8.4.15 do WAMP** (2026-08-29,
+  E-004). A entrada `C:\xampp\php` (PHP 8.2.4) saiu do PATH da máquina e entrou
+  `C:\wamp64\bin\php\php8.4.15`. Motivo: o `composer.bat` do Windows roda `php
+  composer.phar`, então o composer herdava o PHP do XAMPP e reprovava no `"php": "^8.3"` do
+  projeto. **Desinstalar o XAMPP foi avaliado e descartado** — era o único `php` do PATH
+  (removê-lo deixaria o composer sem PHP) e `C:\xampp\htdocs` guarda ~20 projetos antigos,
+  além de bases em `C:\xampp\mysql\data`. O XAMPP segue instalado, fora do PATH. Efeito
+  colateral aceito pelo Ícaro: os projetos antigos do `htdocs` passam a ver PHP 8.4 e não
+  serão mais mexidos; se algum precisar, o WAMP tem `php8.2.29`.
 - **Framework de frontend: Next.js + React + TypeScript** (2026-08-29, ADR-0003). Catálogo
   público renderizado no servidor (SEO); área logada renderizada no cliente (evita a
   armadilha SSR + Sanctum); nenhuma regra de negócio no `web/`.
@@ -123,13 +163,16 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Spike descartável do frontend (M0)** — página pública consumindo um `GET` simples da
-   API, sem login, **fora da Definition of Done**: absorve a curva de Next/React/CORS antes
-   que o relógio da spec 001 comece. Decidido junto com o ADR-0003.
-   **Pré-requisito descoberto no setup:** não existe `routes/api.php` — no Laravel 11+ ele
-   só nasce com `php artisan install:api`, que instala o Sanctum junto. Rodar antes do
-   spike; a *política* de CORS/token continua sendo assunto da spec 001.
-2. Depois, rodar `/specify` da primeira feature: **fundação de contas e autenticação**
-   (conta única multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que todo o resto
-   pressupõe. Segunda na fila: cadastro/perfil de local, que destrava o catálogo. Atenção ao
-   Princípio XI: essa spec já inclui a **tela** (login/cadastro).
+1. **Rodar `/specify` da primeira feature: fundação de contas e autenticação** (conta única
+   multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que todo o resto pressupõe.
+   Atenção ao Princípio XI: essa spec já inclui a **tela** (login/cadastro). Insumos que o
+   spike deixou prontos para ela:
+   - **política de CORS + Sanctum** ainda a decidir (o default `allowed_origins: "*"` do
+     framework não serve com credenciais);
+   - **base de UI e conjunto de testes de front** (Tailwind + primitivas acessíveis,
+     runner, Testing Library, `axe`) — action item do ADR-0003, ainda aberto;
+   - lembrete do spike: **nada de segredo em prop que cruza para componente cliente**.
+2. Segunda na fila: cadastro/perfil de local, que destrava o catálogo.
+3. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
+   `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
+   `web/src/app/eventos/`.

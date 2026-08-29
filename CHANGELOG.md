@@ -24,6 +24,9 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   Done da feature; estrutura passa a prever `api/` e `web/`.
 
 ### Added
+- `docs/product/investment-plan.md` — orçamento de 18 meses (R$ 350 mil), cronograma
+  M0–M5 em 12 meses, TAM/SAM/SOM, dados de campo das duas cidades (IBGE 2025, guia
+  comercial) e a lista de premissas ainda não validadas. Base do pitch para anjo.
 - Projeto **Bora** criado no Linear (time Nexa) com marcos M0–M5, issues de setup
   (NEX-9, NEX-10) e issues `decisao-pendente` espelhando o backlog (NEX-11..NEX-39).
 - ADR-0002 — frontend desacoplado no mesmo repositório (`api/` + `web/`), comunicação

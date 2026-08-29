@@ -18,7 +18,7 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
 
 ## Método — Spec Kit é a espinha dorsal (igual ao Nexa)
 - Fonte única da spec: Spec Kit → `specs/NNN-feature/{spec,plan,tasks}.md`.
-- Fluxo: constituição → `/specify` → `/spec-check` → `/plan` → `/tasks` → implementar → `/doc-sync`.
+- Fluxo: constituição → `/speckit-specify` → `/spec-check` → `/speckit-plan` → `/speckit-tasks` → implementar → `/doc-sync`.
   O `/doc-sync` atualiza a doc e **commita**; o `git push` é sempre manual do Ícaro.
 - Constituição ratificada e **vinculante**: `.specify/memory/constitution.md` (muda só por emenda).
 - Skills complementares: `spec-check` (portão), `domain-rule`, `adr-new`, `screen-help`, `doc-sync`.

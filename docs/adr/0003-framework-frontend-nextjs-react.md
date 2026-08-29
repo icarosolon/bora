@@ -163,7 +163,11 @@ experiência)
       evidência; a curva do App Router se mostrou suportável, então **a alternativa
       React Router v7 não é acionada**. Medição de 3G segue pendente. Ver backlog.
 - [ ] Decidir hospedagem considerando o processo Node — BORA-27
-- [ ] Definir na spec 001 o setup de CORS/Sanctum e o padrão de token da área logada
-      (herdado do action item do ADR-0002)
-- [ ] Definir a base de UI concreta (Tailwind + biblioteca de primitivas acessíveis) e o
-      conjunto de testes de front (runner, Testing Library, `axe`, e2e) — na spec 001
+- [x] Definir na spec 001 o setup de CORS/Sanctum e o padrão de token da área logada
+      (herdado do action item do ADR-0002) — **decidido em 2026-08-29 (spec 001, D2)**:
+      token Bearer, CORS com origens explícitas, `supports_credentials` permanece `false`.
+- [x] Definir a base de UI concreta (Tailwind + biblioteca de primitivas acessíveis) e o
+      conjunto de testes de front (runner, Testing Library, `axe`, e2e) — **decidido em
+      2026-08-29 (spec 001, D4)**: **shadcn/ui** (primitivas Radix + Tailwind, código
+      copiado para o repo); testes com **Vitest + React Testing Library + axe** nos
+      componentes e **Playwright** e2e nas larguras 360 e 1280.

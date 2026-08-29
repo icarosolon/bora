@@ -9,11 +9,10 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 
 | Item | Bloqueia | Fonte |
 |---|---|---|
-| Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento | `brand.md` |
-| Setup de CORS/Sanctum SPA e padrão de documentação da API (OpenAPI) | primeira feature | ADR-0002, Princípio IV |
+| Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento, **envio real de e-mail (SPF/DKIM — spec 001)** | `brand.md` |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
-| Fluxo de confirmação ao unir credenciais Google ↔ e-mail/senha | cadastro/login | `RN-PLAT-002` |
+| Emenda constitucional formalizando o Resend como provedor de e-mail transacional (decisão já tomada — ver Decisões tomadas) | governança | constituição (lista PENDENTE do Stack) |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
 | Lista inicial de categorias de local | cadastro de local, filtros | `RN-LOCAL-002` |
@@ -96,6 +95,31 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Spec 001 (fundação de contas e autenticação) escrita e aprovada no portão
+  `spec-check`** (2026-08-29). Oito decisões que bloqueavam a spec foram tomadas pelo
+  Ícaro na mesma sessão e registradas na spec (`specs/001-contas-autenticacao/spec.md`,
+  seção "Decisões ratificadas", D1–D8):
+  1. **União de credenciais (RN-PLAT-002)**: senha da conta existente confirma; link por
+     e-mail é o plano B; direção inversa exige sessão ativa. Catálogo atualizado
+     (`docs/domain/plataforma.md`) — o PENDENTE saiu.
+  2. **Autenticação do `web/` + CORS**: token Bearer (paridade com o app mobile); origens
+     explícitas; sem credenciais de cookie. Fecha o item "Setup de CORS/Sanctum SPA" que
+     estava nesta tabela (ADR-0002 atualizado).
+  3. **Documentação da API**: OpenAPI gerado automaticamente (Scramble).
+  4. **Base de UI e testes de front** (action item do ADR-0003): shadcn/ui (Radix +
+     Tailwind); Vitest + Testing Library + axe; Playwright e2e em 360 e 1280.
+  5. **Verificação de e-mail**: envia sem bloquear o uso.
+  6. **"Esqueci minha senha"**: dentro do escopo da 001.
+  7. **Sessão**: expira em 30 dias de inatividade, renovada no uso (parâmetro
+     configurável).
+  8. **E-mail transacional: Resend** (atrás de porta & adapter; captura local em dev).
+     A constituição lista esse item como PENDENTE no Stack — **formalizar por emenda**
+     ficou como item de governança nesta tabela; o envio real em produção também depende
+     do domínio próprio (SPF/DKIM), vinculado ao item de marca/INPI.
+- **Nomes de comando corrigidos na doc do método** (2026-08-29): `CLAUDE.md` e
+  `development-workflow.md` diziam `/specify`, `/plan` e `/tasks`, mas as skills
+  instaladas são `speckit-specify`, `speckit-plan` e `speckit-tasks` (não existe
+  `.claude/commands/`). Ver E-005. `spec-check` e `doc-sync` já estavam com o nome real.
 - **Spike do frontend concluído — o Next fica** (BORA-32, 2026-08-29). As quatro perguntas
   do spike foram respondidas com evidência (detalhe no comentário de fechamento da
   BORA-32):
@@ -163,16 +187,13 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Rodar `/specify` da primeira feature: fundação de contas e autenticação** (conta única
-   multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que todo o resto pressupõe.
-   Atenção ao Princípio XI: essa spec já inclui a **tela** (login/cadastro). Insumos que o
-   spike deixou prontos para ela:
-   - **política de CORS + Sanctum** ainda a decidir (o default `allowed_origins: "*"` do
-     framework não serve com credenciais);
-   - **base de UI e conjunto de testes de front** (Tailwind + primitivas acessíveis,
-     runner, Testing Library, `axe`) — action item do ADR-0003, ainda aberto;
-   - lembrete do spike: **nada de segredo em prop que cruza para componente cliente**.
-2. Segunda na fila: cadastro/perfil de local, que destrava o catálogo.
+1. **Ícaro aprova a spec 001** (`specs/001-contas-autenticacao/spec.md` — o portão
+   `spec-check` já disse SIM; quem aprova é ele) e então **rodar `/speckit-plan`** e
+   `/speckit-tasks` da 001. Lembrete do spike que vale para o plano: **nada de segredo em
+   prop que cruza para componente cliente**.
+2. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
 3. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
    `web/src/app/eventos/`.
+4. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+   transacional (decisão D8 da spec 001).

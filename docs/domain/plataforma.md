@@ -21,9 +21,13 @@ Login via Google (OAuth) ou cadastro próprio (e-mail/senha). Vincular Google a 
 já criada por e-mail/senha (ou vice-versa) une as credenciais na mesma conta, mediante
 confirmação do titular.
 
-PENDENTE: fluxo exato de confirmação ao unir credenciais (senha? e-mail de confirmação?).
+Fluxo de confirmação da união (decidido por Ícaro em 2026-08-29 — spec 001, decisão D1):
+a união é confirmada **pela senha da conta existente**, com **link de confirmação por
+e-mail como plano B** para quem esqueceu a senha. A direção inversa — conta criada via
+Google define uma senha — exige **sessão ativa**. União cancelada, negada ou expirada não
+altera nada: nenhuma conta criada, nenhuma credencial vinculada.
 
-Base constitucional: Princípio I.
+Base constitucional: Princípio I. Spec: `specs/001-contas-autenticacao/`.
 
 ---
 

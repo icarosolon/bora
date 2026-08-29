@@ -51,5 +51,8 @@ mobile usará. Nenhum atalho: sem Blade renderizando dado de domínio, sem endpo
 ## Action items
 - [x] Decidir framework do `web/` (critérios eliminatórios: SEO do catálogo público +
       acessibilidade) — **Next.js + React + TypeScript**, ADR-0003 (2026-08-29).
-- [ ] Definir na primeira spec o setup de CORS/Sanctum SPA e o padrão de documentação da
-      API (OpenAPI) que acompanha cada feature.
+- [x] Definir na primeira spec o setup de CORS/Sanctum SPA e o padrão de documentação da
+      API (OpenAPI) que acompanha cada feature — **decidido na spec 001 (2026-08-29)**:
+      autenticação por **token Bearer** (paridade com o app mobile; CORS com origens
+      explícitas e sem credenciais de cookie) e **OpenAPI gerado automaticamente pelo
+      Scramble**. Ver `specs/001-contas-autenticacao/spec.md`, decisões D2 e D3.

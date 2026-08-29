@@ -8,6 +8,30 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — Fundação de Contas e Autenticação** escrita e **aprovada no portão
+  `spec-check`** (2026-08-29): `specs/001-contas-autenticacao/spec.md`. Cobre RN-PLAT-001
+  (conta única multi-papel) e RN-PLAT-002 (login Google/e-mail, união de credenciais),
+  com as telas Entrar, Criar conta, Unir contas, Esqueci minha senha e Redefinir senha,
+  seção "Tela e Experiência" completa (360px, polegar, estados, acessibilidade, testes em
+  360 e 1280 com axe) e mapa de testes por regra e princípio — incluindo os que provam os
+  bloqueios dos Princípios I (nenhuma conta paralela) e II (nada atrás de pagamento).
+  As **oito decisões que a bloqueavam** foram tomadas pelo Ícaro na sessão e registradas
+  na spec (D1–D8): união confirmada por senha com link como plano B; token Bearer + CORS
+  de origens explícitas; OpenAPI via Scramble; shadcn/ui + Vitest/Testing Library/axe +
+  Playwright; verificação de e-mail sem bloquear; recuperação de senha no escopo; sessão
+  de 30 dias renovada no uso; Resend como e-mail transacional (emenda constitucional
+  pendente para formalizar — ver backlog). Catálogo `plataforma.md` (RN-PLAT-002 sem
+  PENDENTE), ADR-0002 e ADR-0003 (action items fechados) e backlog sincronizados no mesmo
+  commit.
+
+### Fixed
+- **Doc do método apontava comandos inexistentes** (E-005): `CLAUDE.md` e
+  `development-workflow.md` diziam `/specify`, `/plan` e `/tasks`, mas as skills
+  instaladas pelo Spec Kit 0.15.1 são `speckit-specify`, `speckit-plan` e `speckit-tasks`
+  (não há `.claude/commands/`). Corrigido para os nomes reais; `/spec-check` e
+  `/doc-sync` já estavam certos.
+
+### Added
 - **Spike descartável de frontend concluído** (BORA-32, 2026-08-29). No `api/`,
   `php artisan install:api` (Sanctum 4.3.3, `routes/api.php`, migration
   `personal_access_tokens`) e o endpoint **andaime** `GET /api/v1/eventos` com 3 eventos

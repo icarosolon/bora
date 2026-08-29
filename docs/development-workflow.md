@@ -9,7 +9,7 @@ trabalhar; no Linear, porém, cada produto tem seu próprio time).
 
 ## 1. Espinha dorsal — Spec Kit
 
-- Fluxo: **constituição → `/specify` (spec) → `/plan` → `/tasks` → implementação**.
+- Fluxo: **constituição → `/speckit-specify` (spec) → `/speckit-plan` → `/speckit-tasks` → implementação**.
 - Specs vivem em `specs/NNN-feature/{spec,plan,tasks}.md` (convenção do Spec Kit).
   **Não duplicar spec em `docs/`.**
 - Constituição em `.specify/memory/constitution.md` — vinculante; muda **só por emenda**.
@@ -28,10 +28,10 @@ trabalhar; no Linear, porém, cada produto tem seu próprio time).
 
 ```
 constituição / emenda
-      → /specify        (escreve a spec — inclui a tela e seus critérios de UX)
+      → /speckit-specify (escreve a spec — inclui a tela e seus critérios de UX)
       → /spec-check      (portão: pronta para implementar? sim/não)
-      → /plan            (plano técnico — API e frontend)
-      → /tasks           (quebra em tarefas)
+      → /speckit-plan    (plano técnico — API e frontend)
+      → /speckit-tasks   (quebra em tarefas)
       → implementar      (API-first DENTRO da feature: API + testes → tela + testes)
       → validação visual (Ícaro aprova a tela — Princípio XI)
       → /doc-sync        (atualiza docs + commita; push é manual)

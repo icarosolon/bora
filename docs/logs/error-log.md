@@ -3,6 +3,24 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-005 — Doc do método apontava comandos que não existem: `/specify`, `/plan`, `/tasks` (2026-08-29)
+
+- **Sintoma:** `CLAUDE.md` e `docs/development-workflow.md` instruíam a rodar `/specify`,
+  `/plan` e `/tasks`, mas nenhum desses comandos existe nesta instalação.
+- **Causa:** o Spec Kit 0.15.1 instala as skills com o prefixo `speckit-`
+  (`.claude/skills/speckit-specify/`, `speckit-plan/`, `speckit-tasks/`...) e **não existe**
+  `.claude/commands/` no repositório — verificado por listagem antes da correção. A doc do
+  método foi escrita com os nomes genéricos do fluxo (espelhando o Nexa), não com os nomes
+  reais das skills instaladas. Mesma família do E-002: doc descrevendo comportamento sem
+  conferir o arquivo que o executa.
+- **Resolução:** `CLAUDE.md` (linha do fluxo) e `development-workflow.md` (§1 e diagrama do
+  §3) corrigidos para `/speckit-specify`, `/speckit-plan` e `/speckit-tasks`. `/spec-check`
+  e `/doc-sync` ficaram como estavam — as skills têm exatamente esses nomes.
+- **Status:** resolvido.
+- **Lição:** nome de comando em doc é afirmação sobre comportamento — conferir
+  `.claude/skills/` (e `.claude/commands/`, se houver) antes de escrever, e reconferir
+  quando o tooling for atualizado (o prefixo veio do instalador do Spec Kit).
+
 ## E-004 — `artisan install:api` revertia a instalação do Sanctum: PHP errado no PATH (2026-08-29)
 
 - **Sintoma:** `php artisan install:api` publicava `routes/api.php` e rodava a migration,
@@ -69,7 +87,12 @@ skill `doc-sync`.
   como **Bloqueante**, com instrução explícita de não rebaixá-los a Aviso; (3) o
   `development-workflow.md` passou a descrever o portão que existe de fato.
 - **Status:** resolvido. A verificar na primeira spec real (001 — contas): o portão precisa
-  reprovar de verdade uma spec sem tela.
+  reprovar de verdade uma spec sem tela. **Atualização 2026-08-29 (spec 001):** o portão
+  foi exercitado pela primeira vez. Registro honesto: ele **não** chegou a reprovar uma
+  spec sem tela, porque a spec 001 já foi escrita com a seção "Tela e Experiência"
+  completa; o que a varredura ativa do passo 5 pegou de verdade foi **um cenário de falha
+  previsível não coberto** (e-mail da conta Google mudado desde o vínculo), corrigido
+  antes do veredito. O caminho "reprovar spec sem tela" segue não exercitado.
 - **Lição:** princípio que não está escrito na skill que o cobra **não está valendo** — está
   só valendo enquanto alguém lembrar. Ao afirmar que uma regra é obrigatória, abrir o
   arquivo que a executa e conferir, em vez de confiar na doc que a descreve.

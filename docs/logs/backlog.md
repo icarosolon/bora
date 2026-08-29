@@ -13,6 +13,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Setup de CORS/Sanctum SPA e padrão de documentação da API (OpenAPI) | primeira feature | ADR-0002, Princípio IV |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
+| **Redis**: a constituição exige Redis 7.0+ e a máquina de dev não tem (não há build oficial para Windows). Hoje cache/sessão/fila estão em `database`. Decidir entre WSL2, Memurai, Docker ou emendar a constituição para "Redis só em produção" | dev e deploy | constituição (Stack), BORA-31 |
 | Fluxo de confirmação ao unir credenciais Google ↔ e-mail/senha | cadastro/login | `RN-PLAT-002` |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
@@ -99,12 +100,26 @@ landing vira um segundo design system e diverge das telas do produto.
 - **Framework de frontend: Next.js + React + TypeScript** (2026-08-29, ADR-0003). Catálogo
   público renderizado no servidor (SEO); área logada renderizada no cliente (evita a
   armadilha SSR + Sanctum); nenhuma regra de negócio no `web/`.
+- **Ambiente de desenvolvimento montado** (2026-08-29, BORA-31): `api/` com Laravel 13.29.0
+  sobre o **PHP 8.4.15 do WAMP** (o `php` do PATH é o do XAMPP 8.2.4 e **não** serve),
+  MySQL 8.4.7 na porta 3306 (MariaDB fica na 3307, não usado), base `bora`, migrações
+  rodadas em InnoDB; `web/` com Next 16.3.3, React 19.2.8, TypeScript 5 e Tailwind 4;
+  Node atualizado de 18.18.0 para **24.19.0 LTS** (Next 16 exige ≥ 20.9.0).
+- **`laravel/boost` como dependência de desenvolvimento** (2026-08-29): instalado **só o
+  servidor MCP** (`--mcp`), sem `--guidelines` e sem `--skills`. Motivo: as diretrizes do
+  pacote mandam "só criar documentação se o usuário pedir", o que contradiz a regra
+  inegociável de documentar no mesmo commit; e a parte boa delas (contratos nas bordas,
+  testes obrigatórios, conferir versão instalada) já está na constituição. A autoridade
+  segue sendo `CLAUDE.md` da raiz + constituição.
 
 ## Próximo passo
 
 1. **Spike descartável do frontend (M0)** — página pública consumindo um `GET` simples da
    API, sem login, **fora da Definition of Done**: absorve a curva de Next/React/CORS antes
    que o relógio da spec 001 comece. Decidido junto com o ADR-0003.
+   **Pré-requisito descoberto no setup:** não existe `routes/api.php` — no Laravel 11+ ele
+   só nasce com `php artisan install:api`, que instala o Sanctum junto. Rodar antes do
+   spike; a *política* de CORS/token continua sendo assunto da spec 001.
 2. Depois, rodar `/specify` da primeira feature: **fundação de contas e autenticação**
    (conta única multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que todo o resto
    pressupõe. Segunda na fila: cadastro/perfil de local, que destrava o catálogo. Atenção ao

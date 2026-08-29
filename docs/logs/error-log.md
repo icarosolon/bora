@@ -3,6 +3,24 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-003 — Migrações falhavam: MySQL do WAMP com MyISAM como engine padrão (2026-08-29)
+
+- **Sintoma:** `php artisan migrate` quebrava na primeira migration com
+  `SQLSTATE[42000]: 1071 Specified key was too long; max key length is 1000 bytes` ao criar
+  o índice único de `users.email`.
+- **Causa:** o MySQL 8.4.7 do WAMP está configurado com `default_storage_engine = MyISAM`,
+  que limita índice a 1000 bytes — e `varchar(255)` em `utf8mb4` ocupa 1020. Verificado por
+  `SHOW VARIABLES`. Primeira hipótese (conexão indo para o MariaDB) foi **descartada**: a
+  porta 3306 é o MySQL 8.4.7; o MariaDB 11.4.9 está na 3307 e não é usado.
+- **Resolução:** `'engine' => 'InnoDB'` na conexão `mysql` de `api/config/database.php`,
+  com comentário explicando o porquê. Corrigido **no projeto, não no servidor** — mexer no
+  `my.ini` do WAMP afetaria o `nexa-api-v2`, que roda na mesma máquina. Confirmado por
+  `information_schema`: as 9 tabelas nasceram InnoDB.
+- **Status:** resolvido e verificado.
+- **Lição:** MyISAM não tem transação nem chave estrangeira — Laravel não funciona direito
+  nele. Em máquina nova, conferir `default_storage_engine` antes de culpar a migration. E
+  conferir **em qual porta está cada servidor**: WAMP sobe MySQL e MariaDB ao mesmo tempo.
+
 ## E-002 — O portão `/spec-check` não cobrava tela, UX nem acessibilidade (2026-08-29)
 
 - **Sintoma:** o `development-workflow.md` afirmava que o portão reprova "tela que não

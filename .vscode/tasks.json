@@ -1,0 +1,98 @@
+{
+  // Tasks do Bora — api/ (Laravel) e web/ (Next.js).
+  // "Run Build Task" executa "Bora: dev": sobe os dois servidores e abre o navegador.
+  //
+  // ATENCAO ao caminho do PHP: aponta para o PHP 8.4 do WAMP de proposito.
+  // O `php` do PATH desta maquina e o do XAMPP (8.2.4), que NAO atende o Laravel 13.
+  // Se o WAMP atualizar o PHP, este caminho quebra e precisa ser ajustado aqui.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "api: serve",
+      "type": "shell",
+      "command": "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
+      "args": ["artisan", "serve", "--host=127.0.0.1", "--port=8000"],
+      "options": { "cwd": "${workspaceFolder}/api" },
+      "isBackground": true,
+      "presentation": {
+        "group": "bora-dev",
+        "panel": "dedicated",
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "owner": "laravel",
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*artisan serve.*|.*Starting.*",
+          "endsPattern": ".*Server running on.*"
+        }
+      }
+    },
+    {
+      "label": "web: dev",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "options": { "cwd": "${workspaceFolder}/web" },
+      "isBackground": true,
+      "presentation": {
+        "group": "bora-dev",
+        "panel": "dedicated",
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "owner": "next",
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "message": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*next dev.*|.*Next\\.js.*",
+          "endsPattern": ".*Ready in.*"
+        }
+      }
+    },
+    {
+      "label": "abrir navegador",
+      "type": "shell",
+      "command": "cmd",
+      "args": ["/c", "start", "", "http://localhost:3000"],
+      "dependsOn": ["web: dev"],
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Bora: dev",
+      "detail": "Sobe api/ (8000) + web/ (3000) e abre o navegador em localhost:3000",
+      "dependsOn": ["api: serve", "abrir navegador"],
+      "dependsOrder": "parallel",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "api: migrar banco",
+      "detail": "Roda as migrations no MySQL local (exige o WAMP no ar)",
+      "type": "shell",
+      "command": "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
+      "args": ["artisan", "migrate"],
+      "options": { "cwd": "${workspaceFolder}/api" },
+      "problemMatcher": []
+    },
+    {
+      "label": "web: build",
+      "detail": "Build de producao do front — usar para checar se o TypeScript passa",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": { "cwd": "${workspaceFolder}/web" },
+      "problemMatcher": []
+    }
+  ]
+}

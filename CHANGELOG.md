@@ -8,6 +8,28 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Projetos `api/` e `web/` criados** (BORA-31, 2026-08-29). `api/`: Laravel 13.29.0 sobre
+  PHP 8.4.15 do WAMP, MySQL 8.4.7 (base `bora`), migrações rodadas, tabelas em InnoDB.
+  `web/`: Next 16.3.3, React 19.2.8, TypeScript 5, Tailwind 4, App Router com `src/` e alias
+  `@/*` — `npm run build` verificado. Node atualizado de 18.18.0 para **24.19.0 LTS**
+  (Next 16 exige ≥ 20.9.0). `artisan serve` verificado respondendo 200.
+- `.vscode/tasks.json` — task de build padrão **`Bora: dev`** sobe `api/` (8000) e `web/`
+  (3000) e abre o navegador em `localhost:3000` só depois do Next sinalizar `Ready`; mais
+  `api: migrar banco` e `web: build`. Os padrões de detecção vieram da saída real dos dois
+  servidores, não de suposição.
+- `laravel/boost` v2.7.0 em `require-dev` + `.mcp.json` — **apenas o servidor MCP**
+  (`--mcp`), sem diretrizes e sem skills, para dar acesso verificável ao estado da aplicação
+  (esquema, config, log, docs da versão instalada) sem importar orientações que conflitam
+  com o método. Servidor testado respondendo ao `initialize` do protocolo MCP. A autoridade
+  segue sendo `CLAUDE.md` da raiz + constituição.
+
+### Fixed
+- **Migrações quebravam por MyISAM** (E-003): o MySQL do WAMP tem
+  `default_storage_engine = MyISAM`, que limita índice a 1000 bytes e não tem transação nem
+  chave estrangeira. Corrigido com `'engine' => 'InnoDB'` em `api/config/database.php` — no
+  projeto, não no servidor, para não afetar o outro sistema da mesma máquina.
+
+### Added
 - **ADR-0003 — framework do frontend: Next.js (App Router) + React + TypeScript**
   (2026-08-29, decisão BORA-28). Critérios que decidiram: SEO do catálogo público e
   acessibilidade, ambos eliminatórios. Regras vinculantes: catálogo público renderizado no

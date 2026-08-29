@@ -13,7 +13,6 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Setup de CORS/Sanctum SPA e padrão de documentação da API (OpenAPI) | primeira feature | ADR-0002, Princípio IV |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
-| **Redis**: a constituição exige Redis 7.0+ e a máquina de dev não tem (não há build oficial para Windows). Hoje cache/sessão/fila estão em `database`. Decidir entre WSL2, Memurai, Docker ou emendar a constituição para "Redis só em produção" | dev e deploy | constituição (Stack), BORA-31 |
 | Fluxo de confirmação ao unir credenciais Google ↔ e-mail/senha | cadastro/login | `RN-PLAT-002` |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
@@ -105,6 +104,16 @@ landing vira um segundo design system e diverge das telas do produto.
   MySQL 8.4.7 na porta 3306 (MariaDB fica na 3307, não usado), base `bora`, migrações
   rodadas em InnoDB; `web/` com Next 16.3.3, React 19.2.8, TypeScript 5 e Tailwind 4;
   Node atualizado de 18.18.0 para **24.19.0 LTS** (Next 16 exige ≥ 20.9.0).
+- **Redis ativo em desenvolvimento** (2026-08-29), fechando a pendência aberta no setup.
+  Servidor **Redis 8.2.5** em `127.0.0.1:6379` (standalone), instalado pelo Ícaro. O PHP
+  8.4 do WAMP **não trazia** a extensão: foi instalada a `php_redis.dll` 6.3.0 (build
+  `8.4-ts-vs17-x64`, do host oficial `downloads.php.net`) em
+  `C:\wamp64\bin\php\php8.4.15\ext\` e habilitada em `php.ini` **e** `phpForApache.ini`
+  (backups `.bak-antes-redis` ao lado). `CACHE_STORE`, `SESSION_DRIVER` e
+  `QUEUE_CONNECTION` apontam para `redis`. Verificado pela facade `Cache` do Laravel, com a
+  chave localizada no **db 1** do servidor. Escolhido phpredis e não predis para o dev ficar
+  igual à produção Linux. **Risco conhecido:** se o WAMP atualizar o PHP, a DLL deixa de
+  casar com o build e precisa ser trocada.
 - **`laravel/boost` como dependência de desenvolvimento** (2026-08-29): instalado **só o
   servidor MCP** (`--mcp`), sem `--guidelines` e sem `--skills`. Motivo: as diretrizes do
   pacote mandam "só criar documentação se o usuário pedir", o que contradiz a regra

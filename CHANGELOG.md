@@ -13,6 +13,11 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   `web/`: Next 16.3.3, React 19.2.8, TypeScript 5, Tailwind 4, App Router com `src/` e alias
   `@/*` — `npm run build` verificado. Node atualizado de 18.18.0 para **24.19.0 LTS**
   (Next 16 exige ≥ 20.9.0). `artisan serve` verificado respondendo 200.
+- **Redis ativo em desenvolvimento** (2026-08-29): servidor Redis 8.2.5 em
+  `127.0.0.1:6379`; extensão `phpredis` 6.3.0 instalada no PHP 8.4 do WAMP (que não a
+  trazia) e habilitada nos dois `php.ini`; `CACHE_STORE`, `SESSION_DRIVER` e
+  `QUEUE_CONNECTION` passam de `database` para `redis`. Fecha a pendência aberta no setup e
+  alinha o ambiente ao Stack da constituição. Verificado pela facade `Cache`.
 - `.vscode/tasks.json` — task de build padrão **`Bora: dev`** sobe `api/` (8000) e `web/`
   (3000) e abre o navegador em `localhost:3000` só depois do Next sinalizar `Ready`; mais
   `api: migrar banco` e `web: build`. Os padrões de detecção vieram da saída real dos dois

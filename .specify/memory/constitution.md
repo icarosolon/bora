@@ -1,5 +1,11 @@
 <!--
 Sync Impact Report
+- Version change: 1.1.0 → 1.1.1 (PATCH — clarificação de redação, sem efeito semântico)
+- Em 2026-08-28 o codinome de trabalho "iBar" foi aposentado: o repositório passou a se
+  chamar `bora` e o projeto no Linear já nasceu como "Bora". A menção ao codinome saiu do
+  Escopo. Nenhum princípio foi alterado.
+
+Sync Impact Report — Emenda 1 (histórico)
 - Version change: 1.0.0 → 1.1.0
 - Amendment: Emenda 1, ratificada por Ícaro em 2026-08-28
 - Bump MINOR: adiciona dois princípios novos (XI e XII) e expande o IV; nenhum princípio
@@ -36,7 +42,7 @@ Sync Impact Report — ratificação inicial (histórico)
 
 ## Escopo
 
-Bora (nome oficial da solução; codinome de repositório: iBar) é uma plataforma web
+Bora (nome oficial da solução) é uma plataforma web
 (marketplace de três lados) que conecta **público**, **estabelecimentos** (bares e
 restaurantes) e **artistas/bandas** em torno de eventos de música ao vivo. Lançamento como
 site responsivo; **o app mobile será lançado quando o site tiver boa aceitação**,
@@ -224,4 +230,4 @@ justificativa e atualização do Sync Impact Report. Versionamento semver: MAJOR
 redefine princípio; MINOR adiciona ou expande; PATCH clarifica redação. Revisões de código
 verificam conformidade com os Princípios I–XII antes de merge.
 
-**Version**: 1.1.0 | **Ratified**: 2026-08-28 | **Last Amended**: 2026-08-28
+**Version**: 1.1.1 | **Ratified**: 2026-08-28 | **Last Amended**: 2026-08-28

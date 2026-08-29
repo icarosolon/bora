@@ -7,12 +7,13 @@ as convenções contínuas.
 
 ## Projeto
 
-- **Nome:** Bora (nome oficial da solução desde 2026-08-28; codinome de repositório: iBar)
+- **Nome:** Bora (nome oficial da solução desde 2026-08-28; o codinome iBar foi aposentado
+  — o repositório passou a se chamar `bora` em 2026-08-28)
 - **Descrição:** Plataforma web que conecta público, bares/restaurantes e artistas em
   torno de eventos de música ao vivo. Gratuito para o usuário final; Freemium B2B. API e
   frontend desacoplados no mesmo repositório; app mobile quando o site tiver boa
   aceitação. Validação em Juazeiro-BA e Petrolina-PE. Método Spec Kit — repositório é a
-  fonte da verdade (`C:\wamp64\www\ibar`). Entrega vertical: feature pronta = API
+  fonte da verdade (`C:\wamp64\www\bora`). Entrega vertical: feature pronta = API
   documentada + tela + testes (back e front) + validação visual do Ícaro.
 - **Marcos (milestones):**
   1. **M0 — Fundação** (constituição ratificada ✔, decisões de base do backlog, setup do

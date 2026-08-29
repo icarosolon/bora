@@ -3,8 +3,9 @@
 Carregado automaticamente em toda sessão. Manter curto e atual.
 
 ## Produto
-**Bora** (nome oficial da solução; codinome de repositório/Linear: iBar; registro INPI
-PENDENTE) é uma **plataforma web de três lados**: público (rolezeiros), estabelecimentos
+**Bora** (nome oficial da solução; registro INPI PENDENTE — o codinome de trabalho "iBar"
+foi aposentado em 2026-08-28, junto com o repositório) é uma **plataforma web de três
+lados**: público (rolezeiros), estabelecimentos
 (bares e restaurantes) e artistas/bandas, em torno de eventos de música ao vivo. Responde
 "onde tem rolê hoje?". Lançamento como **site** (login Google ou cadastro próprio); o
 **app mobile será lançado quando o site tiver boa aceitação**, consumindo a mesma API sem
@@ -21,7 +22,7 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
   O `/doc-sync` atualiza a doc e **commita**; o `git push` é sempre manual do Ícaro.
 - Constituição ratificada e **vinculante**: `.specify/memory/constitution.md` (muda só por emenda).
 - Skills complementares: `spec-check` (portão), `domain-rule`, `adr-new`, `screen-help`, `doc-sync`.
-- Rastreio de trabalho no **Linear**: projeto "iBar" no mesmo time do Nexa (produto
+- Rastreio de trabalho no **Linear**: projeto "Bora" no mesmo time do Nexa (produto
   separado, time igual). Estrutura em `docs/logs/linear-import.md`.
 - Método completo: @docs/development-workflow.md
 

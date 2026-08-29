@@ -8,6 +8,10 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Changed
+- **Repositório renomeado de `ibar` para `bora`** (`C:\wamp64\www\bora`), aposentando o
+  codinome de trabalho. Referências atualizadas em `CLAUDE.md`, `vision.md`, `brand.md`,
+  `development-workflow.md`, `linear-import.md` e ADR-0001; constituição 1.1.0 → **1.1.1**
+  (PATCH, só redação do Escopo). O projeto no Linear já se chamava "Bora".
 - Constituição 1.0.0 → **1.1.0** (Emenda 1, 2026-08-28): novos Princípios XI (Entrega
   Vertical com Validação Visual — feature pronta = API documentada + tela 100% no front +
   testes back/front aprovados + validação visual do Ícaro antes da próxima feature) e XII

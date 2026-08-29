@@ -3,8 +3,9 @@
 Status: **Bora é o nome oficial da solução**, confirmado por Ícaro em 2026-08-28 (na mesma
 data, escolhido entre opções propostas e depois promovido de nome de trabalho a nome
 oficial). Registro de marca e domínio seguem **PENDENTE** (risco conhecido: se o INPI
-barrar, as alternativas do estudo abaixo reabrem). O codinome **iBar** permanece apenas
-como nome técnico do repositório.
+barrar, as alternativas do estudo abaixo reabrem). O codinome de trabalho **iBar** foi
+aposentado em 2026-08-28: o repositório (`C:\wamp64\www\bora`) e o projeto no Linear
+passaram a usar o nome definitivo.
 
 ## Nome
 

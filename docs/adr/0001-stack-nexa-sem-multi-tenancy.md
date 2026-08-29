@@ -5,7 +5,7 @@ Deciders: Ícaro · 2026-08-28
 
 ## Contexto
 
-O Bora (iBar) será construído pelo mesmo time que desenvolve o Nexa, que já tem stack
+O Bora será construído pelo mesmo time que desenvolve o Nexa, que já tem stack
 ratificada (PHP 8.4+/Laravel 13/MySQL/Redis, Sanctum, pacotes spatie) e método de trabalho
 consolidado (Spec Kit). O Nexa é multi-tenant com banco por tenant; o Bora é um
 marketplace único de três lados (usuários, estabelecimentos, artistas) — os

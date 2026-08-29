@@ -2,7 +2,7 @@
 
 Status: aprovado. Ideia extraída do Figma "App Rolezeiros" e das anotações do Ícaro;
 decisões de nome, stack e monetização confirmadas por Ícaro em 2026-08-28. **Bora é o nome
-oficial da solução** (registro INPI pendente; codinome de repositório: iBar).
+oficial da solução** (registro INPI pendente).
 
 ## O que é
 

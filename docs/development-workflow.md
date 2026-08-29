@@ -57,7 +57,7 @@ Uma feature só é dada como pronta quando **tudo** abaixo vale:
 
 ## 4. Rastreio no Linear
 
-O trabalho é rastreado no **Linear**, projeto **iBar**, no mesmo time do Nexa (produto
+O trabalho é rastreado no **Linear**, projeto **Bora**, no mesmo time do Nexa (produto
 separado, time igual). Convenções:
 
 - Cada spec do Spec Kit vira um conjunto de issues no Linear a partir do `tasks.md`

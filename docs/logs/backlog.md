@@ -41,6 +41,51 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Gateway de pagamento | bilheteria (Fase 3), Pix da divisão | `monetization.md`, `RN-CONTA-001` |
 | Redesenho da identidade visual (logo flat, dark-first, tokens semânticos) | UI | `brand.md` |
 
+## Entregáveis previstos, ainda sem spec
+
+### Landing page (no lançamento do MVP)
+
+Decidido por Ícaro em 2026-08-29: **não se constrói agora**. Entra no **lançamento do MVP**
+e deve estar **alinhada com o que estiver documentado como produção naquele momento** — ou
+seja, com o produto de fato entregue e com `brand.md` + `ux-requirements.md` vigentes na
+data, e não com uma visão antecipada do produto.
+
+- **Gatilho:** lançamento do MVP (Fase 1 de `vision.md`).
+- **Escopo:** a definir. Ícaro informa mais à frente se haverá também uma página de
+  **pré-lançamento** (institucional/waitlist, que não depende da API). A **home pública do
+  produto** — feed "O que temos para hoje?" — é tela de produto, segue pelo fluxo normal de
+  spec e **não se confunde** com a landing.
+- **Onde vive:** `web/` (ADR-0002, ADR-0003), como página renderizada no servidor. Nunca
+  como aplicação separada.
+- **Sujeita ao Princípio XI e ao `spec-check`** como qualquer tela: 360px sem rolagem
+  horizontal, WCAG AA, testes em 360 e 1280 com `axe`, validação visual do Ícaro.
+
+**Bloqueios conhecidos** (verificados em 2026-08-29):
+
+- **Marca/INPI.** A landing é material público com nome e logo — cai no item "Registro de
+  marca 'Bora' (INPI) + domínio + @ nas redes" da tabela acima. Construir, pode;
+  **publicar antes do registro é exatamente o risco que aquele item sinaliza.**
+- **Identidade visual.** O redesenho (logo flat, dark-first, tokens semânticos) está
+  PENDENTE em `brand.md` e o Figma está aposentado. Hoje não há referência visual aprovada
+  além da paleta, com as ressalvas de contraste já medidas.
+- **Setup do `web/`.** Tailwind, biblioteca de primitivas acessíveis e o conjunto de testes
+  de front são action item da **spec 001** (ADR-0003). Se a landing vier antes da 001, ela
+  **herda** essas decisões — não as toma sozinha.
+- A landing **não é** o spike descartável do M0 (aquele consome um `GET` da API e é jogado
+  fora).
+
+**Modularização — julgamento do assistente, não medido.** Vale modularizar em sentido
+estreito: cada seção como componente próprio em `web/src/components/landing/` e a **copy
+fora do JSX**, em módulo TypeScript tipado. Razões: a copy muda com frequência na janela de
+lançamento e é reaproveitada em redes/e-mail/pitch; os três públicos (rolezeiro, bar,
+artista) tendem a gerar páginas irmãs com a mesma estrutura; e testar seção a seção nas duas
+larguras é mais barato que testar página monolítica. Como componentes de servidor
+estáticos, isso não custa nada em runtime. **Não vale** agora: sistema de blocos
+configurável, CMS ou landing como aplicação separada — é uma página, um dev, nenhum editor
+não-técnico. Os primitivos (botão, container, tipografia, tokens de cor) nascem em
+`web/src/components/ui`, compartilhados com o app; se nascerem dentro de `landing/`, a
+landing vira um segundo design system e diverge das telas do produto.
+
 ## Infra do método
 
 - **Linear**: projeto **Bora** criado em 2026-08-28

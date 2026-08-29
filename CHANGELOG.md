@@ -19,6 +19,14 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Decisão da tecnologia do app mobile (Flutter, React Native ou PWA) registrada no backlog
   como **deliberadamente adiada para a Fase 3** (BORA-33). O Princípio IV mantém as três
   portas abertas sem custo; a escolha da web não dependeu dessa e não a antecipa.
+- **Landing page registrada como entregável futuro** (backlog, 2026-08-29). Decisão do
+  Ícaro: não se constrói agora — entra no **lançamento do MVP**, alinhada com o que
+  estiver documentado como produção *naquele momento*. Ficam registrados o gatilho, os
+  bloqueios (marca/INPI para material público, identidade visual PENDENTE, setup do `web/`
+  que é action item da spec 001) e a recomendação de modularização (seções como
+  componentes + copy em módulo tipado; sem CMS/blocos configuráveis; primitivos
+  compartilhados em `web/src/components/ui`). Escopo de uma eventual página de
+  pré-lançamento fica em aberto, a informar pelo Ícaro.
 
 ### Fixed
 - **O portão `/spec-check` não fazia o que a documentação dizia que ele fazia.** A skill não

@@ -16,7 +16,9 @@ restaurantes com música ao vivo e aos artistas que tocam neles. Três lados:
 - **Artista/banda** — mantém perfil com gêneros, agenda e avaliações; confirma participação
   em eventos.
 
-Lançamento como **site responsivo** com login via Google ou cadastro na plataforma —
+Lançamento como **site mobile-first** — o uso é predominantemente pelo celular, o
+computador é minoria (`ux-requirements.md`) — com login via Google ou cadastro na
+plataforma;
 frontend e API construídos **juntos neste projeto, porém desacoplados** (ADR-0002): o site
 consome exclusivamente a API pública. O **app mobile será lançado quando o site tiver boa
 aceitação**, consumindo a mesma API sem mudança estrutural no backend (Constituição,

@@ -41,5 +41,6 @@ Reaproveitar a stack do Nexa **sem** a camada de multi-tenancy: banco MySQL úni
   (avaliar extensões espaciais ou serviço de busca dedicado via ADR próprio).
 
 ## Action items
-- [ ] Decidir framework de frontend com SEO como critério eliminatório (backlog).
+- [x] Decidir framework de frontend com SEO como critério eliminatório — **Next.js +
+      React + TypeScript**, ADR-0003 (2026-08-29).
 - [ ] Decidir hospedagem (backlog).

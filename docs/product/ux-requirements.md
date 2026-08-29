@@ -7,11 +7,43 @@ layout; fica em `docs/product/design/figma/` só como registro histórico da ide
 ## Premissa
 
 O Bora atende **todos os perfis de público** — do jovem que resolve tudo pelo celular ao
-idoso que usa com dificuldade (menor público, mas público). O produto é de uso ocasional:
+idoso que usa com dificuldade (menor público, mas público). **O uso é predominantemente
+pelo celular**; o computador é minoria. O produto é de uso ocasional:
 ninguém aprende a usá-lo; **cada tela se explica sozinha ou falhou**. Toda spec de feature
 referencia este documento nos critérios de aceite da tela.
 
 ## Requisitos vinculantes (valem para toda tela)
+
+### Dispositivo principal: o celular (mobile-first, não "responsivo")
+
+Decisão do Ícaro (2026-08-29): **a maioria esmagadora do uso será no celular**; o
+computador é minoria. Isso não é uma preferência de layout — é a ordem em que cada tela é
+pensada, construída e testada.
+
+- **Mobile-first literal no código:** o estilo base é o do celular; `media query` só existe
+  para **ampliar** para telas maiores. Nunca o contrário. Tela que nasce em desktop e
+  "encolhe" reprova.
+- **Piso de largura: 360px.** Nenhuma tela pode ter rolagem **horizontal** nem conteúdo
+  cortado a 360px de largura — é o piso de aparelho modesto que adotamos.
+- **Larguras de referência para conferir toda tela:** 360 (piso), 390–430 (celular comum),
+  768 (tablet), 1280 (computador).
+- **Ação principal ao alcance do polegar:** a ação principal da tela fica na metade
+  inferior, alcançável com uma mão. Barra de ação no topo não serve como único caminho para
+  a ação principal.
+- **Nada depende de `hover`.** Passar o mouse não existe no celular: toda informação ou
+  ação revelada por `hover` tem caminho equivalente por toque, visível.
+- **Uma coluna no celular.** Tabela larga, grade densa e layout de várias colunas se
+  reorganizam em lista vertical — não viram rolagem lateral.
+- **No computador a tela não é celular esticado:** o conteúdo respeita largura máxima
+  legível e usa o espaço extra para mostrar mais, nunca para espalhar controles.
+- **Isso vale para todas as telas, inclusive o painel do estabelecimento.** Premissa: o dono
+  do bar publica evento pelo celular, no balcão, tanto quanto pelo computador. O painel
+  precisa funcionar bem nos dois — mas nasce pelo celular.
+
+**Como se verifica (Princípio IX):** todo teste de tela roda em **pelo menos duas larguras
+— 360 e 1280** — e falha se houver rolagem horizontal ou elemento inacessível. A validação
+visual do Ícaro (Princípio XI) é feita **primeiro no celular**; a tela reprovada no celular
+não é apresentada em desktop.
 
 ### Simplicidade
 - A ação principal de cada tela é **uma**, óbvia, e resolve-se com um toque.
@@ -57,6 +89,8 @@ referencia este documento nos critérios de aceite da tela.
 
 - Toda spec de feature inclui, nos critérios de aceite da tela, os itens deste documento
   que se aplicam — e o `spec-check` reprova spec de feature com tela que não os referencie.
+- Em especial, o `spec-check` reprova spec cuja tela não declare o comportamento no
+  **celular** e os testes nas duas larguras de referência.
 - A validação visual do Ícaro (Princípio XI) é também o teste de "essa tela se explica
   sozinha?". Reprovou, volta.
 - PENDENTE: teste informal com usuário real de baixo letramento digital (ex.: pedir a um

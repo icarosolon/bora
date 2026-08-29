@@ -10,10 +10,9 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Item | Bloqueia | Fonte |
 |---|---|---|
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento | `brand.md` |
-| Framework de frontend (**SEO e acessibilidade são critérios eliminatórios**) | primeira tela (Princípio XI) | constituição, ADR-0002 |
 | Setup de CORS/Sanctum SPA e padrão de documentação da API (OpenAPI) | primeira feature | ADR-0002, Princípio IV |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
-| Hospedagem | deploy | constituição |
+| Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
 | Fluxo de confirmação ao unir credenciais Google ↔ e-mail/senha | cadastro/login | `RN-PLAT-002` |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
@@ -34,6 +33,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Sinais da personalização v1 e critério mínimo (cold start) | personalização | `RN-DESC-005` |
 | Canais de notificação (push web/e-mail/WhatsApp) e provedores | notificações | `RN-DESC-006`, constituição |
 | Divisão de conta: simples ou por item; taxa/couvert; anônima? | divisão de conta | `RN-CONTA-001` |
+| Tecnologia do app mobile: Flutter, React Native ou PWA — **decidir só na Fase 3** | app mobile (Fase 3) | ADR-0003, Princípio IV |
 | Preço dos planos B2B e limite do plano grátis (validar no mercado local) | monetização Fase 1 | `monetization.md` |
 | Contagem real de casas com música ao vivo nas duas cidades (premissa: 20% de 741) | mercado, pitch | `investment-plan.md` |
 | Validar premissas do orçamento (pró-labore, freelances, custo de API em volume) | captação | `investment-plan.md` |
@@ -49,10 +49,18 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
   tabela acima (BORA-1..BORA-29) + setup (BORA-30, BORA-31).
   Ver `docs/logs/linear-import.md`.
 
+## Decisões tomadas
+
+- **Framework de frontend: Next.js + React + TypeScript** (2026-08-29, ADR-0003). Catálogo
+  público renderizado no servidor (SEO); área logada renderizada no cliente (evita a
+  armadilha SSR + Sanctum); nenhuma regra de negócio no `web/`.
+
 ## Próximo passo
 
-Escolher a primeira feature e rodar `/specify`. Candidato natural: **fundação de contas e
-autenticação** (conta única multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que
-todo o resto pressupõe. Segunda na fila: cadastro/perfil de local, que destrava o catálogo.
-Atenção ao Princípio XI: a primeira spec já inclui a **tela** (login/cadastro) — o que
-torna a decisão do framework de frontend pré-requisito imediato.
+1. **Spike descartável do frontend (M0)** — página pública consumindo um `GET` simples da
+   API, sem login, **fora da Definition of Done**: absorve a curva de Next/React/CORS antes
+   que o relógio da spec 001 comece. Decidido junto com o ADR-0003.
+2. Depois, rodar `/specify` da primeira feature: **fundação de contas e autenticação**
+   (conta única multi-papel + login Google/e-mail — `RN-PLAT-001/002`), que todo o resto
+   pressupõe. Segunda na fila: cadastro/perfil de local, que destrava o catálogo. Atenção ao
+   Princípio XI: essa spec já inclui a **tela** (login/cadastro).

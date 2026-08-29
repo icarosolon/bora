@@ -36,11 +36,19 @@ constituição / emenda
       → validação visual (Ícaro aprova a tela — Princípio XI)
       → /doc-sync        (atualiza docs + commita; push é manual)
 ```
-Nenhum código antes de spec aprovada pelo portão. O portão reprova spec sem cenários de
-erro e limites, sem teste para cada `RN-<CTX>-NNN` referenciada, sem teste que prove o
-bloqueio de todo princípio NON-NEGOTIABLE que a feature tocar (Constituição, Princípio
-IX), ou com tela que não referencie `docs/product/ux-requirements.md` nos critérios de
-aceite (Princípio XII).
+Nenhum código antes de spec aprovada pelo portão. O portão (`.claude/skills/spec-check/`)
+reprova spec:
+
+- sem cenários de erro e limites; sem teste para cada `RN-<CTX>-NNN` referenciada; sem
+  teste que prove o bloqueio de todo princípio NON-NEGOTIABLE tocado (Princípio IX);
+- sem a seção **"Tela e Experiência"** preenchida (Princípios XI e XII): tela e ação
+  principal declaradas, referência a `docs/product/ux-requirements.md`, **comportamento a
+  360px** (o celular é o dispositivo principal), ação principal ao alcance do polegar,
+  estados de carregando/vazio/erro/sucesso, itens de acessibilidade, e **testes de tela em
+  360 e 1280**.
+
+Esses critérios estão escritos na skill `spec-check` e na seção obrigatória do
+`spec-template.md` — não dependem de alguém lembrar deles na hora.
 
 ### Definition of Done da feature (Princípio XI — inegociável)
 
@@ -71,7 +79,7 @@ próprio ID. Convenções:
 
 ```
 api/                                     # Laravel — API REST pública (ADR-0002)
-web/                                     # frontend desacoplado (framework PENDENTE)
+web/                                     # frontend desacoplado — Next.js + React (ADR-0003)
 specs/NNN-feature/{spec,plan,tasks}.md   # Spec Kit — fonte única da spec (API + tela)
 .specify/memory/constitution.md          # Spec Kit — constituição
 docs/

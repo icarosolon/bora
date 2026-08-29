@@ -103,6 +103,45 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+## Tela e Experiência *(obrigatório neste projeto — Princípios XI e XII)*
+
+<!--
+  Seção própria do Bora, exigida pela constituição. Feature sem tela especificada não passa
+  no /spec-check. Preencher em português; referência vinculante:
+  docs/product/ux-requirements.md
+-->
+
+### Telas entregues nesta feature
+
+- **[Nome da tela]** — ação principal: [uma frase, uma ação]. Caminho até ela: [de onde se
+  chega, em quantos toques].
+
+### Comportamento no celular (dispositivo principal)
+
+- Como a tela se organiza a 360px de largura: [uma coluna? o que sai de cena? o que vira
+  lista?]
+- Onde fica a ação principal na tela do celular (alcance do polegar):
+- O que muda a partir de 768px e 1280px (o computador mostra **mais**, não espalha):
+
+### Estados obrigatórios
+
+- **Carregando**: [o que a pessoa vê]
+- **Vazio**: [texto que ensina o que fazer — nunca tela em branco]
+- **Erro**: [mensagem em linguagem humana dizendo **o que fazer**]
+- **Sucesso**: [confirmação visível]
+
+### Acessibilidade (`docs/product/ux-requirements.md`)
+
+- Itens do documento que esta tela precisa cumprir explicitamente:
+- Alvos de toque ≥ 44px, contraste AA, ícone com rótulo, foco visível, navegação por
+  teclado, nada dependente de `hover`: [confirmar/como]
+
+### Testes de tela (Princípio IX)
+
+- Larguras testadas: **360 e 1280** (obrigatórias) + [outras, se houver]
+- Verificação automatizada de acessibilidade: [ferramenta/asserção]
+- Cenários de erro da tela cobertos por teste: [listar]
+
 ## Success Criteria *(mandatory)*
 
 <!--
@@ -126,6 +165,8 @@
 -->
 
 - [Assumption about target users, e.g., "Users have stable internet connectivity"]
-- [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
+- [Assumption about scope boundaries — ATENÇÃO: neste projeto o celular é o dispositivo
+  principal e a tela faz parte da feature (Princípios XI e XII); "mobile fica para depois"
+  e "só backend nesta feature" NÃO são premissas válidas]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]

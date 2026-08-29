@@ -1,5 +1,20 @@
 <!--
-Sync Impact Report
+Sync Impact Report — Emenda 2
+- Version change: 1.1.1 → 1.2.0
+- Amendment: Emenda 2, ratificada por Ícaro em 2026-08-29
+- Bump MINOR: o Stack Tecnológico Obrigatório ganha um item antes PENDENTE; nenhum
+  princípio é adicionado, redefinido ou removido.
+- Mudança: **framework do frontend deixa de ser PENDENTE** — `web/` passa a ser
+  obrigatoriamente Next.js (App Router) + React + TypeScript, com catálogo público
+  renderizado no servidor, área logada renderizada no cliente e nenhuma regra de negócio no
+  front. Critérios que decidiram: SEO do catálogo público e acessibilidade (Princípio XII).
+  Ver ADR-0003.
+- Source: decisão de Ícaro em 2026-08-29 (BORA-28, que já previa a emenda).
+- Follow-up TODOs: seguem PENDENTE hospedagem (agora precisa também de processo Node),
+  provedor de mapas/rotas, provedor de push, provedor de e-mail transacional e gateway de
+  pagamento (Fase 3).
+
+Sync Impact Report — 1.1.1 (histórico)
 - Version change: 1.1.0 → 1.1.1 (PATCH — clarificação de redação, sem efeito semântico)
 - Em 2026-08-28 o codinome de trabalho "iBar" foi aposentado: o repositório passou a se
   chamar `bora` e o projeto no Linear já nasceu como "Bora". A menção ao codinome saiu do
@@ -199,14 +214,22 @@ login social Google via `laravel/socialite`. Qualquer mudança nessas escolhas f
 exige emenda a esta constituição.
 
 Frontend: aplicação separada no mesmo repositório (`web/`), desacoplada do backend
-(`api/`), comunicação exclusivamente via API pública — ver ADR-0002. Framework de frontend
-**PENDENTE** (critérios eliminatórios: SEO do catálogo público e acessibilidade — decide
-antes da primeira tela).
+(`api/`), comunicação exclusivamente via API pública — ver ADR-0002. **Next.js (App Router)
++ React + TypeScript** (ADR-0003, Emenda 2), com três regras vinculantes:
 
-PENDENTE (não ratificados, exigem decisão antes da spec que depender deles): framework de
-frontend (bloqueia a primeira tela — Princípio XI), hospedagem, provedor de mapas/rotas (e
-seu custo), provedor de push, provedor de e-mail transacional, gateway de pagamento
-(Fase 3 — bilheteria). Ver `docs/logs/backlog.md`.
+1. **Catálogo público renderizado no servidor** (evento, local, artista, feed do dia) — é o
+   que cumpre o critério de SEO que decidiu a escolha.
+2. **Área autenticada renderizada no cliente**, consumindo a API com token — separação
+   deliberada para não combinar SSR com sessão do Sanctum.
+3. **Nenhuma regra de negócio no `web/`** — o servidor do Next renderiza e repassa; quem
+   decide é a API (Princípio IV, sob pena de o app mobile nascer incompleto).
+
+Mudança nessas escolhas exige emenda a esta constituição.
+
+PENDENTE (não ratificados, exigem decisão antes da spec que depender deles): hospedagem
+(precisa acomodar um processo Node além do PHP), provedor de mapas/rotas (e seu custo),
+provedor de push, provedor de e-mail transacional, gateway de pagamento (Fase 3 —
+bilheteria). Ver `docs/logs/backlog.md`.
 
 ## Fluxo de Desenvolvimento
 
@@ -230,4 +253,4 @@ justificativa e atualização do Sync Impact Report. Versionamento semver: MAJOR
 redefine princípio; MINOR adiciona ou expande; PATCH clarifica redação. Revisões de código
 verificam conformidade com os Princípios I–XII antes de merge.
 
-**Version**: 1.1.1 | **Ratified**: 2026-08-28 | **Last Amended**: 2026-08-28
+**Version**: 1.2.0 | **Ratified**: 2026-08-28 | **Last Amended**: 2026-08-29

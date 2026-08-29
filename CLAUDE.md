@@ -33,8 +33,9 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
   pública** e **prontidão mobile**, segurança por padrão, assíncrono, auditoria de
   escrita, histórico preservado, **entrega vertical com validação visual (XI)**,
   **usabilidade universal (XII)** — stack ratificada (Laravel 13, MySQL, **banco único —
-  sem multi-tenancy**, ADR-0001; front separado no mesmo repo, ADR-0002; framework do
-  front PENDENTE).
+  sem multi-tenancy**, ADR-0001; front separado no mesmo repo, ADR-0002; **`web/` em
+  Next.js + React + TypeScript**, ADR-0003 — catálogo público renderizado no servidor,
+  área logada no cliente, zero regra de negócio no front).
 - Complementos: **portas & adapters** (domínio nunca importa SDK externo); **Clean Code**
   (funções pequenas, SRP, erro explícito, núcleo testável sem framework).
 
@@ -63,6 +64,15 @@ Nada é "pronto só no backend".
 ## Guardrails e acordo de trabalho (inegociável)
 - **Nunca invente** regra, dado ou comportamento. Ausente = PENDENTE + pergunta. Regras de
   negócio se confirmam com o Ícaro.
+- **Afirmação sobre comportamento exige abrir o arquivo que o executa.** Dizer que uma
+  regra "é obrigatória", que uma skill "cobra X" ou que uma ferramenta "faz Y" só é
+  permitido depois de ler o arquivo/rodar a checagem. Sem isso, a resposta é "não
+  verifiquei" — nunca a versão otimista. (Origem: E-002.)
+- **Previsão contrariada pelo resultado é dita em voz alta**, inclusive quando o desfecho
+  foi bom. Relatar só o resultado favorável e omitir que a previsão falhou esconde do Ícaro
+  que o modelo mental usado nas próximas decisões está errado.
+- **Separar fato de julgamento** em documento que será relido meses depois (ADR, spec):
+  o que foi medido/verificado, o que é opinião do assistente, o que falta medir.
 - **Na dúvida, pare e pergunte antes de seguir.**
 - **Sinceridade acima de agradar:** aponte risco/erro mesmo que contrarie; postura de mentor.
 - **Local/dev nunca executa contra banco de produção.**

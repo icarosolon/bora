@@ -7,7 +7,40 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Added
+- **ADR-0003 — framework do frontend: Next.js (App Router) + React + TypeScript**
+  (2026-08-29, decisão BORA-28). Critérios que decidiram: SEO do catálogo público e
+  acessibilidade, ambos eliminatórios. Regras vinculantes: catálogo público renderizado no
+  servidor, área logada renderizada no cliente (evita SSR + sessão do Sanctum) e nenhuma
+  regra de negócio no `web/`. Descartados: Astro + ilhas React, React Router v7, Nuxt/Vue,
+  SPA pura e Flutter Web (SEO), Blade/Livewire/Inertia (Princípio IV).
+- Spike descartável de frontend no M0 (BORA-32) antes da spec 001, para absorver a curva de
+  Next/React/CORS fora da Definition of Done.
+- Decisão da tecnologia do app mobile (Flutter, React Native ou PWA) registrada no backlog
+  como **deliberadamente adiada para a Fase 3** (BORA-33). O Princípio IV mantém as três
+  portas abertas sem custo; a escolha da web não dependeu dessa e não a antecipa.
+
+### Fixed
+- **O portão `/spec-check` não fazia o que a documentação dizia que ele fazia.** A skill não
+  mencionava `ux-requirements.md`, tela, acessibilidade ou mobile, e o
+  `spec-template.md` era o padrão de fábrica do Spec Kit — sem nenhuma seção de tela (e com
+  um exemplo de premissa "Mobile support is out of scope for v1", incompatível com os
+  Princípios XI e XII). Na prática, nada obrigava a spec a especificar a tela. Corrigido nos
+  três pontos: o template ganha a seção obrigatória **"Tela e Experiência"**, a skill
+  `spec-check` ganha critérios Bloqueantes explícitos (tela declarada, comportamento a
+  360px, polegar, estados, acessibilidade, testes em 360 e 1280) e o
+  `development-workflow.md` passa a descrever o portão que existe de fato.
+
 ### Changed
+- `ux-requirements.md` ganha a seção **"Dispositivo principal: o celular"** (2026-08-29):
+  mobile-first deixa de ser adjetivo e vira requisito verificável — estilo base do celular,
+  piso de 360px sem rolagem horizontal, ação principal ao alcance do polegar, nada
+  dependente de `hover`, uma coluna no celular, e teste de tela em duas larguras (360 e
+  1280). Vale inclusive para o painel do estabelecimento. `vision.md` alinhado.
+- Constituição 1.1.1 → **1.2.0** (Emenda 2, 2026-08-29): o Stack Tecnológico Obrigatório
+  deixa de ter o framework de frontend como PENDENTE e passa a exigir Next.js + React +
+  TypeScript com as três regras acima. Nenhum princípio adicionado, redefinido ou removido.
+  `CLAUDE.md`, `development-workflow.md`, `backlog.md`, ADR-0001 e ADR-0002 sincronizados.
 - **Linear: o Bora passou a ter time próprio** — time `Bora`, key `BORA` (2026-08-29),
   revendo a decisão de usar o time do Nexa. No Linear o prefixo do identificador vem do
   time, não do projeto: dentro do time Nexa as issues saíam como `NEX-nn` e não

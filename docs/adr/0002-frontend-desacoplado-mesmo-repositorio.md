@@ -16,9 +16,9 @@ Frontend e backend vivem **no mesmo repositório**, como aplicações separadas 
 desacopladas:
 
 ```
-ibar/
+bora/
 ├─ api/   # Laravel — API REST pública (constituição, Princípio IV)
-└─ web/   # frontend — framework PENDENTE; consome exclusivamente /api/v1/...
+└─ web/   # frontend — Next.js + React (ADR-0003); consome exclusivamente /api/v1/...
 ```
 
 O `web/` consome **apenas a API pública**, com a mesma autenticação (Sanctum) que o app
@@ -49,7 +49,7 @@ mobile usará. Nenhum atalho: sem Blade renderizando dado de domínio, sem endpo
   (aí separar repositórios vira opção real).
 
 ## Action items
-- [ ] Decidir framework do `web/` (critérios eliminatórios: SEO do catálogo público +
-      acessibilidade — backlog).
+- [x] Decidir framework do `web/` (critérios eliminatórios: SEO do catálogo público +
+      acessibilidade) — **Next.js + React + TypeScript**, ADR-0003 (2026-08-29).
 - [ ] Definir na primeira spec o setup de CORS/Sanctum SPA e o padrão de documentação da
       API (OpenAPI) que acompanha cada feature.

@@ -8,6 +8,30 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Plano técnico da spec 001 gerado** (`/speckit-plan`, 2026-08-30):
+  `specs/001-contas-autenticacao/{plan,research,data-model,quickstart}.md` e
+  `contracts/auth-api.md`. A spec passou a **Aprovada** (Ícaro, 2026-08-30). O plano foi
+  escrito sobre o **estado verificado** da instalação (Boost + `composer --dry-run`), não
+  sobre suposição, e isso mudou três coisas:
+  - **`laravel/socialite` não instala neste projeto sem `-W`.** Todas as versões até a
+    v5.30.1 exigem `guzzle ^6|^7` e o projeto está em **guzzle 8.1.0** (transitivo do
+    Laravel 13). Decisão: aceitar o downgrade para guzzle 7.15.5 — verificado que **nada
+    exige guzzle 8** (framework aceita `^7.8.2||^8.0`, boost `^7.9|^8.0`, flysystem só
+    conflita com `<7.0`). A constituição obriga Socialite no Stack; a alternativa exigiria
+    emenda. Reversível. Bônus: sem `-W` a resolução cai numa faixa do `firebase/php-jwt`
+    sob advisory de segurança; com `-W` trava a v7.1.0, limpa.
+  - **O Sanctum não tem expiração deslizante.** A `'expiration'` é prazo absoluto desde a
+    criação, e a D7 pediu 30 dias **de inatividade**. O plano implementa o deslizamento com
+    middleware próprio sobre `expires_at`, mantendo `'expiration' => null`.
+  - **Ressalva sobre a D2 registrada.** A doc oficial do Sanctum instalado desaconselha
+    token de API para SPA de primeira parte. Ícaro **reconfirmou** a D2 com o risco à vista
+    e definiu a guarda do token (`localStorage`); as razões do Bora (Princípio IV e
+    ADR-0003) e as mitigações obrigatórias ficaram escritas em `research.md` §3 e no
+    Complexity Tracking do `plan.md`.
+  Também levantado: três pacotes exigidos pela constituição **não estão instalados**
+  (`socialite`, `spatie/laravel-permission`, `spatie/laravel-activitylog`), o `web/` **não
+  tem nenhuma ferramenta de teste**, e a rota `/api/user` está **fora do versionamento**
+  `/api/v1` — o plano corrige as três coisas.
 - **Spec 001 — Fundação de Contas e Autenticação** escrita e **aprovada no portão
   `spec-check`** (2026-08-29): `specs/001-contas-autenticacao/spec.md`. Cobre RN-PLAT-001
   (conta única multi-papel) e RN-PLAT-002 (login Google/e-mail, união de credenciais),
@@ -25,6 +49,17 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **Tasks do `web/` falhavam com `UnauthorizedAccess`** (E-006): task `shell` no Windows
+  roda em PowerShell e o `npm` do PATH resolve para `npm.ps1`, bloqueado porque a
+  ExecutionPolicy da máquina é `Restricted` (LocalMachine — verificado). Corrigido com
+  `npm.cmd` (batch, não passa pela ExecutionPolicy) nas tasks `web: dev` e `web: build`,
+  em vez de afrouxar a ExecutionPolicy global. Correção feita por outro agente a pedido do
+  Ícaro; registrada no error-log nesta sessão, quando se descobriu que o comentário do
+  `tasks.json` apontava para `E-005` — número já ocupado. Ponteiro corrigido para `E-006`.
+- **Achado de ambiente registrado** (E-007): dentro de sessão aberta **antes** da correção
+  do PATH (E-004), `php` e `composer` continuam falhando, porque processo herda o ambiente
+  de quando nasceu. O E-004 está resolvido — conferido no registro da máquina. Contorno
+  para sessão em andamento documentado no error-log e no `quickstart.md` da spec 001.
 - **Doc do método apontava comandos inexistentes** (E-005): `CLAUDE.md` e
   `development-workflow.md` diziam `/specify`, `/plan` e `/tasks`, mas as skills
   instaladas pelo Spec Kit 0.15.1 são `speckit-specify`, `speckit-plan` e `speckit-tasks`

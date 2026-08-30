@@ -3,6 +3,51 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-007 — `php` e `composer` somem dentro de sessão aberta antes da correção do PATH (2026-08-30)
+
+- **Sintoma:** em plena sessão de trabalho, `php -v` e `composer` falhavam com
+  `'php' não é reconhecido como um comando interno ou externo`, embora o E-004 já tivesse
+  corrigido o PATH da máquina e o `php` funcionar em terminal novo.
+- **Causa:** processo herda o ambiente de quando **nasceu**. A sessão do agente foi aberta
+  antes da troca do PATH, então continuava com `C:\xampp\php` — diretório que hoje **nem
+  tem mais `php.exe`** (verificado: `Test-Path C:\xampp\php\php.exe` → False). Conferido o
+  registro na mesma hora: a Machine PATH **está correta**
+  (`C:\wamp64\bin\php\php8.4.15`), e o binário existe. Ou seja, **o E-004 está resolvido**;
+  o que falhava era só o ambiente velho carregado pelo processo.
+- **Resolução:** abrir terminal novo. Quando não dá para reabrir (sessão de agente já em
+  andamento), prefixar o PATH na própria invocação:
+  `$env:Path = 'C:\wamp64\bin\php\php8.4.15;' + $env:Path`. Verificado: `php -v` → 8.4.15
+  e `composer` passa a resolver.
+- **Status:** resolvido (contorno documentado; não há o que corrigir no projeto).
+- **Lição:** "o PATH foi corrigido" e "o PATH está corrigido **neste processo**" são
+  afirmações diferentes. Antes de concluir que a correção falhou, comparar o ambiente do
+  processo (`$env:Path`) com o registro
+  (`[Environment]::GetEnvironmentVariable("Path","Machine")`). Vale para qualquer variável
+  de ambiente mudada com sessões abertas.
+
+## E-006 — Tasks do `web/` falhavam: ExecutionPolicy bloqueia `npm.ps1` (2026-08-29)
+
+- **Sintoma:** as tasks `web: dev` e `web: build` do VS Code falhavam com
+  `UnauthorizedAccess` ao chamar `npm`.
+- **Causa:** task do tipo `shell` no Windows roda em **PowerShell**, e o `npm` do PATH
+  resolve para `npm.ps1`. A ExecutionPolicy desta máquina é **`Restricted` no escopo
+  LocalMachine** (verificado por `Get-ExecutionPolicy -List`: todos os outros escopos
+  `Undefined`), o que proíbe execução de qualquer `.ps1`.
+- **Resolução:** `"command": "npm.cmd"` nas tasks do `web/` — o `.cmd` é batch e não passa
+  pela ExecutionPolicy. Mexer na ExecutionPolicy da máquina foi evitado: é configuração de
+  segurança global, e o problema é local a duas tasks. O comentário no topo de
+  `.vscode/tasks.json` registra o porquê, para ninguém "simplificar" de volta para `npm`.
+- **Status:** resolvido e em uso — as tasks voltaram a funcionar.
+- **Procedência (para quem reler):** a correção foi feita por outro agente, a pedido do
+  Ícaro, fora desta sessão; eu **não presenciei a falha original**. O que verifiquei nesta
+  sessão: a ExecutionPolicy `Restricted`, o conteúdo atual do `tasks.json` e a existência
+  do PHP no caminho absoluto que ele usa. O sintoma acima vem do comentário deixado no
+  arquivo, não de observação minha.
+- **Lição:** no Windows, task de VS Code que chama ferramenta Node deve apontar para o
+  `.cmd`. E ponteiro para o error-log (`Ver E-NNN`) só se escreve **depois** que a entrada
+  existe — este comentário nasceu apontando para `E-005`, número que já pertencia a outro
+  erro (ver a colisão corrigida em 2026-08-30).
+
 ## E-005 — Doc do método apontava comandos que não existem: `/specify`, `/plan`, `/tasks` (2026-08-29)
 
 - **Sintoma:** `CLAUDE.md` e `docs/development-workflow.md` instruíam a rodar `/specify`,
@@ -51,6 +96,7 @@ skill `doc-sync`.
   XAMPP), `which -a` antes de depurar. Efeito colateral aceito: `php` global passa a ser
   8.4.15 para todos os projetos da máquina; os antigos do `htdocs` não serão mais mexidos
   (decisão do Ícaro, 2026-08-29) e o WAMP tem `php8.2.29` se algum precisar.
+
 ## E-003 — Migrações falhavam: MySQL do WAMP com MyISAM como engine padrão (2026-08-29)
 
 - **Sintoma:** `php artisan migrate` quebrava na primeira migration com

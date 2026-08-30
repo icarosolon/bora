@@ -1,7 +1,7 @@
 # Backlog
 
-Status: pendências extraídas da ideia original e das decisões de 2026-08-28. Nenhuma spec
-escrita ainda.
+Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
+Spec 001 (contas e autenticação) aprovada e planejada; implementação ainda não começou.
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -12,6 +12,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento, **envio real de e-mail (SPF/DKIM — spec 001)** | `brand.md` |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
+| **Credenciais OAuth do Google** (projeto no Cloud Console, tela de consentimento, client ID/secret, URI de redirecionamento) | **implementação da spec 001 — US2 (entrar com Google)** | `specs/001-contas-autenticacao/quickstart.md` |
 | Emenda constitucional formalizando o Resend como provedor de e-mail transacional (decisão já tomada — ver Decisões tomadas) | governança | constituição (lista PENDENTE do Stack) |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
@@ -95,6 +96,27 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Plano técnico da spec 001 fechado** (`/speckit-plan`, 2026-08-30). Spec **aprovada** pelo
+  Ícaro; artefatos em `specs/001-contas-autenticacao/`: `plan.md`, `research.md`,
+  `data-model.md`, `quickstart.md` e `contracts/auth-api.md`. Constitution Check sem gate
+  bloqueante; duas ressalvas justificadas no Complexity Tracking. Decisões técnicas que o
+  plano fixou, todas sobre estado **verificado** (Boost + `composer --dry-run`):
+  1. **Socialite exige `-W`** — o pacote pede `guzzle ^6|^7` e o projeto está em guzzle
+     8.1.0. Aceito o downgrade para 7.15.5; verificado que nada exige guzzle 8 (framework
+     `^7.8.2||^8.0`, boost `^7.9|^8.0`, flysystem só conflita `<7.0`). **A revisitar**
+     quando o Socialite suportar guzzle 8 — aí um `composer update` reverte.
+  2. **Expiração deslizante é código nosso** — o Sanctum só tem prazo absoluto; a D7 pediu
+     inatividade. Middleware próprio sobre `expires_at`, com `'expiration' => null`.
+  3. **Guarda do token: `localStorage`** (Ícaro, 2026-08-30), mantendo a D2 apesar de a doc
+     oficial do Sanctum desaconselhar token de API para SPA de primeira parte. Risco de XSS
+     aceito e escrito, com mitigações obrigatórias (CSP estrita, token fora de prop de
+     componente cliente, fora de URL e de log).
+  4. **Fluxo do Google sem token na URL** — a API devolve a URL de autorização, o Google
+     redireciona para uma página do `web/`, e o `web/` troca o `code` por sessão via POST.
+  5. **`/api/user` volta para dentro do versionamento** como `/api/v1/eu` (Princípio IV).
+  Levantado e ainda não feito: três pacotes obrigatórios pela constituição não estão
+  instalados (`socialite`, `spatie/laravel-permission`, `spatie/laravel-activitylog`) e o
+  `web/` não tem nenhuma ferramenta de teste — tudo entra na implementação.
 - **Spec 001 (fundação de contas e autenticação) escrita e aprovada no portão
   `spec-check`** (2026-08-29). Oito decisões que bloqueavam a spec foram tomadas pelo
   Ícaro na mesma sessão e registradas na spec (`specs/001-contas-autenticacao/spec.md`,
@@ -187,13 +209,19 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Ícaro aprova a spec 001** (`specs/001-contas-autenticacao/spec.md` — o portão
-   `spec-check` já disse SIM; quem aprova é ele) e então **rodar `/speckit-plan`** e
-   `/speckit-tasks` da 001. Lembrete do spike que vale para o plano: **nada de segredo em
-   prop que cruza para componente cliente**.
-2. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
-3. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
+1. **Rodar `/speckit-tasks` da spec 001** — spec aprovada e plano fechado; falta só a
+   quebra em tarefas para começar a implementar. Lembretes que o plano deixou para a
+   implementação: **nada de segredo em prop que cruza para componente cliente**; o
+   `composer require laravel/socialite` **precisa do `-W`**; e `'expiration'` em
+   `config/sanctum.php` **fica em `null`** (valor ali quebra a expiração deslizante).
+2. **Ícaro: criar as credenciais OAuth do Google** antes de a implementação chegar na US2 —
+   sem elas o "Entrar com Google" não roda nem em desenvolvimento. Passo a passo em
+   `specs/001-contas-autenticacao/quickstart.md`. As demais user stories não dependem disso.
+3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
+4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
    `web/src/app/eventos/`.
-4. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
+6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
+   guzzle 7.15.5 por causa dele; a volta é um `composer update`.

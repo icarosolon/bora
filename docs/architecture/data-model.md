@@ -39,3 +39,23 @@ este arquivo é atualizado pelo `/doc-sync` quando o modelo real mudar. Banco ú
   (`RN-EVENTO-002`).
 - Exclusões viram inativação; dado pessoal sai por anonimização (Princípio X).
 - Toda escrita audita (Princípio VIII).
+
+## Detalhamento por spec
+
+O modelo real nasce spec a spec. Quando uma spec detalha parte deste modelo conceitual, o
+desenho concreto (colunas, índices, invariantes, transições de estado) vive na própria
+spec, e este documento aponta para lá em vez de duplicar.
+
+- **Contas e autenticação** → `specs/001-contas-autenticacao/data-model.md`
+  (**projetado em 2026-08-30, ainda não implementado** — nenhuma migration rodou).
+  Detalha a parte de **User** e **Role/Papel** acima e acrescenta duas entidades que este
+  documento conceitual não previa:
+  - **ContaSocial** — vínculo com provedor externo (Google). O vínculo é pelo
+    identificador do provedor, **não pelo e-mail**, para que troca de e-mail no Google não
+    quebre o acesso.
+  - **TokenDeEmail** — link de uso único com validade, servindo aos três fluxos
+    (verificação de e-mail, união de credenciais, redefinição de senha). Guarda apenas o
+    **hash** do token.
+
+  Alterações previstas em `users`: `password` passa a **nullable** (conta que nasce pelo
+  Google não tem senha), `email` sempre normalizado, e nova coluna `ultimo_acesso_em`.

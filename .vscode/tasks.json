@@ -3,8 +3,15 @@
   // "Run Build Task" executa "Bora: dev": sobe os dois servidores e abre o navegador.
   //
   // ATENCAO ao caminho do PHP: aponta para o PHP 8.4 do WAMP de proposito.
-  // O `php` do PATH desta maquina e o do XAMPP (8.2.4), que NAO atende o Laravel 13.
+  // Desde 2026-08-29 o PATH da maquina ja aponta para esse mesmo PHP, mas o caminho
+  // absoluto fica para a task nao depender do PATH da janela que a executa.
   // Se o WAMP atualizar o PHP, este caminho quebra e precisa ser ajustado aqui.
+  //
+  // ATENCAO ao "npm.cmd" nas tasks do web/: e de proposito, nao troque por "npm".
+  // Task do tipo "shell" no Windows roda em PowerShell, e a ExecutionPolicy desta
+  // maquina e Restricted (LocalMachine), o que bloqueia o npm.ps1 com
+  // UnauthorizedAccess. O npm.cmd e batch e nao passa pela ExecutionPolicy.
+  // Ver E-006 no docs/logs/error-log.md.
   "version": "2.0.0",
   "tasks": [
     {
@@ -36,7 +43,7 @@
     {
       "label": "web: dev",
       "type": "shell",
-      "command": "npm",
+      "command": "npm.cmd",
       "args": ["run", "dev"],
       "options": { "cwd": "${workspaceFolder}/web" },
       "isBackground": true,
@@ -89,7 +96,7 @@
       "label": "web: build",
       "detail": "Build de producao do front — usar para checar se o TypeScript passa",
       "type": "shell",
-      "command": "npm",
+      "command": "npm.cmd",
       "args": ["run", "build"],
       "options": { "cwd": "${workspaceFolder}/web" },
       "problemMatcher": []

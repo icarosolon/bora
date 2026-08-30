@@ -4,8 +4,8 @@
 
 **Created**: 2026-08-29
 
-**Status**: Draft — portão `spec-check`: **SIM** (2026-08-29); aguardando aprovação do
-Ícaro para seguir a `/speckit-plan`
+**Status**: **Aprovada** por Ícaro em 2026-08-30 (portão `spec-check`: SIM em 2026-08-29).
+Plano técnico em [plan.md](./plan.md)
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas
@@ -20,7 +20,7 @@ assistente:
 | # | Decisão | Escolha |
 |---|---------|---------|
 | D1 | Fluxo de confirmação ao unir credenciais (RN-PLAT-002) | **Senha da conta existente confirma a união; link por e-mail é o plano B** para quem esqueceu a senha. Direção inversa (conta que nasceu Google define senha) exige sessão ativa. |
-| D2 | Autenticação do `web/` + política de CORS | **Token Bearer** (mesmo mecanismo do futuro app mobile — Princípio IV). CORS com **origens explícitas** e sem credenciais de cookie (o spike provou que `allowed_origins: "*"` não convive com `supports_credentials: true`; com Bearer, `supports_credentials` permanece `false`). |
+| D2 | Autenticação do `web/` + política de CORS | **Token Bearer** (mesmo mecanismo do futuro app mobile — Princípio IV). CORS com **origens explícitas** e sem credenciais de cookie (o spike provou que `allowed_origins: "*"` não convive com `supports_credentials: true`; com Bearer, `supports_credentials` permanece `false`). **Ressalva registrada em 2026-08-30:** a doc oficial do Sanctum instalado *desaconselha* token de API para SPA de primeira parte, recomendando o modo cookie. Ícaro reconfirmou a D2 com o risco à vista, e definiu a guarda do token: **`localStorage`**, com mitigações obrigatórias. Razões e mitigações em [research.md](./research.md) §3 e em [plan.md](./plan.md) (Complexity Tracking). |
 | D3 | Padrão de documentação da API | **OpenAPI gerado automaticamente a partir do código (Scramble)** — a doc acompanha cada feature por construção. |
 | D4 | Base de UI e testes de front (action item do ADR-0003) | **shadcn/ui (primitivas Radix + Tailwind, código copiado para o repo)**. Testes: **Vitest + React Testing Library + axe** nos componentes; **Playwright** e2e nas larguras 360 e 1280. |
 | D5 | Verificação de e-mail no cadastro próprio | **Envia, mas não bloqueia**: a pessoa usa o site imediatamente; aviso discreto até confirmar. Ações sensíveis futuras podem exigir e-mail verificado. |

@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Aviso } from '@/components/ui/aviso'
 import { Button } from '@/components/ui/button'
 import { chamarApi } from '@/lib/api'
+import { useHidratado } from '@/lib/hidratacao'
 
 /**
  * "Entrar com Google" (US2).
@@ -22,19 +23,9 @@ export function BotaoGoogle({ rotulo = 'Entrar com Google' }: { rotulo?: string 
   const [indo, setIndo] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
-  /*
-   * Mesmo guarda do FormularioBase, por um motivo parecido mas com sintoma
-   * diferente: antes da hidratação o `onClick` não existe, então o toque é
-   * **silenciosamente ignorado** — a pessoa aperta e nada acontece, sem
-   * qualquer retorno. O `ux-requirements.md` proíbe exatamente isso ("toda ação
-   * responde na hora... nunca silêncio").
-   *
-   * Aqui não há o risco de submissão nativa do E-012 (é `type="button"`), mas o
-   * botão morto sem aviso é problema por si só. Enquanto não está pronto, ele
-   * diz "Carregando…" em vez de fingir que funciona.
-   */
-  const [pronto, setPronto] = useState(false)
-  useEffect(() => setPronto(true), [])
+  // Antes da hidratação o `onClick` não existe e o toque seria silenciosamente
+  // ignorado — a pessoa aperta e nada acontece. Ver `useHidratado`.
+  const pronto = useHidratado()
 
   async function ir() {
     if (indo) return

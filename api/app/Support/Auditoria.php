@@ -87,13 +87,35 @@ final class Auditoria
         return $propriedades;
     }
 
-    /** Só para teste: o log tem alguma propriedade sensível? */
+    /**
+     * Só para teste: o log tem alguma propriedade sensível?
+     *
+     * Inspeciona **chaves**, não valores. A primeira versão varria o JSON
+     * inteiro e acusava falso positivo em conteúdo legítimo — `confirmado_via:
+     * "senha"` diz apenas por qual caminho a união foi confirmada, e não é
+     * segredo nenhum. Detector que grita sem motivo é pior que detector nenhum:
+     * ensina a ignorá-lo.
+     */
     public static function contemDadoSensivel(Activity $atividade): bool
     {
-        $texto = mb_strtolower(json_encode($atividade->properties) ?: '');
+        return self::temChaveProibida((array) $atividade->properties->toArray());
+    }
 
-        foreach (self::PROIBIDAS as $proibida) {
-            if (str_contains($texto, '"'.$proibida.'"')) {
+    /** @param array<mixed, mixed> $dados */
+    private static function temChaveProibida(array $dados): bool
+    {
+        foreach ($dados as $chave => $valor) {
+            if (is_string($chave)) {
+                $normalizada = mb_strtolower($chave);
+
+                foreach (self::PROIBIDAS as $proibida) {
+                    if (str_contains($normalizada, $proibida)) {
+                        return true;
+                    }
+                }
+            }
+
+            if (is_array($valor) && self::temChaveProibida($valor)) {
                 return true;
             }
         }

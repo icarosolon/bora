@@ -1,4 +1,5 @@
-import { expect, test, type Page } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { expect, test } from './base'
 
 /**
  * US1 ponta a ponta nas DUAS larguras obrigatórias (ux-requirements.md).
@@ -156,5 +157,85 @@ test.describe('regressão: submissão antes da hidratação', () => {
     const url = page.url()
     expect(url, 'a senha não pode aparecer na URL').not.toContain('senhaSuperSecreta123')
     expect(url, 'o formulário não pode ter submetido nativamente').not.toContain('?')
+  })
+})
+
+test.describe('confirmar e-mail', () => {
+  /*
+   * Esta tela ficou SEM teste e2e até 2026-08-31, e foi justamente nela que
+   * apareceu uma divergência de hidratação (`estaAutenticado()` chamado durante
+   * a renderização). O `base.ts` reprova erro de console; sem um teste que
+   * visite a página, porém, a rede não tem onde pegar.
+   */
+  test('confirma o e-mail e oferece seguir', async ({ page }) => {
+    await page.route('**/api/v1/email/verificar', (rota) =>
+      rota.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'E-mail confirmado. Obrigado!' }),
+      }),
+    )
+
+    await page.goto('/verificar-email?token=abc')
+
+    await expect(page.getByRole('main')).toContainText('E-mail confirmado')
+    await expect(page.getByRole('link', { name: 'Ir para o Bora' })).toBeVisible()
+    await semRolagemHorizontal(page)
+  })
+
+  test('explica e oferece caminho quando o link expirou', async ({ page }) => {
+    await page.route('**/api/v1/email/verificar', (rota) =>
+      rota.fulfill({
+        status: 410,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          message: 'Este link expirou ou já foi usado. Entre na sua conta e peça um novo e-mail de confirmação.',
+        }),
+      }),
+    )
+
+    await page.goto('/verificar-email?token=velho')
+
+    await expect(page.getByRole('main').getByRole('alert')).toContainText('expirou')
+    // Sem sessão, oferece entrar — o reenvio exige autenticação.
+    await expect(page.getByRole('link', { name: 'Entre na sua conta' })).toBeVisible()
+    await semRolagemHorizontal(page)
+  })
+
+  test('explica em vez de quebrar quando não há token', async ({ page }) => {
+    await page.goto('/verificar-email')
+
+    await expect(page.getByRole('main').getByRole('alert')).toContainText('Link incompleto')
+  })
+
+  test('não diverge entre servidor e cliente quando há sessão guardada', async ({ page }) => {
+    /*
+     * REGRESSÃO de uma divergência de hidratação real (2026-08-31).
+     *
+     * `estaAutenticado()` era chamado durante a renderização; como ele lê
+     * `localStorage`, o servidor devolvia `false` e o cliente `true`. O React
+     * acusava HTML divergente e desistia de corrigir a subárvore.
+     *
+     * A condição SÓ ocorre com token guardado — por isso o token é semeado
+     * antes de a página carregar. Sem isso, o teste passa mesmo com o bug
+     * presente (foi o que aconteceu na primeira tentativa de provar a rede).
+     * O `base.ts` reprova o erro de console que o React emite.
+     */
+    await page.addInitScript(() => {
+      localStorage.setItem('bora.sessao.token', 'tok-de-teste')
+    })
+
+    await page.route('**/api/v1/email/verificar', (rota) =>
+      rota.fulfill({
+        status: 410,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Este link expirou ou já foi usado.' }),
+      }),
+    )
+
+    await page.goto('/verificar-email?token=velho')
+
+    // Autenticado: a tela oferece reenviar, em vez de mandar entrar.
+    await expect(page.getByRole('button', { name: 'Enviar um novo link' })).toBeVisible()
   })
 })

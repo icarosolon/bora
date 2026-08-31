@@ -64,12 +64,26 @@ class AppServiceProvider extends ServiceProvider
         $porMinuto = (int) config('bora.tentativas.por_minuto');
 
         RateLimiter::for('autenticacao', function (Request $request) use ($porMinuto) {
-            $email = mb_strtolower(trim((string) $request->input('email')));
+            /*
+             * O balde é POR ALVO, não um só por origem.
+             *
+             * O login manda `email`; a união manda `uniao_token` (que identifica
+             * a conta-alvo) e não manda e-mail nenhum. Chavear só pelo e-mail
+             * fazia todas as rotas sem esse campo colapsarem num balde único por
+             * IP — e aí uma pessoa que entra pelo Google e depois confirma a
+             * união se trancava sozinha, misturando fluxos que nada têm a ver.
+             *
+             * Sem alvo identificável, sobra o IP — que já tem o teto abaixo.
+             */
+            $alvo = mb_strtolower(trim((string) $request->input('email')))
+                ?: (string) $request->input('uniao_token')
+                ?: 'sem-alvo';
 
             return [
-                Limit::perMinute($porMinuto)->by($email.'|'.$request->ip()),
-                // Teto por IP, mais folgado: contém varredura de muitos e-mails
-                // a partir da mesma origem sem travar uso legítimo compartilhado.
+                Limit::perMinute($porMinuto)->by($alvo.'|'.$request->ip()),
+                // Teto por IP, mais folgado: contém varredura de muitos alvos a
+                // partir da mesma origem sem travar uso legítimo compartilhado
+                // (um bar com wi-fi para todo mundo, que é o cenário do Bora).
                 Limit::perMinute($porMinuto * 4)->by($request->ip()),
             ];
         });

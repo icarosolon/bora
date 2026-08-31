@@ -3,6 +3,37 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-015 — Divergência de hidratação: `localStorage` lido durante a renderização (2026-08-31)
+
+- **Sintoma:** o Ícaro reportou erro no console do navegador — *"A tree hydrated but some
+  attributes of the server rendered HTML didn't match the client properties. This won't be
+  patched up."*
+- **Causa:** `web/src/app/verificar-email/page.tsx` chamava `estaAutenticado()` **dentro do
+  JSX**, durante a renderização. A função lê `localStorage`, que não existe no servidor:
+  ele renderizava o ramo "não autenticado" e o cliente hidratava com o ramo "autenticado".
+  O React acusa a divergência e, como a própria mensagem diz, **desiste de corrigir aquela
+  subárvore** — a tela fica com o conteúdo errado, em silêncio.
+- **Resolução:** o estado passou a ser lido em `useEffect` e guardado em `useState`, como já
+  era feito no `CabecalhoConta`. Regra que vale para toda tela do projeto: **nada que dependa
+  do navegador — `localStorage`, `window`, data/hora — pode ser lido durante a renderização.**
+- **Status:** resolvido e confirmado por teste de regressão.
+- **Por que passou por 66 e2e, 37 de componente e o build:** o teste de componente roda em
+  **jsdom**, que não faz renderização de servidor nem hidratação — a divergência é
+  impossível ali. E **não havia nenhum teste e2e que visitasse `/verificar-email`**: a tela
+  simplesmente não tinha cobertura de ponta a ponta.
+- **O que foi feito para não repetir**, em duas camadas:
+  1. `web/tests/e2e/base.ts` — um `test` estendido que **reprova quando o navegador registra
+     erro no console**. Pega, de uma vez, divergência de hidratação, violação de CSP, erro
+     de JavaScript não tratado e recurso bloqueado. Ignora só ruído de desenvolvimento e as
+     respostas 4xx que os próprios testes simulam (filtradas por URL de `/api/v1/`, para um
+     403 em chunk de JavaScript continuar reprovando — foi assim que o E-013 se manifestou).
+  2. Testes e2e para a tela de confirmação de e-mail, que não existiam.
+- **Lição — rede de proteção também se testa.** Ao criar a rede acima, afirmei que ela
+  pegaria o bug e **fui verificar**: com o defeito reintroduzido, os testes **passaram**. O
+  motivo é que a divergência só ocorre com token no `localStorage`, e nenhum teste semeava
+  um. Só depois de semear o token com `addInitScript` o teste passou a falhar. Rede de
+  proteção não verificada é rede que dá falsa confiança — pior que não ter.
+
 ## E-014 — PHP sem pacote de CA: nenhuma chamada HTTPS funcionava (2026-08-31)
 
 - **Sintoma:** ao autorizar no Google, a tela voltava com "Não deu para entrar com o Google
@@ -80,6 +111,13 @@ skill `doc-sync`.
   a tela não está pronta, em vez de exibir um botão morto (foi assim que o E-013 passou
   despercebido). Teste de regressão em `us1-conta.spec.ts` falha se a senha voltar à URL.
 - **Status:** resolvido.
+- **Aconteceu mais duas vezes depois (2026-08-31), com sintoma diferente.** No botão
+  "Entrar com Google" (US2) e no plano B da união (US3) — que são `type="button"`, sem
+  submissão nativa — o toque antes da hidratação era **silenciosamente ignorado**: a pessoa
+  aperta e nada acontece, o que o `ux-requirements.md` proíbe. Nas três vezes quem pegou
+  foi o **teste e2e**; o de componente nunca pegou, porque o jsdom não tem essa janela.
+  Na terceira, o guarda foi extraído para o hook `useHidratado` (`web/src/lib/hidratacao.ts`),
+  com a explicação inteira num lugar só. **Todo controle que dispara ação usa esse hook.**
 - **Lição:** formulário controlado por JavaScript tem um estado intermediário — HTML
   pronto, JavaScript não — e nesse estado o navegador faz o que o HTML manda. Vale para
   toda tela com formulário deste projeto, não só para esta.

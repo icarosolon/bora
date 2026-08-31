@@ -4,13 +4,17 @@
 
 **Created**: 2026-08-29
 
-**Status**: **Em implementação — US1 e US2 entregues e validadas.** Portão `spec-check`:
-SIM (2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md),
-tarefas em [tasks.md](./tasks.md). **Progresso: 87/119 tarefas.** US1 (cadastro, login,
-sair, verificação) e US2 (entrar com Google, definir senha) cumpriram a Definition of Done
-do Princípio XI, com validação visual do Ícaro em 2026-08-31. Próxima fatia: **US3 — unir
-credenciais**, a única com dependência real entre stories (exige US1 e US2, que agora
-existem).
+**Status**: **Em implementação — as quatro user stories entregues e validadas.** Portão
+`spec-check`: SIM (2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em
+[plan.md](./plan.md), tarefas em [tasks.md](./tasks.md). **Progresso: 109/119.**
+US1 (cadastro, login, sair, verificação), US2 (Google, definir senha), US3 (unir
+credenciais) e US4 (recuperar senha) validadas visualmente pelo Ícaro em 2026-08-31.
+
+**A feature ainda NÃO está pronta:** falta a fase de Polish (T110–T119), que inclui itens
+da própria Definition of Done do Princípio XI — gerar a documentação da API e conferi-la
+contra o contrato, verificar que nenhum token cruza para o cliente nem aparece em log,
+remover o andaime do spike e a validação final. **A próxima feature não começa antes
+disso.**
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

@@ -23,6 +23,21 @@ function Conteudo() {
   const [reenviando, setReenviando] = useState(false)
   const [reenviado, setReenviado] = useState<string | null>(null)
 
+  /*
+   * Estado de sessão em `useState` + `useEffect`, e NÃO chamando
+   * `estaAutenticado()` direto no JSX.
+   *
+   * A função lê `localStorage`, que não existe no servidor: ela devolvia
+   * `false` na renderização do servidor e podia devolver `true` na hidratação.
+   * O React reclamava de HTML divergente e **desistia de corrigir aquela
+   * subárvore** — a tela ficava com o estado errado em silêncio.
+   *
+   * Regra que vale para toda tela deste projeto: nada que dependa do navegador
+   * (localStorage, window, data/hora) pode ser lido durante a renderização.
+   */
+  const [autenticado, setAutenticado] = useState(false)
+  useEffect(() => setAutenticado(estaAutenticado()), [])
+
   useEffect(() => {
     if (!token) {
       setSituacao({
@@ -79,7 +94,7 @@ function Conteudo() {
           <Aviso tipo="erro">{situacao.mensagem}</Aviso>
 
           {/* Só oferece reenvio a quem está logado: o endpoint exige sessão. */}
-          {estaAutenticado() ? (
+          {autenticado ? (
             <>
               <Button
                 type="button"

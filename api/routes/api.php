@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Auth\ContaController;
 use App\Http\Controllers\Api\V1\Auth\GoogleController;
 use App\Http\Controllers\Api\V1\Auth\SenhaController;
 use App\Http\Controllers\Api\V1\Auth\SessaoController;
+use App\Http\Controllers\Api\V1\Auth\UniaoCredenciaisController;
 use App\Http\Controllers\Api\V1\Auth\VerificacaoEmailController;
 use App\Http\Controllers\Api\V1\EuController;
 use App\Http\Controllers\Spike\EventoSpikeController;
@@ -52,6 +53,34 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/auth/google/sessoes', [GoogleController::class, 'store'])
         ->middleware('throttle:autenticacao');
+
+    /*
+     * União de credenciais (US3). Público: quem chega aqui ainda não tem sessão
+     * — é o que vem obter.
+     *
+     * A confirmação por senha leva o MESMO limitador do login. Sem isso, a
+     * união viraria a porta livre para adivinhar a senha de uma conta,
+     * contornando o bloqueio da tela de entrar.
+     */
+    Route::post('/uniao-credenciais', [UniaoCredenciaisController::class, 'store'])
+        ->middleware('throttle:autenticacao');
+
+    Route::post('/uniao-credenciais/link', [UniaoCredenciaisController::class, 'enviarLink'])
+        ->middleware('throttle:envio-de-email');
+
+    Route::post('/uniao-credenciais/link/confirmar', [UniaoCredenciaisController::class, 'confirmarLink']);
+
+    /*
+     * Recuperação de senha (US4). Pública por necessidade: quem esqueceu a
+     * senha não consegue entrar — exigir sessão aqui fecharia a única saída.
+     *
+     * O pedido leva o limitador de envio de e-mail: cada acerto custa um e-mail
+     * de verdade, e sem limite isto vira ferramenta de varredura e de spam.
+     */
+    Route::post('/senha/esqueci', [SenhaController::class, 'esqueci'])
+        ->middleware('throttle:envio-de-email');
+
+    Route::post('/senha/redefinir', [SenhaController::class, 'redefinir']);
 
     /*
      * Autenticado — o `sessao.deslizante` renova o prazo a cada uso (D7).

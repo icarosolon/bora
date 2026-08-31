@@ -1,7 +1,7 @@
 # Backlog
 
 Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
-Spec 001 em implementação: US1 e US2 entregues e validadas; US3 (unir credenciais) a seguir.
+Spec 001: as quatro user stories entregues e validadas; falta a fase de Polish (T110-T119).
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -96,6 +96,11 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **US3 e US4 da spec 001 entregues e VALIDADAS pelo Ícaro** (2026-08-31). Com elas, as
+  quatro user stories estão prontas: 109/119 tarefas, 185 testes de backend, 37 de
+  componente e 66 e2e. **A feature ainda não está pronta** — falta o Polish, que contém
+  itens da própria Definition of Done (documentação da API conferida contra o contrato,
+  andaime do spike removido, verificação de token em log e em prop de cliente).
 - **US2 da spec 001 entregue e VALIDADA pelo Ícaro** (2026-08-31). Entrar com Google e
   definir senha. 87/119 tarefas. 130 testes de backend, 24 de componente, 32 e2e.
 - **Pacote de CA instalado no PHP da máquina** (E-014, autorizado pelo Ícaro em
@@ -285,20 +290,16 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Implementar a US3 da spec 001 (T088–T099): unir credenciais.** É a única story com
-   dependência real entre stories, e agora ela está satisfeita — US1 e US2 existem. Ordem:
-   testes de backend (T088–T092) → caso de uso e controller (T093–T095) → telas
-   (T096–T099). A parte do 409 já está pronta na US2: o endpoint devolve o `uniao_token`
-   sem gravar nada; falta confirmar e efetivar.
-   **Hoje `/unir-contas` dá 404** — quem cria conta por senha e depois tenta Google cai ali.
-   É o buraco mais visível do produto no momento.
-2. **Depois, US4 (T100–T109): recuperar senha.** O link "Esqueci minha senha" já está na
-   tela de entrar e também leva a 404.
+1. **Fechar a spec 001 com a fase de Polish (T110–T119).** Não é acabamento: contém itens
+   da Definition of Done do Princípio XI. Em especial — **gerar a documentação da API com o
+   Scramble e conferi-la contra `contracts/auth-api.md`** (o princípio exige API
+   *documentada*), **remover o andaime do spike** (`api/app/Http/Controllers/Spike/`, o
+   bloco `v1/eventos` e `web/src/app/eventos/`), verificar que **nenhum token cruza para
+   prop de componente cliente nem aparece em log**, e rodar o `quickstart.md` inteiro.
+2. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
+   atual estar pronta — e "pronta" inclui o Polish.
 3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
-4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
-   `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
-   `web/src/app/eventos/`.
-5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+4. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
-6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
+5. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.

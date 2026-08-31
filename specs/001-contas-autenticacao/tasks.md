@@ -204,24 +204,24 @@ confirmar a união e verificar que existe **uma** conta com os dois meios de ent
 
 ### Testes de backend (escrever antes; devem falhar)
 
-- [ ] T088 [P] [US3] `api/tests/Feature/Auth/UniaoPorSenhaTest.php` — senha correta une, autentica e devolve sessão; depois, os dois métodos entram na mesma conta
-- [ ] T089 [P] [US3] `api/tests/Feature/Auth/UniaoPorLinkTest.php` — plano B: envia link (Job enfileirado), e o link válido conclui a união igual à senha
-- [ ] T090 [P] [US3] `api/tests/Feature/Auth/UniaoErrosTest.php` — senha errada 401 e **sujeita ao mesmo rate limit do login**; `uniao_token` expirado ou já usado devolve 410
-- [ ] T091 [P] [US3] `api/tests/Feature/Auth/UniaoInvarianteTest.php` — **o teste mais importante da story**: em todos os desfechos (confirmada, cancelada, expirada, senha errada) o número de contas com aquele e-mail é **exatamente um** (US3-6, Princípio I)
-- [ ] T092 [P] [US3] `api/tests/Feature/Auth/UniaoAuditoriaTest.php` — a união gera registro de auditoria do **evento**, sem valores sensíveis
+- [x] T088 [P] [US3] `api/tests/Feature/Auth/UniaoPorSenhaTest.php` — senha correta une, autentica e devolve sessão; depois, os dois métodos entram na mesma conta
+- [x] T089 [P] [US3] `api/tests/Feature/Auth/UniaoPorLinkTest.php` — plano B: envia link (Job enfileirado), e o link válido conclui a união igual à senha
+- [x] T090 [P] [US3] `api/tests/Feature/Auth/UniaoErrosTest.php` — senha errada 401 e **sujeita ao mesmo rate limit do login**; `uniao_token` expirado ou já usado devolve 410
+- [x] T091 [P] [US3] `api/tests/Feature/Auth/UniaoInvarianteTest.php` — **o teste mais importante da story**: em todos os desfechos (confirmada, cancelada, expirada, senha errada) o número de contas com aquele e-mail é **exatamente um** (US3-6, Princípio I)
+- [x] T092 [P] [US3] `api/tests/Feature/Auth/UniaoAuditoriaTest.php` — a união gera registro de auditoria do **evento**, sem valores sensíveis
 
 ### Implementação de backend
 
-- [ ] T093 [US3] Criar `api/app/UseCases/Account/UnirCredenciais.php` — valida `uniao_token` (uso único, expiração), confirma por senha ou por link, cria o vínculo em `contas_sociais` e emite sessão. **Nada é gravado antes da confirmação**
-- [ ] T094 [P] [US3] Criar `api/app/Http/Requests/Auth/UnirCredenciaisRequest.php` com `authorize()` e `rules()`
-- [ ] T095 [US3] Criar `api/app/Http/Controllers/Api/V1/Auth/UniaoCredenciaisController.php` — `POST /api/v1/uniao-credenciais`, `POST /api/v1/uniao-credenciais/link` e `POST /api/v1/uniao-credenciais/link/confirmar`; registrar as rotas
+- [x] T093 [US3] Criar `api/app/UseCases/Account/UnirCredenciais.php` — valida `uniao_token` (uso único, expiração), confirma por senha ou por link, cria o vínculo em `contas_sociais` e emite sessão. **Nada é gravado antes da confirmação**
+- [x] T094 [P] [US3] Criar `api/app/Http/Requests/Auth/UnirCredenciaisRequest.php` com `authorize()` e `rules()`
+- [x] T095 [US3] Criar `api/app/Http/Controllers/Api/V1/Auth/UniaoCredenciaisController.php` — `POST /api/v1/uniao-credenciais`, `POST /api/v1/uniao-credenciais/link` e `POST /api/v1/uniao-credenciais/link/confirmar`; registrar as rotas
 
 ### Testes e implementação de frontend
 
-- [ ] T096 [P] [US3] `web/tests/unit/unir-contas.test.tsx` — a tela **explica em linguagem simples** o que será unido; senha errada mostra erro e oferece o plano B; **`axe` sem violações**
-- [ ] T097 [P] [US3] `web/tests/e2e/us3-uniao.spec.ts` — união por senha, por link e cancelamento, em 360 e 1280
-- [ ] T098 [US3] Criar `web/src/app/unir-contas/page.tsx` e `web/src/components/auth/FormularioUnirContas.tsx` — ação principal "Unir e entrar"; alternativa "Receber link por e-mail"; caminho de cancelar visível
-- [ ] T099 [US3] Criar `web/src/app/unir-contas/confirmar/page.tsx` — conclui a união pelo token do e-mail; link expirado explica e oferece recomeçar
+- [x] T096 [P] [US3] `web/tests/unit/unir-contas.test.tsx` — a tela **explica em linguagem simples** o que será unido; senha errada mostra erro e oferece o plano B; **`axe` sem violações**
+- [x] T097 [P] [US3] `web/tests/e2e/us3-uniao.spec.ts` — união por senha, por link e cancelamento, em 360 e 1280
+- [x] T098 [US3] Criar `web/src/app/unir-contas/page.tsx` e `web/src/components/auth/FormularioUnirContas.tsx` — ação principal "Unir e entrar"; alternativa "Receber link por e-mail"; caminho de cancelar visível
+- [x] T099 [US3] Criar `web/src/app/unir-contas/confirmar/page.tsx` — conclui a união pelo token do e-mail; link expirado explica e oferece recomeçar
 
 **Checkpoint**: US1, US2 e US3 funcionam de forma independente.
 
@@ -236,22 +236,22 @@ entrar com ela.
 
 ### Testes de backend (escrever antes; devem falhar)
 
-- [ ] T100 [P] [US4] `api/tests/Feature/Auth/EsqueciSenhaNeutraTest.php` — **prova da não-enumeração**: e-mail existente e inexistente produzem resposta **byte a byte idêntica**; conta só-Google também
-- [ ] T101 [P] [US4] `api/tests/Feature/Auth/RedefinirSenhaTest.php` — senha nova funciona, a antiga não; **as sessões dos outros aparelhos são revogadas** e a atual permanece (FR-015)
-- [ ] T102 [P] [US4] `api/tests/Feature/Auth/RedefinirSenhaErrosTest.php` — link expirado e link já usado devolvem 410; senha inválida devolve 422; rate limit na solicitação
+- [x] T100 [P] [US4] `api/tests/Feature/Auth/EsqueciSenhaNeutraTest.php` — **prova da não-enumeração**: e-mail existente e inexistente produzem resposta **byte a byte idêntica**; conta só-Google também
+- [x] T101 [P] [US4] `api/tests/Feature/Auth/RedefinirSenhaTest.php` — senha nova funciona, a antiga não; **as sessões dos outros aparelhos são revogadas** e a atual permanece (FR-015)
+- [x] T102 [P] [US4] `api/tests/Feature/Auth/RedefinirSenhaErrosTest.php` — link expirado e link já usado devolvem 410; senha inválida devolve 422; rate limit na solicitação
 
 ### Implementação de backend
 
-- [ ] T103 [P] [US4] Criar `api/app/UseCases/Account/SolicitarRedefinicaoDeSenha.php` — resposta neutra sempre; conta só-Google recebe e-mail explicando, **sem mudar a resposta da API**
-- [ ] T104 [P] [US4] Criar `api/app/UseCases/Account/RedefinirSenha.php` — uso único, revoga as outras sessões
-- [ ] T105 [US4] Adicionar `POST /api/v1/senha/esqueci` e `POST /api/v1/senha/redefinir` em `api/app/Http/Controllers/Api/V1/Auth/SenhaController.php` e registrar as rotas
+- [x] T103 [P] [US4] Criar `api/app/UseCases/Account/SolicitarRedefinicaoDeSenha.php` — resposta neutra sempre; conta só-Google recebe e-mail explicando, **sem mudar a resposta da API**
+- [x] T104 [P] [US4] Criar `api/app/UseCases/Account/RedefinirSenha.php` — uso único, revoga as outras sessões
+- [x] T105 [US4] Adicionar `POST /api/v1/senha/esqueci` e `POST /api/v1/senha/redefinir` em `api/app/Http/Controllers/Api/V1/Auth/SenhaController.php` e registrar as rotas
 
 ### Testes e implementação de frontend
 
-- [ ] T106 [P] [US4] `web/tests/unit/esqueci-senha.test.tsx` — pós-envio **ensina o próximo passo** ("Confira sua caixa de entrada e o spam; o link vale por 1 hora"); **`axe` sem violações**
-- [ ] T107 [P] [US4] `web/tests/e2e/us4-recuperacao.spec.ts` — jornada completa em 360 e 1280, incluindo reuso do link
-- [ ] T108 [US4] Criar `web/src/app/esqueci-senha/page.tsx` — ação principal "Enviar link"
-- [ ] T109 [US4] Criar `web/src/app/redefinir-senha/page.tsx` — nova senha pelo token do e-mail; link expirado explica e oferece pedir outro
+- [x] T106 [P] [US4] `web/tests/unit/esqueci-senha.test.tsx` — pós-envio **ensina o próximo passo** ("Confira sua caixa de entrada e o spam; o link vale por 1 hora"); **`axe` sem violações**
+- [x] T107 [P] [US4] `web/tests/e2e/us4-recuperacao.spec.ts` — jornada completa em 360 e 1280, incluindo reuso do link
+- [x] T108 [US4] Criar `web/src/app/esqueci-senha/page.tsx` — ação principal "Enviar link"
+- [x] T109 [US4] Criar `web/src/app/redefinir-senha/page.tsx` — nova senha pelo token do e-mail; link expirado explica e oferece pedir outro
 
 **Checkpoint**: as quatro user stories funcionam de forma independente.
 

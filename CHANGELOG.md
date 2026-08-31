@@ -8,6 +8,30 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — US3 (unir credenciais) e US4 (recuperar senha) entregues e validadas**
+  (T088–T109, 109/119, 2026-08-31). Com elas, **as quatro user stories** estão prontas e
+  validadas visualmente pelo Ícaro. Testes: **185 no backend** (572 asserções), **37 de
+  componente** com `axe` e **66 e2e** em 360 e 1280.
+  - **US3 — API**: `POST /api/v1/uniao-credenciais` (confirma com a senha),
+    `.../link` (plano B) e `.../link/confirmar`. **Telas**: `/unir-contas` e
+    `/unir-contas/confirmar`.
+  - **`UniaoInvarianteTest` é a prova do bloqueio do Princípio I** no único ponto do
+    produto em que duas identidades se encontram: verifica **uma conta só** em todos os
+    desfechos — confirmada, abandonada, senha errada, token expirado, três tentativas, e
+    senha depois de pedir o link —, mais o índice único do banco.
+  - **O plano B fica visível desde o começo**, não escondido atrás de um erro: quem já sabe
+    que não lembra a senha não deveria precisar errar primeiro para achar a saída. E a tela
+    **explica antes de pedir** — ser interrompido por um pedido de senha logo após um login
+    com Google assusta, se não for justificado.
+  - **US4 — API**: `POST /api/v1/senha/esqueci` (resposta **neutra**, sempre igual) e
+    `.../redefinir`. **Telas**: `/esqueci-senha` e `/redefinir-senha`.
+  - **Prova da não-enumeração**: o teste compara as respostas **byte a byte**, exista ou não
+    a conta. Conta que só entra pelo Google tem resposta idêntica, mas recebe e-mail
+    explicando que ali não há senha a redefinir — senão a pessoa esperaria um link que
+    nunca vem.
+  - **Redefinir revoga TODAS as sessões e não faz login automático**: é o caminho de quem
+    pode ter tido a conta comprometida, e quem abriu o link provou que lê o e-mail, não que
+    é a pessoa naquele aparelho.
 - **Spec 001 — US2 (entrar com Google) entregue e validada** (T072–T087, 87/119,
   2026-08-31). Segunda feature a cumprir a Definition of Done do Princípio XI por inteiro,
   com **validação visual do Ícaro**. Testes: **130 no backend** (379 asserções), **24 de
@@ -148,6 +172,26 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **Divergência de hidratação em `/verificar-email`** (E-015): `estaAutenticado()` era
+  chamado durante a renderização e lê `localStorage`, que não existe no servidor — o React
+  acusava HTML divergente e **desistia de corrigir a subárvore**, deixando a tela com o
+  conteúdo errado em silêncio. Passou por 66 e2e, 37 de componente e o build, porque jsdom
+  não hidrata e **a tela não tinha nenhum teste e2e**. Corrigido, com duas redes novas: um
+  `test` estendido em `web/tests/e2e/base.ts` que **reprova erro no console do navegador**,
+  e cobertura e2e para a tela de confirmação de e-mail.
+- **O limitador de tentativas estava mal chaveado.** Ele usava só o campo `email`, mas as
+  rotas do Google e da união não enviam esse campo — então todas colapsavam num balde único
+  por IP. Efeito real: quem entrasse pelo Google e depois confirmasse a união **se trancava
+  sozinho**, misturando fluxos sem relação. A chave passou a ser o **alvo** (e-mail, ou o
+  `uniao_token` que identifica a conta), mantendo o teto por IP. **Atenção ao adicionar
+  rota nova com `throttle:autenticacao`:** ela precisa mandar um alvo identificável.
+- **O detector de dado sensível da auditoria dava falso positivo.** Ele varria o JSON
+  inteiro procurando palavras proibidas, e o valor legítimo `confirmado_via: "senha"`
+  disparava o alarme. Passou a inspecionar **chaves**, recursivamente — detector que grita
+  sem motivo ensina a ser ignorado.
+- **Guarda de hidratação extraído para o hook `useHidratado`** depois de o mesmo defeito
+  aparecer pela terceira vez (formulário, botão do Google, plano B da união). Sempre pego
+  pelo e2e, **nunca** pelo teste de componente: jsdom não tem essa janela. Ver E-012.
 - **PHP do WAMP não conseguia fazer NENHUMA chamada HTTPS** (E-014): `curl.cainfo` e
   `openssl.cafile` vazios e nenhum `cacert.pem` na máquina, então a troca do `code` com o
   Google falhava com `cURL error 60`. Corrigido com o `cacert.pem` oficial do projeto curl

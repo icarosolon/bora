@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Aviso } from '@/components/ui/aviso'
 import { Button } from '@/components/ui/button'
 import type { ErrosPorCampo } from '@/lib/api'
@@ -54,8 +54,33 @@ export function FormularioBase({
   children,
   acessorio,
 }: FormularioBaseProps) {
+  /*
+   * Só libera o envio depois de o componente montar no navegador.
+   *
+   * Isto NÃO é detalhe de teste. Antes da hidratação o `onSubmit` do React não
+   * existe, e um toque no botão faz o navegador submeter o formulário do jeito
+   * nativo: navega para a mesma página com os campos na QUERY STRING — ou seja,
+   * **a senha vai para a URL**, para o histórico do navegador e para o log de
+   * servidor. Exatamente o que a spec proíbe.
+   *
+   * A janela é curta num computador rápido, mas o público do Bora usa aparelho
+   * modesto em rede lenta (ux-requirements.md), onde ela é bem real: a pessoa
+   * tocaria, perderia o que digitou e vazaria a senha sem nada na tela indicar.
+   *
+   * Foi um teste e2e que revelou — clicando mais rápido que a hidratação.
+   */
+  const [pronto, setPronto] = useState(false)
+  useEffect(() => setPronto(true), [])
+
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+    <form
+      onSubmit={onSubmit}
+      // Defesa em profundidade: se por qualquer motivo escapar uma submissão
+      // nativa, ela vai como POST e não expõe os campos na barra de endereço.
+      method="post"
+      noValidate
+      className="flex flex-col gap-5"
+    >
       {estado.erroGeral && <Aviso tipo="erro">{estado.erroGeral}</Aviso>}
       {estado.sucesso && <Aviso tipo="sucesso">{estado.sucesso}</Aviso>}
 
@@ -65,10 +90,17 @@ export function FormularioBase({
 
       <Button
         type="submit"
-        disabled={estado.enviando}
+        disabled={estado.enviando || !pronto}
+        aria-busy={estado.enviando || !pronto}
         className="min-h-11 w-full text-base"
       >
-        {estado.enviando ? rotuloEnviando : rotuloAcao}
+        {/*
+          Enquanto não hidratou, o rótulo diz "Carregando…" em vez de mostrar a
+          ação como se estivesse disponível. Se a hidratação falhar de vez, a
+          tela ADMITE que não está pronta, em vez de exibir um botão morto sem
+          explicação — foi assim que o E-013 passou despercebido.
+        */}
+        {estado.enviando ? rotuloEnviando : pronto ? rotuloAcao : 'Carregando…'}
       </Button>
 
       {acessorio}

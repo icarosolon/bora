@@ -12,7 +12,27 @@
 
 import { esquecerToken, guardarDestino, lerToken } from '@/lib/sessao'
 
-const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1'
+/**
+ * Endereço da API.
+ *
+ * Sem `NEXT_PUBLIC_API_URL`, deriva o host de ONDE A PÁGINA FOI ABERTA, em vez
+ * de fixar `localhost`. Isso é o que faz a validação no celular funcionar sem
+ * configuração: abrindo em `http://192.168.0.105:3000`, a API vira
+ * `http://192.168.0.105:8000` sozinha; no computador, continua `localhost`.
+ *
+ * Fixar `localhost` aqui foi a causa raiz do E-011: no celular, `localhost` é o
+ * próprio celular, então toda chamada morria — e a tela, que é renderizada no
+ * servidor, continuava carregando normalmente, escondendo o problema.
+ */
+function baseDaApi(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
+
+  if (typeof window !== 'undefined') {
+    return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`
+  }
+
+  return 'http://localhost:8000/api/v1'
+}
 
 /** Erros por campo, como a tela precisa para mostrar a mensagem no lugar certo. */
 export type ErrosPorCampo = Record<string, string[]>
@@ -55,7 +75,7 @@ export async function chamarApi<T>(
 
   let resposta: Response
   try {
-    resposta = await fetch(`${BASE}${caminho}`, {
+    resposta = await fetch(`${baseDaApi()}${caminho}`, {
       method: metodo,
       headers: cabecalhos,
       body: corpo === undefined ? undefined : JSON.stringify(corpo),

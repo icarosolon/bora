@@ -122,6 +122,29 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **O cadastro não funcionava no celular — três defeitos encadeados** (E-011, E-012, E-013),
+  descobertos porque o Ícaro tentou usar a tela de verdade no aparelho. Todos corrigidos e
+  confirmados por ele em 2026-08-31.
+  - **API presa no loopback** (E-011): a task do VS Code subia `artisan serve` com
+    `--host=127.0.0.1` enquanto o Next escuta em todas as interfaces. A porta 3000 chegava
+    ao celular e a 8000 não — telas carregavam, nenhuma ação funcionava. Task corrigida
+    para `0.0.0.0`.
+  - **Senha ia parar na URL** (E-012): antes da hidratação o `onSubmit` do React não
+    existe, e o toque no botão fazia o navegador submeter nativamente, em GET, com os
+    campos na query string. O botão de envio agora só habilita depois de montar, o `form`
+    ganhou `method="post"` e há teste de regressão que falha se a senha voltar à URL.
+  - **403 fora do localhost** (E-013): o servidor de dev do Next recusa origem diferente de
+    `localhost`, então chunks voltavam 403 e o React nunca hidratava — deixando o botão
+    permanentemente desabilitado. Resolvido com `allowedDevOrigins` alimentado por
+    `os.networkInterfaces()`.
+- **Endereço da API deixa de ser configuração e passa a ser derivado.** O front resolve o
+  host a partir de onde a página foi aberta (`web/src/lib/api.ts`) e a CSP faz o mesmo pelo
+  header `Host` (`web/src/middleware.ts`). Abrindo em `localhost:3000` fala com
+  `localhost:8000`; abrindo pelo IP no celular, com aquele IP. Elimina o `.env.local` com
+  IP fixo, que quebrava a cada mudança de DHCP.
+- **O botão de envio admite quando a tela não está pronta**: enquanto não hidrata, o rótulo
+  é "Carregando…" em vez de exibir a ação como se estivesse disponível. Falha de hidratação
+  passa a ser visível em vez de virar botão morto sem explicação.
 - **A CSP quebrava a hidratação do Next — o app parecia certo e não funcionava** (E-009):
   header estático com `script-src 'self'` bloqueava os scripts inline de hidratação, então
   formulário não enviava e cabeçalho não atualizava, **sem erro visível na tela**. Os 18

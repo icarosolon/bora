@@ -23,12 +23,30 @@ export function middleware(request: NextRequest) {
 
   const emDesenvolvimento = process.env.NODE_ENV === 'development'
 
-  const apiOrigem = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1'
-  let apiHost = 'http://localhost:8000'
-  try {
-    apiHost = new URL(apiOrigem).origin
-  } catch {
-    // mantém o padrão local
+  /*
+   * O `connect-src` precisa liberar exatamente o host que o navegador vai
+   * chamar. Como o cliente deriva a API de onde a página foi aberta
+   * (`src/lib/api.ts`), aqui se faz o mesmo a partir do host da requisição:
+   * abrindo em `localhost:3000`, libera `localhost:8000`; abrindo pelo IP da
+   * rede no celular, libera aquele IP. Fixar um host aqui recriaria o E-011,
+   * agora na forma de bloqueio de CSP em vez de conexão recusada.
+   */
+  let apiHost: string
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    try {
+      apiHost = new URL(process.env.NEXT_PUBLIC_API_URL).origin
+    } catch {
+      apiHost = 'http://localhost:8000'
+    }
+  } else {
+    // Do header `Host`, e NÃO de `request.nextUrl`: com o servidor subido em
+    // `-H 0.0.0.0`, o nextUrl devolve o endereço de bind (`0.0.0.0`), que não
+    // é o host que o navegador pediu — e a CSP sairia liberando `0.0.0.0:8000`,
+    // bloqueando tanto o computador quanto o celular.
+    const host = (request.headers.get('host') ?? 'localhost:3000').split(':')[0]
+    const protocolo = request.headers.get('x-forwarded-proto') ?? 'http'
+
+    apiHost = `${protocolo}://${host}:8000`
   }
 
   const csp = [

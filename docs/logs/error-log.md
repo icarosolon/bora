@@ -3,6 +3,71 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-013 — Servidor de dev do Next devolve 403 fora do localhost: tela viva sem hidratar (2026-08-31)
+
+- **Sintoma:** abrindo pelo IP da rede (celular), as telas carregavam mas **nada
+  funcionava**; com o guarda de hidratação do E-012 já no lugar, o botão de enviar ficava
+  **permanentemente desabilitado**.
+- **Causa:** o servidor de **desenvolvimento** do Next recusa requisições de origem
+  diferente de `localhost`. Vários chunks de JavaScript voltavam **403 Forbidden**, então o
+  React nunca hidratava. Medido no navegador: `formHidratou: false`, 403 em
+  `/_next/static/chunks/...`.
+- **Resolução:** `allowedDevOrigins` em `web/next.config.ts`, alimentado por
+  `os.networkInterfaces()` — a máquina se autoriza na própria rede, e os IPs são
+  descobertos em tempo de execução, **não fixados** (IP muda com DHCP; valor fixo foi a
+  armadilha do E-011). Verificado depois: `formHidratou: true`, botão habilitado, zero 403.
+  Vale só em desenvolvimento.
+- **Status:** resolvido e confirmado pelo Ícaro no celular.
+- **Lição:** **validar no aparelho é diferente de validar na máquina.** Três verificações
+  minhas passaram — `curl` local, testes de componente e e2e — e todas rodavam em
+  `localhost`, onde este bloqueio não existe. O caminho do celular é uma configuração
+  distinta e precisa ser exercitada como tal.
+
+## E-012 — Formulário submetia nativamente antes de hidratar, com a senha na URL (2026-08-31)
+
+- **Sintoma:** ao investigar outra falha, o teste e2e registrou a navegação
+  `/criar-conta?nome=&email=maria%40exemplo.com&senha=senhaforte1`. Nenhuma requisição à
+  API acontecia.
+- **Causa:** antes da hidratação o `onSubmit` do React não existe. Um toque no botão fazia
+  o **navegador** submeter o formulário do jeito clássico — GET para a mesma página, com
+  todos os campos na query string. **A senha ia para a URL**, e daí para o histórico do
+  navegador, o log de servidor e o cabeçalho `Referer`. Contradiz frontalmente a regra da
+  própria spec ("token e senha nunca em URL").
+- **Gravidade real, não teórica:** a janela é curta num computador rápido, mas o público do
+  Bora usa **aparelho modesto em rede lenta** (`ux-requirements.md`). Lá a pessoa tocaria,
+  perderia o que digitou e vazaria a senha, sem nada na tela indicando problema.
+- **Resolução:** em `FormularioBase`, o botão de envio só habilita depois de o componente
+  montar, e o `<form>` ganhou `method="post"` como defesa em profundidade. O rótulo diz
+  **"Carregando…"** enquanto não está pronto — para uma falha de hidratação **admitir** que
+  a tela não está pronta, em vez de exibir um botão morto (foi assim que o E-013 passou
+  despercebido). Teste de regressão em `us1-conta.spec.ts` falha se a senha voltar à URL.
+- **Status:** resolvido.
+- **Lição:** formulário controlado por JavaScript tem um estado intermediário — HTML
+  pronto, JavaScript não — e nesse estado o navegador faz o que o HTML manda. Vale para
+  toda tela com formulário deste projeto, não só para esta.
+
+## E-011 — API presa no loopback: celular abria as telas e nenhuma ação funcionava (2026-08-31)
+
+- **Sintoma:** pelo celular, as telas carregavam normalmente, mas o cadastro respondia
+  "Não conseguimos falar com o Bora agora."
+- **Causa:** `.vscode/tasks.json` subia a API com `artisan serve --host=127.0.0.1`,
+  enquanto o Next escuta em **todas** as interfaces por padrão. Resultado: a porta 3000
+  chegava ao celular e a 8000 não. Confirmado por `netstat`: o processo PHP iniciado pela
+  task escutava só em `127.0.0.1:8000`. **Não era firewall** (regras de `php.exe` e
+  `node.exe` permitem no perfil Public, sem regra de bloqueio) **nem CORS**.
+- **Resolução:** a task passa a usar `--host=0.0.0.0`, com comentário explicando. E a causa
+  raiz foi eliminada: o front **deriva o endereço da API de onde a página foi aberta**
+  (`web/src/lib/api.ts`), e a CSP faz o mesmo a partir do header `Host`
+  (`web/src/middleware.ts`) — em vez de um IP fixo em `.env.local`, que quebra quando o
+  DHCP muda o endereço. Efeito colateral aceito: enquanto a task roda, a API de
+  desenvolvimento fica visível na LAN (o Next já estava assim; a **inconsistência** entre
+  os dois é que causava o bug).
+- **Status:** resolvido.
+- **Lição — erro de verificação, e é o que mais importa aqui:** na véspera dei o ambiente
+  como verificado usando `curl` **da própria máquina para o próprio IP**. Esse tráfego não
+  atravessa o firewall nem prova alcance externo: testei algo que não testava o caso real.
+  Verificação só vale se percorrer o mesmo caminho do usuário.
+
 ## E-010 — Parar a task do VS Code / do agente não mata o servidor de dev (2026-08-31)
 
 - **Sintoma:** depois de encerrar as tasks dos servidores, as portas 3000 e 8000

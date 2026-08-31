@@ -1,7 +1,7 @@
 # Backlog
 
 Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
-Spec 001 (contas e autenticação) aprovada e planejada; implementação ainda não começou.
+Spec 001 em implementação: US1 (MVP) entregue e validada no celular; US2 a seguir.
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -96,6 +96,14 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Validação no celular passa a ser sem configuração** (2026-08-31, após E-011/E-012/E-013).
+  O front deriva o endereço da API de onde a página foi aberta, a CSP faz o mesmo pelo
+  header `Host`, o `allowedDevOrigins` vem das interfaces de rede da máquina e a task do
+  VS Code sobe a API em `0.0.0.0`. Some o `.env.local` com IP fixo.
+  **Sobra um ajuste manual:** `FRONTEND_URLS` em `api/.env` precisa conter a origem do
+  celular, porque o CORS usa origens explícitas de propósito (Princípio V). Vale avaliar,
+  numa próxima, liberar por padrão as faixas de rede privada **apenas em ambiente local** —
+  fecharia o último passo manual sem afrouxar produção.
 - **US1 da spec 001 entregue e VALIDADA pelo Ícaro no celular** (2026-08-31). Primeira
   feature do Bora a fechar a Definition of Done do Princípio XI por inteiro. 71/119
   tarefas. 99 testes de backend, 18 de componente com `axe`, 14 e2e em 360 e 1280.

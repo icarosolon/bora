@@ -210,32 +210,36 @@ resolve escolhendo um dos dois no olho.
 
 ---
 
-## Validar no celular de verdade (Princípio XI) — receita testada
+## Validar no celular de verdade (Princípio XI)
 
 A validação visual do Ícaro é feita **primeiro no celular** (`ux-requirements.md`).
-Receita usada e verificada em 2026-08-31 (IP da máquina naquele dia: `192.168.0.105` —
-confira o seu com `Get-NetIPAddress`):
+Depois dos erros E-011, E-012 e E-013, isso ficou **sem configuração**:
 
-1. **Apontar o front para o IP da rede, não para `localhost`.** Do celular, `localhost`
-   é o próprio celular. Em `web/.env.local` (não versionado):
-   `NEXT_PUBLIC_API_URL=http://<IP>:8000/api/v1`. Esse valor também alimenta o
-   `connect-src` da CSP, então basta mudar aqui.
-2. **Liberar a origem do celular no CORS.** Em `api/.env`:
-   `FRONTEND_URLS=http://localhost:3000,http://<IP>:3000`. Sem isso a tela abre e
-   **nenhuma ação funciona** — o navegador bloqueia antes de sair.
-3. **Subir ouvindo na rede** (o padrão só ouve em localhost):
-   `php artisan serve --host=0.0.0.0 --port=8000` e `npm run dev -- -H 0.0.0.0 -p 3000`,
-   mais `php artisan queue:work` para os e-mails saírem da fila.
-4. **Conferir antes de chamar o Ícaro**, para não desperdiçar o tempo dele:
-   - `curl -s -o /dev/null -w "%{http_code}" http://<IP>:3000/entrar` → 200
-   - preflight de CORS devolvendo `Access-Control-Allow-Origin` com a origem do celular
-   - o header `Content-Security-Policy` trazendo o IP em `connect-src`
-5. **Ao terminar, derrubar de verdade.** Parar a task não mata o processo filho —
-   conferir a porta por PID e matar (E-010).
+1. Subir a task `Bora: dev` do VS Code (ou os comandos acima). A API já sobe com
+   `--host=0.0.0.0`; o Next escuta em todas as interfaces por padrão.
+2. Descobrir o IP da máquina: `Get-NetIPAddress -AddressFamily IPv4`.
+3. Abrir `http://<IP>:3000/entrar` no celular, **na mesma rede**.
 
-**Login com Google no celular** exige túnel HTTPS: o IP de rede local não serve como URI
-de redirecionamento (o Google só aceita HTTP em loopback). Item aberto no backlog; não
-bloqueia as telas sem Google.
+Não é preciso mexer em `web/.env.local` nem apontar IP em lugar nenhum: o front deriva o
+endereço da API de onde a página foi aberta, a CSP faz o mesmo pelo header `Host`, e o
+`allowedDevOrigins` é preenchido a partir das interfaces de rede da máquina.
+
+**Único ajuste manual que sobra:** o CORS da API usa origens explícitas (Princípio V), então
+`FRONTEND_URLS` em `api/.env` precisa conter `http://<IP>:3000`. Se o DHCP mudar o IP, esse
+valor precisa acompanhar. Sintoma quando não acompanha: a tela carrega e a ação falha com a
+mensagem de conexão.
+
+**Como saber que a tela está mesmo pronta:** o botão da ação principal mostra **"Carregando…"**
+enquanto o JavaScript não assumiu, e só então vira "Entrar"/"Criar conta". Botão travado em
+"Carregando…" significa que a hidratação falhou — não é lentidão, é defeito (E-013).
+
+**Erro de verificação a não repetir (E-011):** testar com `curl` da própria máquina para o
+próprio IP **não prova** que o celular alcança — esse tráfego não atravessa o firewall.
+A prova é o aparelho.
+
+**Login com Google no celular** exige túnel HTTPS: o IP de rede local não serve como URI de
+redirecionamento (o Google só aceita HTTP em loopback). Item aberto no backlog; não bloqueia
+as telas sem Google.
 
 ## Portão final (Princípio XI — Definition of Done)
 

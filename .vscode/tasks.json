@@ -7,6 +7,13 @@
   // absoluto fica para a task nao depender do PATH da janela que a executa.
   // Se o WAMP atualizar o PHP, este caminho quebra e precisa ser ajustado aqui.
   //
+  // ATENCAO ao --host=0.0.0.0 da api: e de proposito, nao troque por 127.0.0.1.
+  // O Next ja escuta em todas as interfaces por padrao; com a api presa no
+  // loopback, o celular carregava as telas e NENHUMA acao funcionava (E-011).
+  // A validacao visual e feita no celular (Principio XI), entao os dois lados
+  // precisam estar na rede. Efeito colateral aceito: em rede publica, a api de
+  // desenvolvimento fica visivel na LAN enquanto a task roda.
+  //
   // ATENCAO ao "npm.cmd" nas tasks do web/: e de proposito, nao troque por "npm".
   // Task do tipo "shell" no Windows roda em PowerShell, e a ExecutionPolicy desta
   // maquina e Restricted (LocalMachine), o que bloqueia o npm.ps1 com
@@ -18,7 +25,7 @@
       "label": "api: serve",
       "type": "shell",
       "command": "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
-      "args": ["artisan", "serve", "--host=127.0.0.1", "--port=8000"],
+      "args": ["artisan", "serve", "--host=0.0.0.0", "--port=8000"],
       "options": { "cwd": "${workspaceFolder}/api" },
       "isBackground": true,
       "presentation": {

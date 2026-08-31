@@ -3,6 +3,31 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-008 — `composer require` falha com "Permission denied" ao gravar zip temporário (2026-08-30)
+
+- **Sintoma:** `composer require spatie/laravel-permission spatie/laravel-activitylog
+  dedoc/scramble` gravou o `composer.lock`, mas abortou no meio do download com
+  `The "https://api.github.com/.../zipball/..." file could not be written to
+  vendor/composer/tmp-<hash>.zip: Failed to open stream: Permission denied` e
+  `Source fallback is disabled`. Resultado: `composer.json` já listava os três pacotes,
+  `vendor/` não tinha **nenhum** deles.
+- **Causa:** falha **transitória** ao escrever o arquivo temporário — típico de antivírus
+  do Windows segurando o `.zip` durante a varredura. Não é permissão de pasta: o
+  `composer require laravel/socialite` tinha acabado de gravar em `vendor/` sem problema,
+  na mesma sessão e na mesma pasta.
+- **Resolução:** repetir. `composer install` (o lock já estava escrito) completou os cinco
+  pacotes de primeira, sem nenhuma mudança de permissão.
+- **Status:** resolvido.
+- **Lição:** falha de escrita no `vendor/composer/tmp-*` **não** se investiga como
+  permissão de diretório — repete-se o comando primeiro. Mesmo padrão da instabilidade de
+  rede já conhecida neste ambiente: repetir resolve, investigar custa tempo à toa. E,
+  quando o `require` aborta no meio, conferir **os dois lados** — `composer.json` pode
+  estar atualizado com o `vendor/` vazio, estado que engana quem só olha um.
+- **Efeito colateral que valeu corrigir:** o `require` interrompido deixou as restrições
+  como `"*"` (`"dedoc/scramble": "*"`). Num projeto que precisa ser recriável do zero isso
+  é armadilha — foram fixadas em `^0.13.42`, `^5.1` e `^8.3`, com `composer update --lock`
+  para o lock reconhecer.
+
 ## E-007 — `php` e `composer` somem dentro de sessão aberta antes da correção do PATH (2026-08-30)
 
 - **Sintoma:** em plena sessão de trabalho, `php -v` e `composer` falhavam com

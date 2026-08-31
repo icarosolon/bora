@@ -96,6 +96,28 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Fundação da spec 001 implementada** (T001–T044, 2026-08-30). Testes verdes dos dois
+  lados. Decisões de implementação que fogem do texto da tarefa e valem saber:
+  1. **Políticas de domínio recebem parâmetro por construtor**, não por `config()`. As
+     tarefas diziam "mínimo vindo de config", mas isso importaria framework para dentro do
+     núcleo (Princípio VII). A amarração acontece no `AppServiceProvider`; os testes de
+     domínio rodam em `PHPUnit\TestCase` puro, sem subir o Laravel.
+  2. **`Retry-After` exposto no CORS.** Não estava na tarefa. Sem `exposed_headers`, o
+     JavaScript não lê o header e a tela não tem como dizer quanto esperar após um 429 —
+     requisito de UX que ficaria impossível de cumprir.
+  3. **"Test User" removido do `DatabaseSeeder`.** Seeder que cria conta silenciosamente
+     atrapalha justamente a feature cuja invariante é "uma conta por e-mail".
+  4. **Classe `Auditoria` com lista de chaves barradas**, em vez de `activity()` solto:
+     um descuido futuro num caso de uso não consegue gravar senha ou token no log.
+  5. **Limitação de e-mail registrada em teste**: acento no endereço e domínio
+     internacionalizado são recusados (limite do `filter_var`). Não atinge o público real;
+     fica documentado com o ponto exato de correção, se um dia precisar.
+- **Ressalva aberta — testes rodam em SQLite, produção é MySQL.** O `phpunit.xml` do
+  Laravel usa `sqlite :memory:`; verificado que o banco de dev **não** é tocado pelo
+  `RefreshDatabase`. Mas a invariante central desta feature é um **índice único**, e
+  testar num banco enquanto se roda em outro pode esconder diferença de comportamento.
+  **Decisão do Ícaro, ainda não tomada:** manter assim (rápido) ou apontar os testes de
+  feature para um banco MySQL de teste (fiel).
 - **Tarefas da spec 001 geradas** (`/speckit-tasks`, 2026-08-30):
   `specs/001-contas-autenticacao/tasks.md`, **119 tarefas** (T001–T119) por user story —
   Setup 13, Foundational 31, US1 27 (**MVP**), US2 16, US3 12, US4 10, Polish 10; 85
@@ -236,21 +258,22 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Implementar a spec 001, começando pela T001** de
-   `specs/001-contas-autenticacao/tasks.md`. Ordem: Setup (T001–T013) → Foundational
-   (T014–T044) → US1 (T045–T071, que é o MVP) → parar e validar. Armadilhas já mapeadas,
-   para não redescobrir: **nada de segredo em prop que cruza para componente cliente**; o
-   `composer require laravel/socialite` **precisa do `-W`**; `'expiration'` em
-   `config/sanctum.php` **fica em `null`** (valor ali quebra a expiração deslizante); e
-   script `.ps1` precisa de `-ExecutionPolicy Bypass` (E-006).
-2. **Ícaro: confirmar no console** que o "Salvar" dos URIs foi aplicado e que seu Gmail
+1. **Seguir a implementação da spec 001 a partir da T045** — Setup e Foundational
+   (T001–T044) estão prontos e verdes. A próxima fatia é a **US1 (T045–T071)**, que é o
+   **MVP**: cadastro, login, sair e verificação de e-mail, incluindo os testes que provam
+   os bloqueios dos Princípios I (conta paralela recusada) e II (nada atrás de pagamento).
+   Ao fim dela: **parar e validar** antes de abrir a US2.
+2. **Decisão pendente do Ícaro:** testes de feature em SQLite (como está) ou apontados
+   para um MySQL de teste? A invariante desta feature é um índice único — vale decidir
+   antes de escrever os testes da US1, que são justamente os que a exercitam.
+3. **Ícaro: confirmar no console** que o "Salvar" dos URIs foi aplicado e que seu Gmail
    está em **Público-alvo → Usuários de teste**. As credenciais já estão no `api/.env` e
    verificadas; falta só essa confirmação para a US2 rodar em desenvolvimento.
-3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
-4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
+4. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
+5. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
    `web/src/app/eventos/`.
-5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+6. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
-6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
+7. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.

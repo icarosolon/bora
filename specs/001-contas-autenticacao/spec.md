@@ -4,9 +4,10 @@
 
 **Created**: 2026-08-29
 
-**Status**: **Aprovada** por Ícaro em 2026-08-30 (portão `spec-check`: SIM em 2026-08-29).
-Plano técnico em [plan.md](./plan.md); tarefas em [tasks.md](./tasks.md). **Implementação
-ainda não começou.**
+**Status**: **Em implementação** (portão `spec-check`: SIM em 2026-08-29; aprovada por
+Ícaro em 2026-08-30). Plano em [plan.md](./plan.md), tarefas em [tasks.md](./tasks.md).
+**Progresso: 44/119 tarefas** — Setup e Foundational concluídos e verdes; as quatro user
+stories ainda não começaram.
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

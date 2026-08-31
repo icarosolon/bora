@@ -20,5 +20,7 @@ As decisões abaixo saíram da spec 001 e valem para **todas** as features, não
   (decisão D3 da spec 001). O contrato revisado à mão vive na spec; o Scramble é o que
   publica. Divergência entre os dois é defeito, não questão de preferência.
 
-**Status**: decidido e documentado em 2026-08-30; **ainda não implementado** — nenhum
-pacote instalado, nenhuma rota criada.
+**Status**: **implementado em 2026-08-30** (fundação da spec 001). Pacotes instalados,
+`config/cors.php` publicado com origem explícita, Scramble servindo em `/docs/api`, e todo
+o roteamento sob `/api/v1` — `/api/user` deixou de existir. Os endpoints de conta em si
+(cadastro, login, união, senha) ainda não foram implementados: são as user stories.

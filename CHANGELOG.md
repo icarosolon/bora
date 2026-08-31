@@ -8,6 +8,40 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — fundação implementada** (T001–T044 de 119, 2026-08-30). Setup e Foundational
+  concluídos, com `php artisan test` (36 testes) e `npm run test` (7 testes) verdes e
+  `npm run build` passando type-check. As quatro user stories ainda não começaram.
+  - **`api/`**: instalados Socialite v5.30.1 (com `-W` — guzzle rebaixado de 8.1.0 para
+    7.15.5, como o plano previu), `spatie/laravel-permission` 8.3.0,
+    `spatie/laravel-activitylog` 5.1.0 e `dedoc/scramble` v0.13.42.
+  - **Banco**: `users` ganha `password` **nullable** (conta que nasce no Google não tem
+    senha) e `ultimo_acesso_em`; novas `contas_sociais` (vínculo pelo `provedor_user_id`,
+    **não** pelo e-mail, com dois índices únicos) e `tokens_de_email` (uso único, só o
+    **hash** — o valor em claro nunca é persistido). 18 tabelas, todas InnoDB.
+  - **Domínio sem framework** (Princípio VII): `Email` (normalização que sustenta a
+    invariante de conta única), `PoliticaDeSenha`, `PoliticaDeSessao`, `SessaoAberta` e as
+    portas `ProvedorDeIdentidade` / `EnviadorDeEmail`. As políticas recebem o parâmetro
+    por **construtor**, não por `config()` — assim o núcleo se testa sem subir o Laravel.
+  - **Janela deslizante da sessão** (D7) implementada em `RenovarExpiracaoDoToken`, com
+    teste que também **trava `sanctum.expiration` em `null`**: valor ali sobrepõe o
+    `expires_at` por token e quebraria o deslizamento em silêncio.
+  - **API**: tudo sob `/api/v1`; `/api/user` **deixou de existir** (virou `/api/v1/eu`).
+    Envelope de erro da constituição em `bootstrap/app.php` (422 com `errors`, 429 com
+    `Retry-After`, 5xx sem vazar detalhe). CORS com origem explícita e
+    `supports_credentials` em `false`; `Retry-After` **exposto** — sem isso a tela não
+    conseguiria dizer quanto esperar após um 429.
+  - **Auditoria**: classe `Auditoria` com lista de chaves barradas, para que um descuido
+    futuro num caso de uso não consiga gravar senha, hash ou token no log (Princípio V).
+  - **`web/`**: `lib/api.ts` (resultado discriminado por status, sem regra de negócio),
+    `lib/sessao.ts` (token em `localStorage`, módulo só de cliente), **CSP estrita** em
+    `next.config.ts` como mitigação obrigatória da D2, primitivas acessíveis (`Campo`,
+    `Aviso`) e `LayoutAuth` mobile-first literal.
+  - **Removido o "Test User" do `DatabaseSeeder`**: numa feature cuja invariante é "uma
+    conta por e-mail", seeder que cria conta silenciosamente atrapalha o teste manual.
+    Conta de teste passa a nascer por factory, dentro do teste que precisa dela.
+  - **Limitação registrada em teste**: `Email` recusa acento no endereço e domínio
+    internacionalizado (limite do `filter_var`). Não atinge o público real do Bora; fica
+    documentado, com o lugar exato de corrigir se aparecer usuário reprovado por isso.
 - **Tarefas da spec 001 geradas** (`/speckit-tasks`, 2026-08-30):
   `specs/001-contas-autenticacao/tasks.md` — **119 tarefas** (T001–T119), organizadas por
   user story: Setup (13), Foundational (31), US1 cadastro/login (27, o **MVP**), US2 Google
@@ -66,6 +100,14 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **`composer require` abortava com "Permission denied" no zip temporário** (E-008): falha
+  transitória de escrita (antivírus segurando o `.zip`), não permissão de pasta. Repetir
+  resolveu. O `require` interrompido deixou `composer.json` com os pacotes e `vendor/`
+  vazio, e gravou restrições como `"*"` — fixadas em `^0.13.42`, `^5.1` e `^8.3`.
+- **`npm run build` quebrava com os testes passando**: `jest-axe` não traz tipos e
+  `toHaveNoViolations` não é conhecido do Vitest, então o type-check reprovava mesmo com
+  tudo verde em runtime. Corrigido com `@types/jest-axe` e a declaração do matcher em
+  `web/tests/vitest.d.ts`.
 - **Tasks do `web/` falhavam com `UnauthorizedAccess`** (E-006): task `shell` no Windows
   roda em PowerShell e o `npm` do PATH resolve para `npm.ps1`, bloqueado porque a
   ExecutionPolicy da máquina é `Restricted` (LocalMachine — verificado). Corrigido com

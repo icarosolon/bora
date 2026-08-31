@@ -30,19 +30,19 @@ antes da entrega). Onde o template diria "if requested", neste projeto é sempre
 **Objetivo**: instalar e configurar o que hoje **não existe**. Verificado em 2026-08-30:
 nenhum destes pacotes está instalado e o `web/` não tem nenhuma ferramenta de teste.
 
-- [ ] T001 Instalar Socialite em `api/` com `composer require laravel/socialite -W` — o `-W` é **obrigatório**: o pacote exige guzzle ^6|^7 e o projeto está em 8.1.0; sem `-W` a instalação falha e a resolução cai numa faixa de `firebase/php-jwt` sob advisory de segurança. Ver [research.md](./research.md) §2
-- [ ] T002 Instalar os demais pacotes em `api/`: `composer require spatie/laravel-permission spatie/laravel-activitylog dedoc/scramble`
-- [ ] T003 [P] Publicar e configurar `api/config/cors.php` com `php artisan config:publish cors` — `allowed_origins` **explícito** (`http://localhost:3000`), `supports_credentials` em `false`, `paths` em `api/*`
-- [ ] T004 [P] Adicionar bloco `google` em `api/config/services.php` lendo `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e `GOOGLE_REDIRECT_URI` — as três já estão no `.env` e foram verificadas
-- [ ] T005 [P] Criar `api/config/bora.php` com os parâmetros configuráveis da spec: senha mínima (8), tentativas por minuto (5), validade dos tokens de e-mail (união 60 min, redefinição 60 min, verificação 7 dias), validade da sessão (30 dias). **Nenhum desses números pode ficar hardcoded** (Princípio VII)
-- [ ] T006 [P] Confirmar `'expiration' => null` em `api/config/sanctum.php` e comentar o porquê — valor ali **sobrepõe** o `expires_at` por token e quebra a expiração deslizante ([research.md](./research.md) §1)
-- [ ] T007 [P] Publicar as migrations dos pacotes com `php artisan vendor:publish` para `spatie/laravel-permission` e `spatie/laravel-activitylog`
-- [ ] T008 [P] Atualizar `api/.env.example` com as chaves novas (`GOOGLE_*`, `RESEND_API_KEY`, `FRONTEND_URL`), sem valores reais
-- [ ] T009 [P] Instalar ferramentas de teste no `web/`: `npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-axe @playwright/test`
-- [ ] T010 [P] Criar `web/vitest.config.ts` (ambiente jsdom, alias `@/*`) e `web/tests/setup.ts` (matchers de `jest-dom` e `jest-axe`)
-- [ ] T011 [P] Criar `web/playwright.config.ts` com **dois projetos de viewport: 360×740 e 1280×800** — as larguras obrigatórias do `ux-requirements.md` — e `baseURL` `http://localhost:3000`
-- [ ] T012 [P] Inicializar shadcn/ui no `web/` sobre o Tailwind 4 já instalado, gerando `web/src/components/ui/` e `web/src/lib/utils.ts`
-- [ ] T013 [P] Adicionar scripts `test`, `test:e2e` e `lint` em `web/package.json`
+- [x] T001 Instalar Socialite em `api/` com `composer require laravel/socialite -W` — o `-W` é **obrigatório**: o pacote exige guzzle ^6|^7 e o projeto está em 8.1.0; sem `-W` a instalação falha e a resolução cai numa faixa de `firebase/php-jwt` sob advisory de segurança. Ver [research.md](./research.md) §2
+- [x] T002 Instalar os demais pacotes em `api/`: `composer require spatie/laravel-permission spatie/laravel-activitylog dedoc/scramble`
+- [x] T003 [P] Publicar e configurar `api/config/cors.php` com `php artisan config:publish cors` — `allowed_origins` **explícito** (`http://localhost:3000`), `supports_credentials` em `false`, `paths` em `api/*`
+- [x] T004 [P] Adicionar bloco `google` em `api/config/services.php` lendo `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e `GOOGLE_REDIRECT_URI` — as três já estão no `.env` e foram verificadas
+- [x] T005 [P] Criar `api/config/bora.php` com os parâmetros configuráveis da spec: senha mínima (8), tentativas por minuto (5), validade dos tokens de e-mail (união 60 min, redefinição 60 min, verificação 7 dias), validade da sessão (30 dias). **Nenhum desses números pode ficar hardcoded** (Princípio VII)
+- [x] T006 [P] Confirmar `'expiration' => null` em `api/config/sanctum.php` e comentar o porquê — valor ali **sobrepõe** o `expires_at` por token e quebra a expiração deslizante ([research.md](./research.md) §1)
+- [x] T007 [P] Publicar as migrations dos pacotes com `php artisan vendor:publish` para `spatie/laravel-permission` e `spatie/laravel-activitylog`
+- [x] T008 [P] Atualizar `api/.env.example` com as chaves novas (`GOOGLE_*`, `RESEND_API_KEY`, `FRONTEND_URL`), sem valores reais
+- [x] T009 [P] Instalar ferramentas de teste no `web/`: `npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event jest-axe @playwright/test`
+- [x] T010 [P] Criar `web/vitest.config.mts` (ambiente jsdom, alias `@/*`) e `web/tests/setup.ts` (matchers de `jest-dom` e `jest-axe`). **Extensão `.mts`, não `.ts`**: o Vite 8 avisa que carregar config ESM como CommonJS deixará de funcionar
+- [x] T011 [P] Criar `web/playwright.config.ts` com **dois projetos de viewport: 360×740 e 1280×800** — as larguras obrigatórias do `ux-requirements.md` — e `baseURL` `http://localhost:3000`
+- [x] T012 [P] Inicializar shadcn/ui no `web/` sobre o Tailwind 4 já instalado, gerando `web/src/components/ui/` e `web/src/lib/utils.ts`
+- [x] T013 [P] Adicionar scripts `test`, `test:e2e` e `lint` em `web/package.json`
 
 **Checkpoint**: dependências instaladas; `php artisan test` e `npm run test` executam.
 
@@ -54,49 +54,49 @@ nenhum destes pacotes está instalado e o `web/` não tem nenhuma ferramenta de 
 
 ### Banco e modelos
 
-- [ ] T014 Criar migration em `api/database/migrations/` alterando `users`: `password` para **nullable** e nova coluna `ultimo_acesso_em` (timestamp, nullable). O índice único de `email` já existe — não recriar. Ver [data-model.md](./data-model.md)
-- [ ] T015 [P] Criar migration da tabela `contas_sociais` (`user_id` FK, `provedor`, `provedor_user_id`, `email_no_provedor` nullable, `vinculado_em`), com **único em (`provedor`,`provedor_user_id`)** e **único em (`user_id`,`provedor`)**
-- [ ] T016 [P] Criar migration da tabela `tokens_de_email` (`user_id` FK, `finalidade`, `token_hash` único, `expira_em`, `usado_em` nullable, `dados` json nullable) e índice em (`user_id`,`finalidade`)
-- [ ] T017 Rodar `php artisan migrate` e **conferir que as tabelas nasceram InnoDB** (E-003 — o MySQL do WAMP usa MyISAM por padrão; `api/config/database.php` força InnoDB e isso não se desfaz)
-- [ ] T018 [P] Atualizar `api/app/Models/User.php`: adicionar `HasApiTokens` (Sanctum) e `HasRoles` (spatie), relações `contasSociais()` e `tokensDeEmail()`, cast de `ultimo_acesso_em`. **Manter a sintaxe do Laravel 13 já usada no arquivo** — atributos `#[Fillable([...])]` e `#[Hidden([...])]`, não propriedades
-- [ ] T019 [P] Criar `api/app/Models/ContaSocial.php` com `$fillable` explícito e relação `user()`
-- [ ] T020 [P] Criar `api/app/Models/TokenDeEmail.php` com `$fillable` explícito, relação `user()` e escopos `valido()` / `naoUsado()`
-- [ ] T021 Criar seeder idempotente em `api/database/seeders/` que garante o papel `rolezeiro` (spatie)
+- [x] T014 Criar migration em `api/database/migrations/` alterando `users`: `password` para **nullable** e nova coluna `ultimo_acesso_em` (timestamp, nullable). O índice único de `email` já existe — não recriar. Ver [data-model.md](./data-model.md)
+- [x] T015 [P] Criar migration da tabela `contas_sociais` (`user_id` FK, `provedor`, `provedor_user_id`, `email_no_provedor` nullable, `vinculado_em`), com **único em (`provedor`,`provedor_user_id`)** e **único em (`user_id`,`provedor`)**
+- [x] T016 [P] Criar migration da tabela `tokens_de_email` (`user_id` FK, `finalidade`, `token_hash` único, `expira_em`, `usado_em` nullable, `dados` json nullable) e índice em (`user_id`,`finalidade`)
+- [x] T017 Rodar `php artisan migrate` e **conferir que as tabelas nasceram InnoDB** (E-003 — o MySQL do WAMP usa MyISAM por padrão; `api/config/database.php` força InnoDB e isso não se desfaz)
+- [x] T018 [P] Atualizar `api/app/Models/User.php`: adicionar `HasApiTokens` (Sanctum) e `HasRoles` (spatie), relações `contasSociais()` e `tokensDeEmail()`, cast de `ultimo_acesso_em`. **Manter a sintaxe do Laravel 13 já usada no arquivo** — atributos `#[Fillable([...])]` e `#[Hidden([...])]`, não propriedades
+- [x] T019 [P] Criar `api/app/Models/ContaSocial.php` com `$fillable` explícito e relação `user()`
+- [x] T020 [P] Criar `api/app/Models/TokenDeEmail.php` com `$fillable` explícito, relação `user()` e escopos `valido()` / `naoUsado()`
+- [x] T021 Criar seeder idempotente em `api/database/seeders/` que garante o papel `rolezeiro` (spatie)
 
 ### Domínio (núcleo testável, sem framework — Princípio VII)
 
-- [ ] T022 [P] Criar `api/app/Domain/Account/Email.php` — value object que **normaliza** (minúsculas, `trim`) e valida. É o que sustenta a invariante de conta única contra variação de caixa
-- [ ] T023 [P] Criar `api/app/Domain/Account/PoliticaDeSenha.php` — comprimento mínimo vindo de `config`, nunca literal
-- [ ] T024 [P] Criar `api/app/Domain/Account/PoliticaDeSessao.php` — calcula o novo `expires_at` (agora + prazo configurado) da janela deslizante
-- [ ] T025 [P] Criar `api/app/Ports/ProvedorDeIdentidade.php` e `api/app/Ports/EnviadorDeEmail.php` — interfaces do domínio; **nenhum `use` de SDK externo** nesses arquivos
+- [x] T022 [P] Criar `api/app/Domain/Account/Email.php` — value object que **normaliza** (minúsculas, `trim`) e valida. É o que sustenta a invariante de conta única contra variação de caixa
+- [x] T023 [P] Criar `api/app/Domain/Account/PoliticaDeSenha.php` — comprimento mínimo vindo de `config`, nunca literal
+- [x] T024 [P] Criar `api/app/Domain/Account/PoliticaDeSessao.php` — calcula o novo `expires_at` (agora + prazo configurado) da janela deslizante
+- [x] T025 [P] Criar `api/app/Ports/ProvedorDeIdentidade.php` e `api/app/Ports/EnviadorDeEmail.php` — interfaces do domínio; **nenhum `use` de SDK externo** nesses arquivos
 
 ### Bordas da API
 
-- [ ] T026 Reescrever `api/routes/api.php`: tudo sob o grupo `v1` e **mover `/user` para `/api/v1/eu`** (hoje está em `/api/user`, fora do versionamento — Princípio IV). Manter o bloco andaime `v1/eventos` do spike por enquanto; ele sai na T115
-- [ ] T027 Criar `api/app/Http/Middleware/RenovarExpiracaoDoToken.php` — a cada request autenticada empurra o `expires_at` do token atual para agora + prazo configurado e atualiza `users.ultimo_acesso_em`. Registrar no grupo autenticado em `api/bootstrap/app.php`
-- [ ] T028 Configurar em `api/bootstrap/app.php` o rendering de exceções no envelope da constituição: 422 com `errors` por campo, 401/409/410 com `message`, 429 com `message` + header `Retry-After`. Nenhum 5xx pode vazar detalhe interno para a tela
-- [ ] T029 [P] Criar `api/app/Http/Resources/ContaResource.php` — resposta sempre por API Resource, nunca Model direto; datas ISO 8601; **nunca** expor `password` nem token
-- [ ] T030 [P] Criar `api/app/Http/Resources/SessaoResource.php` com `conta`, `token` e `expira_em`
-- [ ] T031 [P] Configurar rate limiters nomeados em `api/app/Providers/AppServiceProvider.php`, por e-mail + IP, com limite vindo do config. O mesmo limitador serve login **e** união — a spec exige o bloqueio nas duas portas
-- [ ] T032 [P] Configurar `api/config/activitylog.php` e criar helper de auditoria que registra **evento e autor, nunca valores sensíveis** — senha, hash e token são PROIBIDOS no log (Princípio V)
-- [ ] T033 [P] Criar adapter em `api/app/Adapters/Email/` implementando `EnviadorDeEmail` — Resend em produção, `log` em desenvolvimento (a chave `resend` já existe em `config/services.php`)
-- [ ] T034 [P] Criar `api/app/Jobs/EnviarEmailTransacional.php` — todo envio vai para a fila Redis, nunca no ciclo da request (Princípio VI); falha de envio **não** derruba a request que o originou
-- [ ] T035 [P] Configurar `api/config/scramble.php` para expor só o prefixo `api/v1`, e agendar `sanctum:prune-expired --hours=24` em `api/routes/console.php`
+- [x] T026 Reescrever `api/routes/api.php`: tudo sob o grupo `v1` e **mover `/user` para `/api/v1/eu`** (hoje está em `/api/user`, fora do versionamento — Princípio IV). Manter o bloco andaime `v1/eventos` do spike por enquanto; ele sai na T115
+- [x] T027 Criar `api/app/Http/Middleware/RenovarExpiracaoDoToken.php` — a cada request autenticada empurra o `expires_at` do token atual para agora + prazo configurado e atualiza `users.ultimo_acesso_em`. Registrar no grupo autenticado em `api/bootstrap/app.php`
+- [x] T028 Configurar em `api/bootstrap/app.php` o rendering de exceções no envelope da constituição: 422 com `errors` por campo, 401/409/410 com `message`, 429 com `message` + header `Retry-After`. Nenhum 5xx pode vazar detalhe interno para a tela
+- [x] T029 [P] Criar `api/app/Http/Resources/ContaResource.php` — resposta sempre por API Resource, nunca Model direto; datas ISO 8601; **nunca** expor `password` nem token
+- [x] T030 [P] Criar `api/app/Http/Resources/SessaoResource.php` com `conta`, `token` e `expira_em`
+- [x] T031 [P] Configurar rate limiters nomeados em `api/app/Providers/AppServiceProvider.php`, por e-mail + IP, com limite vindo do config. O mesmo limitador serve login **e** união — a spec exige o bloqueio nas duas portas
+- [x] T032 [P] Configurar `api/config/activitylog.php` e criar helper de auditoria que registra **evento e autor, nunca valores sensíveis** — senha, hash e token são PROIBIDOS no log (Princípio V)
+- [x] T033 [P] Criar adapter em `api/app/Adapters/Email/` implementando `EnviadorDeEmail` — Resend em produção, `log` em desenvolvimento (a chave `resend` já existe em `config/services.php`)
+- [x] T034 [P] Criar `api/app/Jobs/EnviarEmailTransacional.php` — todo envio vai para a fila Redis, nunca no ciclo da request (Princípio VI); falha de envio **não** derruba a request que o originou
+- [x] T035 [P] Configurar `api/config/scramble.php` para expor só o prefixo `api/v1`, e agendar `sanctum:prune-expired --hours=24` em `api/routes/console.php`
 
 ### Frontend base
 
-- [ ] T036 [P] Criar `web/src/lib/api.ts` — cliente da API pública: base URL de env, envelope (`data`/`message`/`errors`), anexa `Authorization: Bearer` quando há token e traduz 401/409/410/422/429 em tipos discriminados para a tela tratar
-- [ ] T037 [P] Criar `web/src/lib/sessao.ts` — guarda o token em `localStorage` (decisão D2). Arquivo **exclusivamente de cliente**: nunca importado por componente de servidor, e **nenhum token pode ir em prop que cruze a fronteira servidor→cliente** (o spike provou que essas props são serializadas no HTML)
-- [ ] T038 [P] Configurar **CSP estrita** em `web/next.config.ts`, sem `unsafe-inline` para script — mitigação obrigatória do risco de XSS aceito na D2 ([research.md](./research.md) §3)
-- [ ] T039 [P] Criar primitivos acessíveis em `web/src/components/ui/` (botão, campo com rótulo associado, mensagem de erro anunciada a leitor de tela, indicador de carregando): alvo de toque ≥ 44px, foco visível, contraste AA, ícone sempre com rótulo
-- [ ] T040 [P] Criar `web/src/components/auth/FormularioBase.tsx` — componente **cliente** com estados de carregando/erro/sucesso e bloqueio de dupla submissão (botão desabilita durante o envio)
-- [ ] T041 [P] Criar `web/src/components/auth/LayoutAuth.tsx` — uma coluna a 360px sem rolagem horizontal; a partir de 768px vira cartão centralizado com largura máxima legível. **Estilo base é o do celular**; media query só amplia
+- [x] T036 [P] Criar `web/src/lib/api.ts` — cliente da API pública: base URL de env, envelope (`data`/`message`/`errors`), anexa `Authorization: Bearer` quando há token e traduz 401/409/410/422/429 em tipos discriminados para a tela tratar
+- [x] T037 [P] Criar `web/src/lib/sessao.ts` — guarda o token em `localStorage` (decisão D2). Arquivo **exclusivamente de cliente**: nunca importado por componente de servidor, e **nenhum token pode ir em prop que cruze a fronteira servidor→cliente** (o spike provou que essas props são serializadas no HTML)
+- [x] T038 [P] Configurar **CSP estrita** em `web/next.config.ts`, sem `unsafe-inline` para script — mitigação obrigatória do risco de XSS aceito na D2 ([research.md](./research.md) §3)
+- [x] T039 [P] Criar primitivos acessíveis em `web/src/components/ui/` (botão, campo com rótulo associado, mensagem de erro anunciada a leitor de tela, indicador de carregando): alvo de toque ≥ 44px, foco visível, contraste AA, ícone sempre com rótulo
+- [x] T040 [P] Criar `web/src/components/auth/FormularioBase.tsx` — componente **cliente** com estados de carregando/erro/sucesso e bloqueio de dupla submissão (botão desabilita durante o envio)
+- [x] T041 [P] Criar `web/src/components/auth/LayoutAuth.tsx` — uma coluna a 360px sem rolagem horizontal; a partir de 768px vira cartão centralizado com largura máxima legível. **Estilo base é o do celular**; media query só amplia
 
 ### Testes da fundação
 
-- [ ] T042 [P] `api/tests/Unit/Domain/EmailTest.php` — normalização de caixa e espaços; e-mail inválido rejeitado
-- [ ] T043 [P] `api/tests/Unit/Domain/PoliticaDeSenhaTest.php` e `PoliticaDeSessaoTest.php` — **senha no limite mínimo exato aceita, um caractere a menos recusada** (edge case da spec)
-- [ ] T044 `api/tests/Feature/Auth/ExpiracaoDeslizanteTest.php` — request autenticada empurra o `expires_at`; token expirado devolve 401. É a prova da D7, que **não** vem pronta do Sanctum
+- [x] T042 [P] `api/tests/Unit/Domain/EmailTest.php` — normalização de caixa e espaços; e-mail inválido rejeitado
+- [x] T043 [P] `api/tests/Unit/Domain/PoliticaDeSenhaTest.php` e `PoliticaDeSessaoTest.php` — **senha no limite mínimo exato aceita, um caractere a menos recusada** (edge case da spec)
+- [x] T044 `api/tests/Feature/Auth/ExpiracaoDeslizanteTest.php` — request autenticada empurra o `expires_at`; token expirado devolve 401. É a prova da D7, que **não** vem pronta do Sanctum
 
 **Checkpoint**: fundação pronta — as user stories podem começar.
 

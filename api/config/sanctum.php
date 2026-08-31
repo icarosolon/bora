@@ -50,6 +50,11 @@ return [
     |
     */
 
+    // NAO PREENCHER. Este valor e um prazo ABSOLUTO contado da criacao do token e
+    // SOBREPOE o expires_at gravado por token — o que quebraria a janela deslizante
+    // da decisao D7 (30 dias de INATIVIDADE, renovados a cada uso). O deslizamento
+    // e feito pelo middleware RenovarExpiracaoDoToken; o prazo vem de
+    // config('bora.sessao.validade_dias'). Ver research.md §1 da spec 001.
     'expiration' => null,
 
     /*

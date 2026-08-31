@@ -14,6 +14,15 @@ return [
     |
     */
 
+    // Google OAuth — spec 001 (RN-PLAT-002). O redirect aponta para o web/ (porta
+    // 3000), NAO para a API: o Google devolve o code a uma pagina do Next, que o
+    // repassa por POST. E o que mantem o token fora da URL e do log de servidor.
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

@@ -121,6 +121,51 @@ test.describe('tela de criar conta', () => {
 })
 
 test.describe('cabeçalho', () => {
+  test('passa a mostrar o nome logo após entrar, sem recarregar', async ({ page }) => {
+    /*
+     * REGRESSÃO real (2026-08-31): o login funcionava e o token era guardado,
+     * mas a barra continuava mostrando "Entrar" até a pessoa recarregar a
+     * página — parecia que o login tinha falhado.
+     *
+     * Causa: o cabeçalho vive no LAYOUT RAIZ, monta uma vez e não remonta em
+     * navegação client-side. Passou por 74 testes e2e porque nenhum fazia
+     * login de verdade e depois olhava a barra.
+     */
+    await page.route('**/api/v1/sessoes', (rota) =>
+      rota.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          data: {
+            conta: { id: 1, nome: 'Maria Souza', email: 'maria@exemplo.com', email_verificado: true },
+            token: 'tok-sessao',
+            expira_em: '2026-09-30T00:00:00-03:00',
+          },
+        }),
+      }),
+    )
+
+    await page.route('**/api/v1/eu', (rota) =>
+      rota.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          data: { id: 1, nome: 'Maria Souza', email: 'maria@exemplo.com', email_verificado: true },
+        }),
+      }),
+    )
+
+    await page.goto('/entrar')
+    await page.getByLabel('E-mail').fill('maria@exemplo.com')
+    await page.getByLabel('Senha').fill('senhaforte1')
+    await page.getByRole('button', { name: 'Entrar', exact: true }).click()
+
+    // SEM recarregar: a barra tem de refletir a sessão sozinha.
+    const barra = page.getByRole('banner')
+    await expect(barra).toContainText('Maria Souza')
+    await expect(barra.getByRole('button', { name: 'Sair' })).toBeVisible()
+  })
+
   test('oferece entrar para quem não está autenticado', async ({ page }) => {
     await page.goto('/entrar')
 
@@ -224,6 +269,24 @@ test.describe('confirmar e-mail', () => {
     await page.addInitScript(() => {
       localStorage.setItem('bora.sessao.token', 'tok-de-teste')
     })
+
+    /*
+     * `/eu` precisa responder 200 AQUI, sobrepondo o 401 do `beforeEach`.
+     *
+     * O cenário tem de ser coerente: com 401, o cabeçalho descarta o token
+     * (comportamento correto — token inválido não fica guardado), e aí a página
+     * às vezes lia a sessão antes e às vezes depois do descarte. O teste ficava
+     * intermitente por culpa da própria premissa, não do produto.
+     */
+    await page.route('**/api/v1/eu', (rota) =>
+      rota.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          data: { id: 1, nome: 'Maria', email: 'maria@exemplo.com', email_verificado: false },
+        }),
+      }),
+    )
 
     await page.route('**/api/v1/email/verificar', (rota) =>
       rota.fulfill({

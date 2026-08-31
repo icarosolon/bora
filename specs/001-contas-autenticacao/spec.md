@@ -4,17 +4,17 @@
 
 **Created**: 2026-08-29
 
-**Status**: **Em implementação — as quatro user stories entregues e validadas.** Portão
-`spec-check`: SIM (2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em
-[plan.md](./plan.md), tarefas em [tasks.md](./tasks.md). **Progresso: 109/119.**
-US1 (cadastro, login, sair, verificação), US2 (Google, definir senha), US3 (unir
-credenciais) e US4 (recuperar senha) validadas visualmente pelo Ícaro em 2026-08-31.
+**Status**: **117/119 — falta só a validação visual final.** Portão `spec-check`: SIM
+(2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md), tarefas
+em [tasks.md](./tasks.md).
 
-**A feature ainda NÃO está pronta:** falta a fase de Polish (T110–T119), que inclui itens
-da própria Definition of Done do Princípio XI — gerar a documentação da API e conferi-la
-contra o contrato, verificar que nenhum token cruza para o cliente nem aparece em log,
-remover o andaime do spike e a validação final. **A próxima feature não começa antes
-disso.**
+As quatro user stories estão entregues e foram validadas pelo Ícaro em 2026-08-31, e o
+Polish está concluído: documentação da API conferida contra o contrato, andaime do spike
+removido, verificação de vazamento de token feita e quickstart executado.
+
+**Falta (T118):** uma última passada visual, porque **duas telas mudaram depois da
+validação** — a união (token saiu da URL, passou a `sessionStorage`) e o cabeçalho (passou
+a refletir o login sem recarregar, E-016).
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

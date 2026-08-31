@@ -18,6 +18,24 @@
 
 const CHAVE_TOKEN = 'bora.sessao.token'
 
+/**
+ * Evento avisando que a sessão mudou (entrou ou saiu).
+ *
+ * Existe porque o cabeçalho vive no **layout raiz**: ele monta uma vez e não
+ * remonta em navegação client-side. Sem este aviso, entrar por e-mail e senha
+ * guardava o token e navegava para a home, mas a barra continuava mostrando
+ * "Entrar" até a pessoa recarregar a página — parecia que o login não tinha
+ * funcionado, quando tinha.
+ *
+ * Quem guarda ou esquece o token avisa; quem exibe estado de sessão escuta.
+ */
+export const EVENTO_SESSAO = 'bora:sessao'
+
+function avisarMudancaDeSessao(): void {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new Event(EVENTO_SESSAO))
+}
+
 /** localStorage não existe no servidor nem em navegador com storage bloqueado. */
 function armazenamento(): Storage | null {
   if (typeof window === 'undefined') return null
@@ -44,6 +62,8 @@ export function guardarToken(token: string): void {
     // Sem storage a pessoa continua navegando; ela só precisará entrar de novo
     // ao recarregar. Falhar aqui seria pior que degradar.
   }
+
+  avisarMudancaDeSessao()
 }
 
 export function esquecerToken(): void {
@@ -52,6 +72,8 @@ export function esquecerToken(): void {
   } catch {
     /* nada a fazer */
   }
+
+  avisarMudancaDeSessao()
 }
 
 export function estaAutenticado(): boolean {
@@ -82,5 +104,59 @@ export function consumirDestino(): string | null {
     return destino
   } catch {
     return null
+  }
+}
+
+/**
+ * Pedido de união pendente (US3), guardado entre a página de retorno do Google
+ * e a tela de unir contas.
+ *
+ * Fica em `sessionStorage`, e não na URL, para o token **não** cair no
+ * histórico do navegador, no log de servidor nem no cabeçalho `Referer` — a
+ * mesma regra que vale para o token de sessão ("token nunca em URL").
+ *
+ * `sessionStorage` e não `localStorage` de propósito: é um pedido em andamento,
+ * de 15 minutos, que morre com a aba. Não faz sentido sobreviver ao navegador
+ * ser fechado — e some sozinho se a pessoa desistir no meio.
+ */
+const CHAVE_UNIAO = 'bora.uniao.pendente'
+
+export type UniaoPendente = { token: string; email: string }
+
+function sessao(): Storage | null {
+  if (typeof window === 'undefined') return null
+  try {
+    return window.sessionStorage
+  } catch {
+    return null
+  }
+}
+
+export function guardarUniaoPendente(pendente: UniaoPendente): void {
+  try {
+    sessao()?.setItem(CHAVE_UNIAO, JSON.stringify(pendente))
+  } catch {
+    /* sem storage, a tela de união explica que o pedido expirou */
+  }
+}
+
+export function lerUniaoPendente(): UniaoPendente | null {
+  try {
+    const bruto = sessao()?.getItem(CHAVE_UNIAO)
+    if (!bruto) return null
+
+    const dados = JSON.parse(bruto) as Partial<UniaoPendente>
+
+    return dados.token ? { token: dados.token, email: dados.email ?? '' } : null
+  } catch {
+    return null
+  }
+}
+
+export function esquecerUniaoPendente(): void {
+  try {
+    sessao()?.removeItem(CHAVE_UNIAO)
+  } catch {
+    /* nada a fazer */
   }
 }

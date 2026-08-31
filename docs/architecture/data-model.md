@@ -47,7 +47,8 @@ desenho concreto (colunas, índices, invariantes, transições de estado) vive n
 spec, e este documento aponta para lá em vez de duplicar.
 
 - **Contas e autenticação** → `specs/001-contas-autenticacao/data-model.md`
-  (**implementado em 2026-08-30** — migrations rodadas; as tabelas existem no banco `bora`).
+  (**implementado e em uso desde 2026-08-31** — as quatro user stories da spec 001 estão
+  entregues e validadas; as tabelas existem e são exercitadas por 185 testes).
   Detalha a parte de **User** e **Role/Papel** acima e acrescenta duas entidades que este
   documento conceitual não previa:
   - **ContaSocial** — vínculo com provedor externo (Google). O vínculo é pelo

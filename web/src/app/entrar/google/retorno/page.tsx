@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { LayoutAuth } from '@/components/auth/LayoutAuth'
 import { Aviso } from '@/components/ui/aviso'
 import { chamarApi } from '@/lib/api'
-import { consumirDestino, guardarToken } from '@/lib/sessao'
+import { consumirDestino, guardarToken, guardarUniaoPendente } from '@/lib/sessao'
 
 type Sessao = { conta: { id: number; nome: string }; token: string; expira_em: string }
 
@@ -55,12 +55,17 @@ function Conteudo() {
       if (r.tipo === 'conflito') {
         // 409: já existe conta com este e-mail. Nada foi gravado; falta a
         // confirmação do titular, que é a US3.
+        //
+        // O token vai em `sessionStorage`, NÃO na query string: na URL ele
+        // cairia no histórico do navegador, no log de servidor e no `Referer`
+        // — a mesma regra que vale para o token de sessão.
         const dados = r.dados as { uniao_token?: string; email?: string }
-        const busca = new URLSearchParams()
-        if (dados.uniao_token) busca.set('token', dados.uniao_token)
-        if (dados.email) busca.set('email', dados.email)
 
-        router.replace(`/unir-contas?${busca.toString()}`)
+        if (dados.uniao_token) {
+          guardarUniaoPendente({ token: dados.uniao_token, email: dados.email ?? '' })
+        }
+
+        router.replace('/unir-contas')
         return
       }
 

@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\V1\Auth\SessaoController;
 use App\Http\Controllers\Api\V1\Auth\UniaoCredenciaisController;
 use App\Http\Controllers\Api\V1\Auth\VerificacaoEmailController;
 use App\Http\Controllers\Api\V1\EuController;
-use App\Http\Controllers\Spike\EventoSpikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,11 +22,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
-
-    /*
-     * ANDAIME DESCARTÁVEL — spike BORA-32 (M0). Sai na T115 da spec 001.
-     */
-    Route::get('/eventos', [EventoSpikeController::class, 'index']);
 
     /*
      * Público — cadastro, entrada e confirmação por link.

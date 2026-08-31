@@ -1,7 +1,7 @@
 # Backlog
 
 Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
-Spec 001: as quatro user stories entregues e validadas; falta a fase de Polish (T110-T119).
+Spec 001 em 117/119: falta a validação visual final (T118) e o fechamento.
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -96,6 +96,12 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Polish da spec 001 concluído** (T110–T117, 2026-08-31). Documentação da API conferida
+  contra o contrato (14 rotas, batem exatamente), andaime do spike removido, verificação de
+  vazamento de token e de logs limpa, quickstart executado contra a API real.
+- **Token de união saiu da URL** (decisão do Ícaro, 2026-08-31): passou a `sessionStorage`.
+  A regra "token nunca em URL" agora vale sem exceção; só o link de e-mail do plano B
+  continua carregando token, onde é inevitável.
 - **US3 e US4 da spec 001 entregues e VALIDADAS pelo Ícaro** (2026-08-31). Com elas, as
   quatro user stories estão prontas: 109/119 tarefas, 185 testes de backend, 37 de
   componente e 66 e2e. **A feature ainda não está pronta** — falta o Polish, que contém
@@ -290,14 +296,11 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Fechar a spec 001 com a fase de Polish (T110–T119).** Não é acabamento: contém itens
-   da Definition of Done do Princípio XI. Em especial — **gerar a documentação da API com o
-   Scramble e conferi-la contra `contracts/auth-api.md`** (o princípio exige API
-   *documentada*), **remover o andaime do spike** (`api/app/Http/Controllers/Spike/`, o
-   bloco `v1/eventos` e `web/src/app/eventos/`), verificar que **nenhum token cruza para
-   prop de componente cliente nem aparece em log**, e rodar o `quickstart.md` inteiro.
+1. **Validação visual final da spec 001 (T118)** e então o fechamento (T119). Duas telas
+   mudaram depois da validação e precisam de uma passada: a **união** (token saiu da URL) e
+   o **cabeçalho** (passou a refletir o login sem recarregar, E-016).
 2. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
-   atual estar pronta — e "pronta" inclui o Polish.
+   atual estar pronta.
 3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
 4. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).

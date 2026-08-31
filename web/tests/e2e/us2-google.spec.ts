@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { expect, test } from './base'
+import { comSessaoValida, expect, test } from './base'
 
 /**
  * US2 — entrar com Google, nas duas larguras obrigatórias.
@@ -72,6 +72,7 @@ test.describe('botão do Google na tela de entrar', () => {
 
 test.describe('retorno do Google', () => {
   test('entra e guarda o token quando dá certo', async ({ page }) => {
+    await comSessaoValida(page)
     await page.route('**/api/v1/auth/google/sessoes', (rota) =>
       rota.fulfill({
         status: 200,
@@ -93,6 +94,7 @@ test.describe('retorno do Google', () => {
   })
 
   test('o token nunca aparece na URL', async ({ page }) => {
+    await comSessaoValida(page)
     await page.route('**/api/v1/auth/google/sessoes', (rota) =>
       rota.fulfill({
         status: 200,
@@ -157,7 +159,15 @@ test.describe('retorno do Google', () => {
 
     // A tela de destino é da US3; aqui garante-se o encaminhamento e que
     // NENHUMA sessão foi aberta (nada foi gravado no servidor tampouco).
-    await expect(page).toHaveURL(/\/unir-contas\?/)
+    await expect(page).toHaveURL(/\/unir-contas$/)
     expect(await page.evaluate(() => localStorage.getItem('bora.sessao.token'))).toBeNull()
+
+    // O token de união vai por `sessionStorage`, NUNCA pela URL: na query
+    // string ele cairia no histórico, no log de servidor e no `Referer`.
+    expect(page.url(), 'token de união não pode ir na URL').not.toContain('tok-uniao')
+    expect(
+      await page.evaluate(() => sessionStorage.getItem('bora.uniao.pendente')),
+      'o pedido precisa ficar guardado para a tela de união',
+    ).toContain('tok-uniao')
   })
 })

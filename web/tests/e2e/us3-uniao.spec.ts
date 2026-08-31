@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { expect, test } from './base'
+import { comSessaoValida, expect, test } from './base'
 
 /**
  * US3 — unir credenciais, nas duas larguras obrigatórias.
@@ -18,7 +18,21 @@ async function semRolagemHorizontal(page: Page) {
   expect(scrollWidth, 'a página tem rolagem horizontal').toBeLessThanOrEqual(clientWidth)
 }
 
-const URL_UNIAO = '/unir-contas?token=tok-uniao&email=maria%40exemplo.com'
+const URL_UNIAO = '/unir-contas'
+
+/**
+ * O pedido de união vem por `sessionStorage`, não pela URL — token em query
+ * string cairia no histórico, no log de servidor e no `Referer` (fechado no
+ * Polish da spec 001). Por isso os testes semeiam o pedido antes de navegar.
+ */
+async function semearUniaoPendente(page: Page) {
+  await page.addInitScript(() => {
+    sessionStorage.setItem(
+      'bora.uniao.pendente',
+      JSON.stringify({ token: 'tok-uniao', email: 'maria@exemplo.com' }),
+    )
+  })
+}
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/eu', (rota) =>
@@ -32,6 +46,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('tela de unir contas', () => {
   test('explica o que vai acontecer e não tem rolagem horizontal', async ({ page }) => {
+    await semearUniaoPendente(page)
     await page.goto(URL_UNIAO)
 
     const explicacao = page.getByRole('main').getByRole('status')
@@ -43,6 +58,7 @@ test.describe('tela de unir contas', () => {
   })
 
   test('a ação principal tem alvo de toque confortável', async ({ page }) => {
+    await semearUniaoPendente(page)
     await page.goto(URL_UNIAO)
 
     const caixa = await page.getByRole('button', { name: 'Unir e entrar' }).boundingBox()
@@ -51,6 +67,7 @@ test.describe('tela de unir contas', () => {
   })
 
   test('une com a senha certa e não deixa a senha na URL', async ({ page }) => {
+    await comSessaoValida(page)
     await page.route('**/api/v1/uniao-credenciais', (rota) =>
       rota.fulfill({
         status: 200,
@@ -62,6 +79,7 @@ test.describe('tela de unir contas', () => {
       }),
     )
 
+    await semearUniaoPendente(page)
     await page.goto(URL_UNIAO)
     await page.getByLabel('Sua senha do Bora').fill('senhaSuperSecreta123')
     await page.getByRole('button', { name: 'Unir e entrar' }).click()
@@ -81,6 +99,7 @@ test.describe('tela de unir contas', () => {
       }),
     )
 
+    await semearUniaoPendente(page)
     await page.goto(URL_UNIAO)
     await page.getByLabel('Sua senha do Bora').fill('errada123')
     await page.getByRole('button', { name: 'Unir e entrar' }).click()
@@ -99,6 +118,7 @@ test.describe('tela de unir contas', () => {
       }),
     )
 
+    await semearUniaoPendente(page)
     await page.goto(URL_UNIAO)
     await page.getByRole('button', { name: 'Receber link por e-mail' }).click()
 
@@ -115,6 +135,7 @@ test.describe('tela de unir contas', () => {
 
 test.describe('confirmação da união pelo link', () => {
   test('conclui e guarda a sessão', async ({ page }) => {
+    await comSessaoValida(page)
     await page.route('**/api/v1/uniao-credenciais/link/confirmar', (rota) =>
       rota.fulfill({
         status: 200,

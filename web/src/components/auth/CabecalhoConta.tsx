@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { chamarApi } from '@/lib/api'
-import { esquecerToken, lerToken } from '@/lib/sessao'
+import { EVENTO_SESSAO, esquecerToken, lerToken } from '@/lib/sessao'
 
 type Conta = {
   id: number
@@ -28,15 +28,44 @@ export function CabecalhoConta() {
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
-    if (!lerToken()) {
-      setCarregando(false)
-      return
+    let ativo = true
+
+    function conferirSessao() {
+      if (!lerToken()) {
+        if (ativo) {
+          setConta(null)
+          setCarregando(false)
+        }
+        return
+      }
+
+      chamarApi<Conta>('/eu', { autenticado: true }).then((r) => {
+        if (!ativo) return
+        setConta(r.tipo === 'ok' ? r.dados : null)
+        setCarregando(false)
+      })
     }
 
-    chamarApi<Conta>('/eu', { autenticado: true }).then((r) => {
-      if (r.tipo === 'ok') setConta(r.dados)
-      setCarregando(false)
-    })
+    conferirSessao()
+
+    /*
+     * Este componente vive no LAYOUT RAIZ: ele monta uma vez e **não remonta**
+     * em navegação client-side. Sem escutar a mudança de sessão, entrar por
+     * e-mail e senha guardava o token e navegava para a home, mas a barra
+     * continuava mostrando "Entrar" até recarregar a página — parecia que o
+     * login tinha falhado, quando tinha dado certo.
+     */
+    window.addEventListener(EVENTO_SESSAO, conferirSessao)
+
+    // `storage` dispara nas OUTRAS abas: sair numa aba atualiza as demais, em
+    // vez de deixar uma barra mentindo que a pessoa continua dentro.
+    window.addEventListener('storage', conferirSessao)
+
+    return () => {
+      ativo = false
+      window.removeEventListener(EVENTO_SESSAO, conferirSessao)
+      window.removeEventListener('storage', conferirSessao)
+    }
   }, [])
 
   async function sair() {

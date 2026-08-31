@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test'
+import { test as base, expect, type Page } from '@playwright/test'
 
 /**
  * `test` estendido que **reprova quando o navegador registra erro no console**.
@@ -65,3 +65,27 @@ export const test = base.extend<{ semErrosDeConsole: void }>({
 })
 
 export { expect }
+
+/**
+ * Faz `/api/v1/eu` responder como autenticado.
+ *
+ * **Todo teste que ESTABELECE sessão precisa disto.** As specs devolvem 401 por
+ * padrão no `beforeEach` (a maioria dos casos é de quem não entrou), e o
+ * cabeçalho consulta `/eu` assim que um token é guardado. Com 401, o cliente
+ * descarta o token — comportamento correto do produto — e o teste fica
+ * contraditório: guarda sessão e ao mesmo tempo declara que ela é inválida.
+ *
+ * Essa contradição já produziu duas falhas intermitentes; por isso o auxiliar
+ * mora aqui, e não copiado em cada spec.
+ */
+export async function comSessaoValida(page: Page) {
+  await page.route('**/api/v1/eu', (rota) =>
+    rota.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        data: { id: 1, nome: 'Maria', email: 'maria@exemplo.com', email_verificado: true },
+      }),
+    }),
+  )
+}

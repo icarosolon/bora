@@ -3,6 +3,39 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-016 — Barra continuava mostrando "Entrar" depois do login (2026-08-31)
+
+- **Sintoma:** o Ícaro reportou que, após unir as contas, conseguia entrar pelo Google mas
+  "não conseguia mais entrar com e-mail e senha". Na segunda mensagem ele mesmo refinou:
+  **o login funcionava** — o que não funcionava era a barra superior, que continuava com o
+  botão "Entrar" mesmo autenticado.
+- **Causa:** `CabecalhoConta` vive no **layout raiz**. Ele consulta `/api/v1/eu` num
+  `useEffect` de montagem, e navegação client-side **não remonta o layout** — então, ao
+  entrar, a barra ficava congelada no estado anterior até um recarregamento completo.
+  Medido no navegador antes de mexer: depois do login, `token: guardado`, URL `/`, barra
+  `"Bora Entrar"`; depois de recarregar, `"Bora Teste Uniao Sair"`. O token sempre esteve
+  válido — e o backend também: teste direto na API confirmou 200 e
+  `entra_com: ["senha","google"]` após a união.
+- **Resolução:** `guardarToken` e `esquecerToken` passam a emitir o evento `bora:sessao`;
+  o cabeçalho escuta e reconsulta. Escuta também o evento nativo `storage`, então **sair
+  numa aba atualiza as outras** — antes, uma aba esquecida seguiria mostrando a pessoa como
+  logada.
+- **Status:** resolvido; teste de regressão em `us1-conta.spec.ts`, verificado nos dois
+  sentidos (falha com o bug, passa com a correção).
+- **Por que 74 testes e2e não pegaram:** nenhum fazia **login de verdade e depois olhava a
+  barra**. Havia teste de que a barra oferece "Entrar" para quem não entrou, e testes de
+  que o login guarda o token — mas nada ligava as duas coisas.
+- **Efeito colateral que a correção expôs, e vale mais que ela:** ao fazer o cabeçalho
+  reagir ao login, três testes começaram a falhar por **premissa contraditória deles
+  próprios** — guardavam sessão e ao mesmo tempo mockavam `/eu` como 401, e o cliente então
+  descartava o token (comportamento correto do produto). A mesma contradição já tinha
+  causado uma falha intermitente antes. Em vez de corrigir caso a caso, o auxiliar
+  `comSessaoValida` foi para `tests/e2e/base.ts`, com a explicação escrita.
+- **Lição:** o relato do usuário raramente vem com a causa certa — e não deve vir. Aqui a
+  primeira formulação ("não consigo mais entrar com e-mail e senha") apontava para o
+  backend, e o backend estava certo. O que resolveu foi **reproduzir e medir** antes de
+  mexer: token guardado, API 200, barra desatualizada.
+
 ## E-015 — Divergência de hidratação: `localStorage` lido durante a renderização (2026-08-31)
 
 - **Sintoma:** o Ícaro reportou erro no console do navegador — *"A tree hydrated but some

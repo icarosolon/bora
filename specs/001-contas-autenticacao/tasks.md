@@ -259,14 +259,14 @@ entrar com ela.
 
 ## Phase 7: Polish e questões transversais
 
-- [ ] T110 [P] Rodar `php artisan test` inteiro e garantir **verde**, com o mapa regra→teste da spec coberto
-- [ ] T111 [P] Rodar `npm run test` e `npx playwright test` — **`axe` sem nenhuma violação** nas cinco telas, nas duas larguras
-- [ ] T112 Gerar a doc com `php artisan scramble:export` e **conferir contra [contracts/auth-api.md](./contracts/auth-api.md)** — divergência é defeito, não questão de gosto
-- [ ] T113 [P] Revisar que **nenhum token cruza a fronteira servidor→cliente** no `web/`: inspecionar o HTML/payload RSC das cinco telas e confirmar que o token não aparece (lição verificada no spike BORA-32)
-- [ ] T114 [P] Revisar que senha, hash e token **não aparecem** em `api/storage/logs/` nem em `activity_log` após percorrer todos os fluxos
-- [ ] T115 Remover o andaime do spike: `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` em `api/routes/api.php` e `web/src/app/eventos/`
-- [ ] T116 [P] Rodar o `quickstart.md` inteiro (V1 a V5) manualmente e corrigir o que divergir
-- [ ] T117 [P] Atualizar `docs/architecture/data-model.md` e `docs/architecture/api-conventions.md` trocando "projetado, ainda não implementado" pelo estado real
+- [x] T110 [P] Rodar `php artisan test` inteiro e garantir **verde**, com o mapa regra→teste da spec coberto
+- [x] T111 [P] Rodar `npm run test` e `npx playwright test` — **`axe` sem nenhuma violação** nas cinco telas, nas duas larguras
+- [x] T112 Gerar a doc com `php artisan scramble:export` e **conferir contra [contracts/auth-api.md](./contracts/auth-api.md)** — divergência é defeito, não questão de gosto
+- [x] T113 [P] Revisar que **nenhum token cruza a fronteira servidor→cliente** no `web/`: inspecionar o HTML/payload RSC das cinco telas e confirmar que o token não aparece (lição verificada no spike BORA-32)
+- [x] T114 [P] Revisar que senha, hash e token **não aparecem** em `api/storage/logs/` nem em `activity_log` após percorrer todos os fluxos
+- [x] T115 Remover o andaime do spike: `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` em `api/routes/api.php` e `web/src/app/eventos/`
+- [x] T116 [P] Rodar o `quickstart.md` inteiro (V1 a V5) manualmente e corrigir o que divergir
+- [x] T117 [P] Atualizar `docs/architecture/data-model.md` e `docs/architecture/api-conventions.md` trocando "projetado, ainda não implementado" pelo estado real
 - [ ] T118 **Validação visual do Ícaro — primeiro no celular** (Princípio XI). Tela reprovada no celular **não** se apresenta em desktop. Sem esta aprovação a feature não está pronta e a próxima não começa
 - [ ] T119 Rodar `/doc-sync` — CHANGELOG, backlog, error-log e catálogo; commit sem push
 

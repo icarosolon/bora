@@ -8,6 +8,29 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — fase de Polish (T110–T117)** concluída, 117/119. Falta só a validação visual
+  final e o fechamento.
+  - **Documentação da API conferida contra o contrato**: as 14 rotas geradas pelo Scramble
+    batem **exatamente** com `contracts/auth-api.md`, verificado por comparação
+    automatizada. Fecha o item "API documentada" do Princípio XI.
+  - **Andaime do spike removido** (BORA-32): `api/app/Http/Controllers/Spike/`, o bloco
+    `v1/eventos` e `web/src/app/eventos/`. Zero referências sobrando; a doc caiu de 15 para
+    14 rotas, confirmando.
+  - **Verificação de vazamento**: nenhum token cruza para componente de servidor
+    (`lib/sessao` só é importado por componentes cliente), o HTML servido não contém token
+    de sessão, e nos logs há **zero** hashes bcrypt, tokens Bearer ou campos de senha. A
+    auditoria não guarda chave sensível.
+  - **Quickstart contra a API real**: conta criada, token autentica, duplicata recusada
+    **mesmo com o e-mail em caixa diferente**, e as respostas de "esqueci minha senha"
+    idênticas para e-mail existente e inexistente.
+  - `docs/architecture/{data-model,api-conventions}.md` atualizados para o estado real.
+- **O token de união saiu da URL** (decisão do Ícaro no Polish). Ele viajava em
+  `/unir-contas?token=...` e caía no histórico do navegador, no log de servidor e no
+  `Referer`. Passou a viajar por `sessionStorage`, entre a página de retorno do Google e a
+  tela de união. Risco anterior era baixo — token de 15 minutos, uso único, que não
+  autentica nada —, mas contrariava a regra "token nunca em URL" que a própria spec fixou;
+  agora a regra vale sem exceção. Continua na URL apenas o link de e-mail do plano B, onde
+  é inevitável.
 - **Spec 001 — US3 (unir credenciais) e US4 (recuperar senha) entregues e validadas**
   (T088–T109, 109/119, 2026-08-31). Com elas, **as quatro user stories** estão prontas e
   validadas visualmente pelo Ícaro. Testes: **185 no backend** (572 asserções), **37 de
@@ -172,6 +195,16 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **A barra continuava mostrando "Entrar" depois do login** (E-016, reportado pelo Ícaro):
+  o login funcionava e o token era guardado, mas `CabecalhoConta` vive no **layout raiz** e
+  só consultava `/eu` ao montar — navegação client-side não remonta o layout, então a barra
+  ficava congelada até um recarregamento. Corrigido com um evento de sessão que o cabeçalho
+  escuta; escuta também o `storage`, então **sair numa aba atualiza as outras**. Nenhum dos
+  74 testes e2e pegava, porque nenhum fazia login de verdade e depois olhava a barra.
+- **Premissa contraditória em testes e2e**, exposta pela correção acima: três testes
+  guardavam sessão e ao mesmo tempo mockavam `/eu` como 401 — e o cliente descarta o token
+  nesse caso, comportamento correto do produto. Auxiliar `comSessaoValida` extraído para
+  `tests/e2e/base.ts`, com a explicação escrita, em vez de corrigir caso a caso.
 - **Divergência de hidratação em `/verificar-email`** (E-015): `estaAutenticado()` era
   chamado durante a renderização e lê `localStorage`, que não existe no servidor — o React
   acusava HTML divergente e **desistia de corrigir a subárvore**, deixando a tela com o

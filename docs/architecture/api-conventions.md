@@ -20,7 +20,12 @@ As decisões abaixo saíram da spec 001 e valem para **todas** as features, não
   (decisão D3 da spec 001). O contrato revisado à mão vive na spec; o Scramble é o que
   publica. Divergência entre os dois é defeito, não questão de preferência.
 
-**Status**: **implementado em 2026-08-30** (fundação da spec 001). Pacotes instalados,
-`config/cors.php` publicado com origem explícita, Scramble servindo em `/docs/api`, e todo
-o roteamento sob `/api/v1` — `/api/user` deixou de existir. Os endpoints de conta em si
-(cadastro, login, união, senha) ainda não foram implementados: são as user stories.
+**Status**: **em uso desde 2026-08-31.** As 14 rotas da spec 001 estão implementadas sob
+`/api/v1`, e a documentação gerada pelo Scramble foi **conferida contra o contrato**
+(`specs/001-contas-autenticacao/contracts/auth-api.md`): batem exatamente, rota a rota.
+A doc é servida em `/docs/api` e exportável com `php artisan scramble:export`.
+
+**Regra que a spec 001 fixou e vale para todas as features:** divergência entre a doc
+gerada e o contrato escrito é **defeito**, não questão de preferência — ou o código saiu do
+contrato, ou o contrato não foi atualizado. Conferir faz parte da Definition of Done, não
+do acabamento.

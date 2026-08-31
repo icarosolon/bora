@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Campo } from '@/components/ui/campo'
 import { chamarApi, erroDoCampo } from '@/lib/api'
 import { useHidratado } from '@/lib/hidratacao'
-import { consumirDestino, guardarToken } from '@/lib/sessao'
+import { consumirDestino, esquecerUniaoPendente, guardarToken } from '@/lib/sessao'
 
 type Sessao = { conta: { id: number; nome: string }; token: string; expira_em: string }
 
@@ -48,6 +48,9 @@ export function FormularioUnirContas({ token, email }: { token: string; email: s
 
     if (resultado.tipo === 'ok') {
       guardarToken(resultado.dados.token)
+      // O pedido cumpriu seu papel; deixa-lo guardado faria uma visita futura
+      // a /unir-contas tentar reusar um token ja consumido.
+      esquecerUniaoPendente()
       router.replace(consumirDestino() ?? '/')
       return
     }

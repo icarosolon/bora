@@ -25,7 +25,7 @@ skill `doc-sync`.
   (`[Environment]::GetEnvironmentVariable("Path","Machine")`). Vale para qualquer variável
   de ambiente mudada com sessões abertas.
 
-## E-006 — Tasks do `web/` falhavam: ExecutionPolicy bloqueia `npm.ps1` (2026-08-29)
+## E-006 — ExecutionPolicy `Restricted` bloqueia qualquer `.ps1`: tasks do `web/` e scripts do Spec Kit (2026-08-29, ampliado em 2026-08-30)
 
 - **Sintoma:** as tasks `web: dev` e `web: build` do VS Code falhavam com
   `UnauthorizedAccess` ao chamar `npm`.
@@ -35,18 +35,26 @@ skill `doc-sync`.
   `Undefined`), o que proíbe execução de qualquer `.ps1`.
 - **Resolução:** `"command": "npm.cmd"` nas tasks do `web/` — o `.cmd` é batch e não passa
   pela ExecutionPolicy. Mexer na ExecutionPolicy da máquina foi evitado: é configuração de
-  segurança global, e o problema é local a duas tasks. O comentário no topo de
-  `.vscode/tasks.json` registra o porquê, para ninguém "simplificar" de volta para `npm`.
+  segurança global. O comentário no topo de `.vscode/tasks.json` registra o porquê, para
+  ninguém "simplificar" de volta para `npm`.
 - **Status:** resolvido e em uso — as tasks voltaram a funcionar.
-- **Procedência (para quem reler):** a correção foi feita por outro agente, a pedido do
-  Ícaro, fora desta sessão; eu **não presenciei a falha original**. O que verifiquei nesta
-  sessão: a ExecutionPolicy `Restricted`, o conteúdo atual do `tasks.json` e a existência
-  do PHP no caminho absoluto que ele usa. O sintoma acima vem do comentário deixado no
-  arquivo, não de observação minha.
-- **Lição:** no Windows, task de VS Code que chama ferramenta Node deve apontar para o
-  `.cmd`. E ponteiro para o error-log (`Ver E-NNN`) só se escreve **depois** que a entrada
-  existe — este comentário nasceu apontando para `E-005`, número que já pertencia a outro
-  erro (ver a colisão corrigida em 2026-08-30).
+- **AMPLIAÇÃO (2026-08-30): o alcance é maior do que esta entrada dizia.** Ao rodar o
+  `/speckit-tasks`, o `.specify/scripts/powershell/setup-tasks.ps1` falhou com o **mesmo**
+  `UnauthorizedAccess`. Ou seja, a política não atinge só as tasks do VS Code: atinge
+  **qualquer `.ps1`**, incluindo os scripts do próprio Spec Kit. Contorno para esses:
+  `powershell.exe -NoProfile -ExecutionPolicy Bypass -File <script>`. Não tinha aparecido
+  antes porque a ferramenta PowerShell do agente já invoca com bypass — o problema só
+  surge ao chamar `powershell.exe` direto.
+- **Procedência (para quem reler):** a correção das tasks foi feita por outro agente, a
+  pedido do Ícaro, fora desta sessão; eu **não presenciei a falha original**. O que
+  verifiquei: a ExecutionPolicy `Restricted`, o conteúdo atual do `tasks.json`, a
+  existência do PHP no caminho absoluto que ele usa e, depois, a falha do script do Spec
+  Kit. O sintoma inicial vem do comentário deixado no arquivo, não de observação minha.
+- **Lição:** no Windows com ExecutionPolicy restrita, **todo ponto de entrada `.ps1` é
+  suspeito** — tasks, scripts de ferramenta, hooks. Preferir `.cmd` onde existir e
+  `-ExecutionPolicy Bypass` onde não existir. E ponteiro para o error-log (`Ver E-NNN`) só
+  se escreve **depois** que a entrada existe — este comentário nasceu apontando para
+  `E-005`, número que já pertencia a outro erro (colisão corrigida em 2026-08-30).
 
 ## E-005 — Doc do método apontava comandos que não existem: `/specify`, `/plan`, `/tasks` (2026-08-29)
 

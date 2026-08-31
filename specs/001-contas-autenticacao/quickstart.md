@@ -23,16 +23,22 @@ ficaram com o valor velho). Abrir terminal novo resolve; sem isso:
 $env:Path = 'C:\wamp64\bin\php\php8.4.15;' + $env:Path
 ```
 
-**A providenciar antes de rodar a US2 (Google)** — Ícaro:
+**Google OAuth — feito em 2026-08-30** (Ícaro). Projeto `bora-507117`, cliente OAuth 2.0
+do tipo Aplicativo da Web, app **Externo**. `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e
+`GOOGLE_REDIRECT_URI` estão em `api/.env` e **verificados** (o Laravel lê os três). No
+console: origem `http://localhost:3000`, redirecionamento
+`http://localhost:3000/entrar/google/retorno`.
 
-1. Projeto no Google Cloud Console com a tela de consentimento OAuth configurada.
-2. Credencial "ID do cliente OAuth 2.0" do tipo aplicativo web.
-3. URI de redirecionamento autorizado apontando para a página de retorno do `web/`
-   (em dev: `http://localhost:3000/entrar/google/retorno`).
-4. `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e `GOOGLE_REDIRECT_URI` no `api/.env`.
+Faltam duas confirmações antes de a US2 rodar:
 
-Sem isso a US2 não roda nem em desenvolvimento. As demais user stories (US1, US3 por link,
-US4) rodam sem o Google.
+1. O "Salvar" do console aplicado — ele mesmo avisa que leva de 5 min a algumas horas.
+   Sintoma se não aplicou: `redirect_uri_mismatch`.
+2. O Gmail do Ícaro em **Público-alvo → Usuários de teste** (app Externo nasce em modo
+   Teste). Sintoma se faltar: `access_denied`.
+
+Este cliente é **de desenvolvimento e não vai a produção** — quando a hospedagem for
+definida (BORA-27), cria-se outro, com secret próprio. As demais user stories (US1, US3
+por link, US4) rodam sem o Google.
 
 ---
 
@@ -203,6 +209,21 @@ ou o código saiu do contrato, ou o contrato mudou e o arquivo não foi atualiza
 resolve escolhendo um dos dois no olho.
 
 ---
+
+## Validar no celular de verdade (Princípio XI)
+
+A validação visual do Ícaro é feita **primeiro no celular** (`ux-requirements.md`). Duas
+situações diferentes:
+
+- **Telas sem Google** (criar conta, entrar, esqueci a senha, redefinir): acessar pelo
+  **IP da máquina na rede local** (ex.: `http://192.168.0.10:3000`) resolve, sem
+  ferramenta nenhuma. O `next dev` precisa estar ouvindo na rede, não só em `localhost`.
+- **Tela com "Entrar com Google"**: o IP de rede local **não serve** como URI de
+  redirecionamento — o Google só aceita HTTP em endereço de loopback, e `192.168.x.x` não
+  é loopback. Aqui é preciso um **túnel HTTPS** (ngrok, Cloudflare Tunnel), com a URL do
+  túnel registrada como **segundo URI de redirecionamento** no mesmo cliente OAuth.
+  A escolha da ferramenta está no backlog; não bloqueia o desenvolvimento, só a validação
+  dessa tela específica no aparelho.
 
 ## Portão final (Princípio XI — Definition of Done)
 

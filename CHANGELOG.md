@@ -8,6 +8,23 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Tarefas da spec 001 geradas** (`/speckit-tasks`, 2026-08-30):
+  `specs/001-contas-autenticacao/tasks.md` — **119 tarefas** (T001–T119), organizadas por
+  user story: Setup (13), Foundational (31), US1 cadastro/login (27, o **MVP**), US2 Google
+  (16), US3 união (12), US4 recuperação de senha (10) e Polish (10). 85 paralelizáveis.
+  **Desvio deliberado do template do Spec Kit**: ele trata teste como opcional; aqui os
+  Princípios IX e XI tornam obrigatório, então toda story tem tarefas de teste de back e
+  front — inclusive as que **provam bloqueio** (T046 conta duplicada, T054 gratuidade,
+  T091 invariante da união, T100 resposta neutra). Registrada também a única dependência
+  real entre stories: a **US3 exige US1 e US2**, porque unir credenciais é o cruzamento das
+  duas — US1, US2 e US4 podem correr em paralelo.
+- **Credenciais OAuth do Google criadas** (Ícaro, 2026-08-30): projeto `bora-507117`,
+  cliente Aplicativo da Web, app Externo, escopos no mínimo (`openid`, `email`, `profile`).
+  `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e `GOOGLE_REDIRECT_URI` em `api/.env`
+  (ignorado pelo git) e verificados — o Laravel lê os três. Redirecionamento aponta para o
+  `web/` (`http://localhost:3000/entrar/google/retorno`), **não** para a API, mantendo o
+  token fora da URL. Decisão de segurança: este cliente é **de desenvolvimento e não vai a
+  produção** — outro será criado quando a hospedagem for definida (BORA-27).
 - **Plano técnico da spec 001 gerado** (`/speckit-plan`, 2026-08-30):
   `specs/001-contas-autenticacao/{plan,research,data-model,quickstart}.md` e
   `contracts/auth-api.md`. A spec passou a **Aprovada** (Ícaro, 2026-08-30). O plano foi
@@ -56,6 +73,10 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   em vez de afrouxar a ExecutionPolicy global. Correção feita por outro agente a pedido do
   Ícaro; registrada no error-log nesta sessão, quando se descobriu que o comentário do
   `tasks.json` apontava para `E-005` — número já ocupado. Ponteiro corrigido para `E-006`.
+  **Ampliado em 2026-08-30**: o alcance é maior do que se registrou — o
+  `setup-tasks.ps1` do próprio Spec Kit falhou com o mesmo erro. A política atinge
+  **qualquer `.ps1`**, não só as tasks do VS Code; contorno para scripts:
+  `powershell.exe -NoProfile -ExecutionPolicy Bypass -File <script>`.
 - **Achado de ambiente registrado** (E-007): dentro de sessão aberta **antes** da correção
   do PATH (E-004), `php` e `composer` continuam falhando, porque processo herda o ambiente
   de quando nasceu. O E-004 está resolvido — conferido no registro da máquina. Contorno

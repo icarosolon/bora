@@ -12,7 +12,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento, **envio real de e-mail (SPF/DKIM — spec 001)** | `brand.md` |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
-| **Credenciais OAuth do Google** (projeto no Cloud Console, tela de consentimento, client ID/secret, URI de redirecionamento) | **implementação da spec 001 — US2 (entrar com Google)** | `specs/001-contas-autenticacao/quickstart.md` |
+| **Ferramenta de túnel HTTPS** (ngrok, Cloudflare Tunnel…) para validar o **login com Google no celular** — o IP de rede local não serve como URI de redirecionamento, o Google só aceita HTTP em loopback | **validação visual da spec 001 no celular** (Princípio XI, US2). As telas sem Google validam por IP de rede local, sem túnel | `ux-requirements.md`, `specs/001-contas-autenticacao/` |
 | Emenda constitucional formalizando o Resend como provedor de e-mail transacional (decisão já tomada — ver Decisões tomadas) | governança | constituição (lista PENDENTE do Stack) |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
@@ -96,6 +96,33 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Tarefas da spec 001 geradas** (`/speckit-tasks`, 2026-08-30):
+  `specs/001-contas-autenticacao/tasks.md`, **119 tarefas** (T001–T119) por user story —
+  Setup 13, Foundational 31, US1 27 (**MVP**), US2 16, US3 12, US4 10, Polish 10; 85
+  paralelizáveis. Duas coisas registradas de propósito, para não se perderem:
+  1. **Teste aqui não é opcional.** O template do Spec Kit trata como opcional; os
+     Princípios IX e XI mandam o contrário. Toda story tem teste de back e front, e os que
+     **provam bloqueio** têm tarefa própria: T046 (conta duplicada), T054 (gratuidade),
+     T091 (invariante da união em todos os desfechos), T100 (resposta neutra).
+  2. **A US3 não é independente.** Unir credenciais é o cruzamento de US1 e US2, então
+     exige as duas implementadas — é a única dependência real entre stories. US1, US2 e
+     US4 podem correr em paralelo depois da fundação.
+- **Credenciais OAuth do Google criadas** (Ícaro, 2026-08-30). Projeto `bora-507117` no
+  Google Cloud, cliente OAuth 2.0 do tipo Aplicativo da Web, app em modo **Externo**.
+  `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e `GOOGLE_REDIRECT_URI` gravados em
+  `api/.env` (ignorado pelo git) e **verificados**: o Laravel lê os três.
+  URIs registrados no console: origem `http://localhost:3000` e redirecionamento
+  `http://localhost:3000/entrar/google/retorno` — o redirecionamento aponta para o `web/`,
+  **não** para a API, porque o Google devolve o `code` a uma página do Next que o repassa
+  por POST (é o que mantém o token fora da URL).
+  **Ainda a confirmar pelo Ícaro:** que o "Salvar" do console foi aplicado (o próprio
+  console avisa que pode levar de 5 min a algumas horas) e que o Gmail dele está em
+  **Público-alvo → Usuários de teste** — sem isso o retorno é `access_denied`.
+  **Decisão de segurança registrada:** este cliente é **de desenvolvimento e não vai a
+  produção**. Quando a hospedagem for definida (BORA-27), cria-se um cliente novo, com
+  secret próprio. Motivo: o secret deste foi exposto em transcrição de conversa; com
+  cliente separado, a exposição não alcança produção. Escopos mantidos no mínimo
+  (`openid`, `email`, `profile`) — qualquer escopo além disso dispara verificação do Google.
 - **Plano técnico da spec 001 fechado** (`/speckit-plan`, 2026-08-30). Spec **aprovada** pelo
   Ícaro; artefatos em `specs/001-contas-autenticacao/`: `plan.md`, `research.md`,
   `data-model.md`, `quickstart.md` e `contracts/auth-api.md`. Constitution Check sem gate
@@ -209,14 +236,16 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Rodar `/speckit-tasks` da spec 001** — spec aprovada e plano fechado; falta só a
-   quebra em tarefas para começar a implementar. Lembretes que o plano deixou para a
-   implementação: **nada de segredo em prop que cruza para componente cliente**; o
-   `composer require laravel/socialite` **precisa do `-W`**; e `'expiration'` em
-   `config/sanctum.php` **fica em `null`** (valor ali quebra a expiração deslizante).
-2. **Ícaro: criar as credenciais OAuth do Google** antes de a implementação chegar na US2 —
-   sem elas o "Entrar com Google" não roda nem em desenvolvimento. Passo a passo em
-   `specs/001-contas-autenticacao/quickstart.md`. As demais user stories não dependem disso.
+1. **Implementar a spec 001, começando pela T001** de
+   `specs/001-contas-autenticacao/tasks.md`. Ordem: Setup (T001–T013) → Foundational
+   (T014–T044) → US1 (T045–T071, que é o MVP) → parar e validar. Armadilhas já mapeadas,
+   para não redescobrir: **nada de segredo em prop que cruza para componente cliente**; o
+   `composer require laravel/socialite` **precisa do `-W`**; `'expiration'` em
+   `config/sanctum.php` **fica em `null`** (valor ali quebra a expiração deslizante); e
+   script `.ps1` precisa de `-ExecutionPolicy Bypass` (E-006).
+2. **Ícaro: confirmar no console** que o "Salvar" dos URIs foi aplicado e que seu Gmail
+   está em **Público-alvo → Usuários de teste**. As credenciais já estão no `api/.env` e
+   verificadas; falta só essa confirmação para a US2 rodar em desenvolvimento.
 3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
 4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e

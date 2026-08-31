@@ -94,7 +94,7 @@ specs/001-contas-autenticacao/
 │   └── auth-api.md      # Phase 1 — contrato dos endpoints /api/v1
 ├── checklists/
 │   └── requirements.md  # checklist de qualidade da spec
-└── tasks.md             # Phase 2 — NÃO criado por /speckit-plan
+└── tasks.md             # Phase 2 — 119 tarefas (/speckit-tasks, 2026-08-30)
 ```
 
 ### Source Code (repository root)
@@ -181,7 +181,8 @@ hook de git configurado; `.specify/extensions.yml` não existe). Criar branch é
   token) ou resolvidos por verificação (expiração deslizante, guzzle, CORS).
 - **Phase 1 — Design e contratos**: concluída → [data-model.md](./data-model.md),
   [contracts/auth-api.md](./contracts/auth-api.md), [quickstart.md](./quickstart.md).
-- **Phase 2 — Tarefas**: **não** é deste comando. Roda com `/speckit-tasks`.
+- **Phase 2 — Tarefas**: concluída em 2026-08-30 → [tasks.md](./tasks.md) (119 tarefas,
+  T001–T119, organizadas por user story).
 
 ### Constitution Check — reavaliação pós-Phase 1
 

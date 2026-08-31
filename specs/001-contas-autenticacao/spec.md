@@ -5,7 +5,8 @@
 **Created**: 2026-08-29
 
 **Status**: **Aprovada** por Ícaro em 2026-08-30 (portão `spec-check`: SIM em 2026-08-29).
-Plano técnico em [plan.md](./plan.md)
+Plano técnico em [plan.md](./plan.md); tarefas em [tasks.md](./tasks.md). **Implementação
+ainda não começou.**
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

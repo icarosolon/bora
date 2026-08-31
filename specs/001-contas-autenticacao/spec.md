@@ -4,12 +4,13 @@
 
 **Created**: 2026-08-29
 
-**Status**: **Em implementação — US1 entregue e validada.** Portão `spec-check`: SIM
-(2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md), tarefas
-em [tasks.md](./tasks.md). **Progresso: 71/119 tarefas.** A **US1 (MVP)** cumpriu a
-Definition of Done do Princípio XI: API documentada, telas no `web/`, testes de back e
-front aprovados e **validação visual do Ícaro no celular em 2026-08-31**. Próxima fatia:
-US2 (entrar com Google).
+**Status**: **Em implementação — US1 e US2 entregues e validadas.** Portão `spec-check`:
+SIM (2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md),
+tarefas em [tasks.md](./tasks.md). **Progresso: 87/119 tarefas.** US1 (cadastro, login,
+sair, verificação) e US2 (entrar com Google, definir senha) cumpriram a Definition of Done
+do Princípio XI, com validação visual do Ícaro em 2026-08-31. Próxima fatia: **US3 — unir
+credenciais**, a única com dependência real entre stories (exige US1 e US2, que agora
+existem).
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

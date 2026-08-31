@@ -1,7 +1,7 @@
 # Backlog
 
 Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
-Spec 001 em implementação: US1 (MVP) entregue e validada no celular; US2 a seguir.
+Spec 001 em implementação: US1 e US2 entregues e validadas; US3 (unir credenciais) a seguir.
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -96,6 +96,15 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **US2 da spec 001 entregue e VALIDADA pelo Ícaro** (2026-08-31). Entrar com Google e
+  definir senha. 87/119 tarefas. 130 testes de backend, 24 de componente, 32 e2e.
+- **Pacote de CA instalado no PHP da máquina** (E-014, autorizado pelo Ícaro em
+  2026-08-31). O PHP 8.4 do WAMP não tinha `curl.cainfo` nem `openssl.cafile`, então
+  **nenhuma** chamada HTTPS funcionava. `cacert.pem` oficial do projeto curl em
+  `C:\wamp64\bin\php\php8.4.15\extras\ssl\`, apontado em `php.ini` e `phpForApache.ini`,
+  com backups `.bak-antes-cacert`. **Risco conhecido, igual ao do phpredis:** se o WAMP
+  atualizar o PHP, a configuração se perde e volta o `cURL error 60`. Também vale renovar o
+  `cacert.pem` de tempos em tempos — raízes expiram.
 - **Validação no celular passa a ser sem configuração** (2026-08-31, após E-011/E-012/E-013).
   O front deriva o endereço da API de onde a página foi aberta, a CSP faz o mesmo pelo
   header `Host`, o `allowedDevOrigins` vem das interfaces de rede da máquina e a task do
@@ -276,19 +285,15 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Implementar a US2 da spec 001 (T072–T087): entrar com Google.** A US1 está entregue e
-   validada; a fundação e as telas de conta já existem. Ordem: testes de backend
-   (T072–T077) → adapter do Socialite e casos de uso (T078–T082) → tela (T083–T087).
-   Lembretes que já custaram caro:
-   - o botão "Entrar com Google" fica **acima** do formulário de e-mail/senha;
-   - o retorno do Google vai para **uma página do `web/`** (`/entrar/google/retorno`), que
-     repassa o `code` à API por POST — é o que mantém o token fora da URL;
-   - o 409 de "união necessária" **não grava nada**; quem une é a US3;
-   - toda tela nova precisa de e2e em 360 e 1280: CSP e hidratação só quebram em
-     navegador de verdade (E-009).
-2. **Antes de testar a US2:** confirmar no console do Google que o "Salvar" dos URIs foi
-   aplicado e que seu Gmail está em **Público-alvo → Usuários de teste** — sem isso o
-   retorno é `redirect_uri_mismatch` ou `access_denied`.
+1. **Implementar a US3 da spec 001 (T088–T099): unir credenciais.** É a única story com
+   dependência real entre stories, e agora ela está satisfeita — US1 e US2 existem. Ordem:
+   testes de backend (T088–T092) → caso de uso e controller (T093–T095) → telas
+   (T096–T099). A parte do 409 já está pronta na US2: o endpoint devolve o `uniao_token`
+   sem gravar nada; falta confirmar e efetivar.
+   **Hoje `/unir-contas` dá 404** — quem cria conta por senha e depois tenta Google cai ali.
+   É o buraco mais visível do produto no momento.
+2. **Depois, US4 (T100–T109): recuperar senha.** O link "Esqueci minha senha" já está na
+   tela de entrar e também leva a 404.
 3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
 4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e

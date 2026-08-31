@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Auth\ContaController;
+use App\Http\Controllers\Api\V1\Auth\GoogleController;
+use App\Http\Controllers\Api\V1\Auth\SenhaController;
 use App\Http\Controllers\Api\V1\Auth\SessaoController;
 use App\Http\Controllers\Api\V1\Auth\VerificacaoEmailController;
 use App\Http\Controllers\Api\V1\EuController;
@@ -42,12 +44,25 @@ Route::prefix('v1')->group(function () {
     Route::post('/email/verificar', [VerificacaoEmailController::class, 'store']);
 
     /*
+     * Google (US2). A URL de autorização é pública — é o primeiro passo de quem
+     * ainda não tem conta. A troca do `code` leva o mesmo limite das outras
+     * portas de entrada.
+     */
+    Route::get('/auth/google/url', [GoogleController::class, 'url']);
+
+    Route::post('/auth/google/sessoes', [GoogleController::class, 'store'])
+        ->middleware('throttle:autenticacao');
+
+    /*
      * Autenticado — o `sessao.deslizante` renova o prazo a cada uso (D7).
      */
     Route::middleware(['auth:sanctum', 'sessao.deslizante'])->group(function () {
         Route::get('/eu', [EuController::class, 'show']);
 
         Route::delete('/sessoes/atual', [SessaoController::class, 'destroy']);
+
+        // Primeira senha de conta nascida no Google (US2-5, D1 inversa).
+        Route::post("/senha", [SenhaController::class, "store"]);
 
         Route::post('/email/verificar/reenviar', [VerificacaoEmailController::class, 'reenviar'])
             ->middleware('throttle:envio-de-email');

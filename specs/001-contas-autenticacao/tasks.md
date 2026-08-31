@@ -167,28 +167,28 @@ autenticado; repetir e confirmar que autentica na **mesma** conta.
 
 ### Testes de backend (escrever antes; devem falhar)
 
-- [ ] T072 [P] [US2] `api/tests/Feature/Auth/GoogleUrlTest.php` — `GET /api/v1/auth/google/url` devolve URL e `state`; o `state` é validado depois e expira
-- [ ] T073 [P] [US2] `api/tests/Feature/Auth/GoogleSessaoTest.php` — e-mail inédito cria conta com `email_verified_at` preenchido e papel `rolezeiro`; repetir o fluxo **não** duplica (`COUNT(*) == 1` — prova do Princípio I)
-- [ ] T074 [P] [US2] `api/tests/Feature/Auth/GoogleFalhaTest.php` — cancelamento, recusa, falha do provedor e provedor sem devolver e-mail: 401 com mensagem humana e **nenhuma conta criada, nenhum estado parcial**
-- [ ] T075 [P] [US2] `api/tests/Feature/Auth/GoogleEmailAlteradoTest.php` — conta cujo e-mail no Google mudou desde o vínculo continua entrando na **mesma** conta, porque o vínculo é pelo `provedor_user_id` (edge case da spec)
-- [ ] T076 [P] [US2] `api/tests/Feature/Auth/DefinirSenhaTest.php` — conta nascida no Google define senha **com sessão ativa** e passa a aceitar os dois métodos; sem sessão, 401; conta que já tem senha, 422
-- [ ] T077 [P] [US2] `api/tests/Feature/Auth/CadastroComEmailDeContaGoogleTest.php` — tentar cadastrar e-mail/senha com e-mail que só entra pelo Google devolve 422 orientando o Google e **não cria conta paralela**
+- [x] T072 [P] [US2] `api/tests/Feature/Auth/GoogleUrlTest.php` — `GET /api/v1/auth/google/url` devolve URL e `state`; o `state` é validado depois e expira
+- [x] T073 [P] [US2] `api/tests/Feature/Auth/GoogleSessaoTest.php` — e-mail inédito cria conta com `email_verified_at` preenchido e papel `rolezeiro`; repetir o fluxo **não** duplica (`COUNT(*) == 1` — prova do Princípio I)
+- [x] T074 [P] [US2] `api/tests/Feature/Auth/GoogleFalhaTest.php` — cancelamento, recusa, falha do provedor e provedor sem devolver e-mail: 401 com mensagem humana e **nenhuma conta criada, nenhum estado parcial**
+- [x] T075 [P] [US2] `api/tests/Feature/Auth/GoogleEmailAlteradoTest.php` — conta cujo e-mail no Google mudou desde o vínculo continua entrando na **mesma** conta, porque o vínculo é pelo `provedor_user_id` (edge case da spec)
+- [x] T076 [P] [US2] `api/tests/Feature/Auth/DefinirSenhaTest.php` — conta nascida no Google define senha **com sessão ativa** e passa a aceitar os dois métodos; sem sessão, 401; conta que já tem senha, 422
+- [x] T077 [P] [US2] `api/tests/Feature/Auth/CadastroComEmailDeContaGoogleTest.php` — tentar cadastrar e-mail/senha com e-mail que só entra pelo Google devolve 422 orientando o Google e **não cria conta paralela**
 
 ### Implementação de backend
 
-- [ ] T078 [P] [US2] Criar `api/app/Adapters/Socialite/GoogleIdentidade.php` implementando `ProvedorDeIdentidade` em modo `stateless()` — **o `use` do Socialite fica só aqui**, nunca no domínio
-- [ ] T079 [US2] Criar `api/app/UseCases/Account/AutenticarPorGoogle.php` — decide entre entrar, criar conta ou **exigir união** (409); gera e valida o `state`; não grava nada quando o desfecho é união
-- [ ] T080 [P] [US2] Criar `api/app/UseCases/Account/DefinirSenha.php` — exige sessão ativa (D1, direção inversa)
-- [ ] T081 [US2] Criar `api/app/Http/Controllers/Api/V1/Auth/GoogleController.php` — `GET /api/v1/auth/google/url` e `POST /api/v1/auth/google/sessoes`, devolvendo 409 com `uniao_token` quando for o caso
-- [ ] T082 [US2] Criar `api/app/Http/Controllers/Api/V1/Auth/SenhaController.php` com `POST /api/v1/senha` (autenticado) e registrar as rotas da US2 em `api/routes/api.php`
+- [x] T078 [P] [US2] Criar `api/app/Adapters/Socialite/GoogleIdentidade.php` implementando `ProvedorDeIdentidade` em modo `stateless()` — **o `use` do Socialite fica só aqui**, nunca no domínio
+- [x] T079 [US2] Criar `api/app/UseCases/Account/AutenticarPorGoogle.php` — decide entre entrar, criar conta ou **exigir união** (409); gera e valida o `state`; não grava nada quando o desfecho é união
+- [x] T080 [P] [US2] Criar `api/app/UseCases/Account/DefinirSenha.php` — exige sessão ativa (D1, direção inversa)
+- [x] T081 [US2] Criar `api/app/Http/Controllers/Api/V1/Auth/GoogleController.php` — `GET /api/v1/auth/google/url` e `POST /api/v1/auth/google/sessoes`, devolvendo 409 com `uniao_token` quando for o caso
+- [x] T082 [US2] Criar `api/app/Http/Controllers/Api/V1/Auth/SenhaController.php` com `POST /api/v1/senha` (autenticado) e registrar as rotas da US2 em `api/routes/api.php`
 
 ### Testes e implementação de frontend
 
-- [ ] T083 [P] [US2] `web/tests/unit/botao-google.test.tsx` — o botão tem rótulo de texto (não só ícone), estado de carregando e mensagem humana em falha; **`axe` sem violações**
-- [ ] T084 [P] [US2] `web/tests/e2e/us2-google.spec.ts` — fluxo com o provedor **simulado** (sem depender do Google real na CI), em 360 e 1280
-- [ ] T085 [US2] Implementar o botão "Entrar com Google" em `web/src/components/auth/BotaoGoogle.tsx` — **acima** do formulário de e-mail/senha, por ser o caminho de menor fricção
-- [ ] T086 [US2] Criar `web/src/app/entrar/google/retorno/page.tsx` — é **a URL registrada no console do Google**; lê o `code`, faz POST para a API, mostra "Entrando…" e trata o 409 redirecionando para `/unir-contas`. **Nenhum token pode aparecer na URL**
-- [ ] T087 [US2] Criar `web/src/app/definir-senha/page.tsx` — tela autenticada para conta nascida no Google
+- [x] T083 [P] [US2] `web/tests/unit/botao-google.test.tsx` — o botão tem rótulo de texto (não só ícone), estado de carregando e mensagem humana em falha; **`axe` sem violações**
+- [x] T084 [P] [US2] `web/tests/e2e/us2-google.spec.ts` — fluxo com o provedor **simulado** (sem depender do Google real na CI), em 360 e 1280
+- [x] T085 [US2] Implementar o botão "Entrar com Google" em `web/src/components/auth/BotaoGoogle.tsx` — **acima** do formulário de e-mail/senha, por ser o caminho de menor fricção
+- [x] T086 [US2] Criar `web/src/app/entrar/google/retorno/page.tsx` — é **a URL registrada no console do Google**; lê o `code`, faz POST para a API, mostra "Entrando…" e trata o 409 redirecionando para `/unir-contas`. **Nenhum token pode aparecer na URL**
+- [x] T087 [US2] Criar `web/src/app/definir-senha/page.tsx` — tela autenticada para conta nascida no Google
 
 **Checkpoint**: US1 e US2 funcionam de forma independente.
 

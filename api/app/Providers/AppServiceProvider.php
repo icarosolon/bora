@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Adapters\Email\MailerEnviadorDeEmail;
+use App\Adapters\Socialite\GoogleIdentidade;
 use App\Domain\Account\PoliticaDeSenha;
 use App\Domain\Account\PoliticaDeSessao;
 use App\Ports\EnviadorDeEmail;
+use App\Ports\ProvedorDeIdentidade;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -34,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         // Porta -> adapter (Principio VII). O provedor concreto (log em dev,
         // Resend em producao) e escolhido por MAIL_MAILER, nao por codigo.
         $this->app->bind(EnviadorDeEmail::class, MailerEnviadorDeEmail::class);
+
+        // Idem para o login social: quem conhece o Socialite é só o adapter.
+        // É esta amarração que os testes da US2 trocam por um provedor falso,
+        // para exercitar cancelamento e falha sem depender do Google.
+        $this->app->bind(ProvedorDeIdentidade::class, GoogleIdentidade::class);
     }
 
     public function boot(): void

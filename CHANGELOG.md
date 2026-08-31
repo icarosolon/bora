@@ -8,6 +8,32 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — US2 (entrar com Google) entregue e validada** (T072–T087, 87/119,
+  2026-08-31). Segunda feature a cumprir a Definition of Done do Princípio XI por inteiro,
+  com **validação visual do Ícaro**. Testes: **130 no backend** (379 asserções), **24 de
+  componente** com `axe` e **32 e2e** em 360 e 1280.
+  - **API**: `GET /api/v1/auth/google/url` (URL de autorização + `state`),
+    `POST /api/v1/auth/google/sessoes` (troca o `code` por sessão; **409** quando o e-mail
+    já tem conta; **401** em qualquer falha do provedor) e `POST /api/v1/senha` (primeira
+    senha de conta nascida no Google — decisão D1, direção inversa).
+  - **Telas**: botão "Entrar com Google" **acima** do formulário de e-mail/senha,
+    `/entrar/google/retorno` (a URL registrada no console) e `/definir-senha`.
+  - **O token nunca passa pela URL**: o Google redireciona para uma página do `web/`, que
+    troca o `code` por sessão num POST. Há teste e2e que falha se o token aparecer na URL.
+  - **`state` de uso único, consumido antes de falar com o provedor** — se sobrevivesse a
+    uma tentativa malsucedida, deixaria um valor válido circulando, que é justamente o que
+    ele existe para impedir.
+  - **O vínculo casa pelo `provedor_user_id`, não pelo e-mail**: quem troca o endereço no
+    Google continua entrando na mesma conta, com teste dedicado.
+  - **Guarda contra o efeito duplo do StrictMode** na página de retorno: sem ele, o `code`
+    seria trocado duas vezes, e como o Google só aceita uma, a segunda tentativa
+    sobrescreveria um login bem-sucedido com mensagem de erro.
+  - **`email_verified_at` fica fora do `#[Fillable]`** de propósito: adicioná-lo permitiria
+    que um payload de cadastro marcasse a própria conta como verificada. A marcação é feita
+    deliberadamente no caso de uso, com comentário explicando por que não pode voltar.
+  - **O botão do Google ganhou o mesmo guarda de hidratação do formulário** (E-012), com
+    sintoma diferente: antes de hidratar, o toque era silenciosamente ignorado — a pessoa
+    apertava e nada acontecia, o que o `ux-requirements.md` proíbe.
 - **Spec 001 — US1 (MVP) entregue e validada** (T045–T071, 71/119, 2026-08-31). É a
   primeira feature do Bora a cumprir a **Definition of Done do Princípio XI** por inteiro:
   API documentada + telas no `web/` + testes dos dois lados aprovados + **validação visual
@@ -122,6 +148,12 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **PHP do WAMP não conseguia fazer NENHUMA chamada HTTPS** (E-014): `curl.cainfo` e
+  `openssl.cafile` vazios e nenhum `cacert.pem` na máquina, então a troca do `code` com o
+  Google falhava com `cURL error 60`. Corrigido com o `cacert.pem` oficial do projeto curl
+  (121 raízes da Mozilla) instalado em `bin/php/php8.4.15/extras/ssl/` e apontado nos dois
+  `.ini`, com backup. Destrava também o **Resend em produção** e qualquer API externa
+  futura. Desativar a verificação de TLS foi descartado sem discussão.
 - **O cadastro não funcionava no celular — três defeitos encadeados** (E-011, E-012, E-013),
   descobertos porque o Ícaro tentou usar a tela de verdade no aparelho. Todos corrigidos e
   confirmados por ele em 2026-08-31.

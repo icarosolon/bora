@@ -40,14 +40,14 @@ test.describe('tela de entrar', () => {
     await page.goto('/entrar')
 
     await expect(page.getByRole('heading', { name: 'Entrar', level: 1 })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Entrar' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Entrar', exact: true })).toBeVisible()
     await semRolagemHorizontal(page)
   })
 
   test('a ação principal tem alvo de toque confortável', async ({ page }) => {
     await page.goto('/entrar')
 
-    const caixa = await page.getByRole('button', { name: 'Entrar' }).boundingBox()
+    const caixa = await page.getByRole('button', { name: 'Entrar', exact: true }).boundingBox()
 
     // ux-requirements.md: alvos de toque >= 44px.
     expect(caixa?.height ?? 0).toBeGreaterThanOrEqual(44)

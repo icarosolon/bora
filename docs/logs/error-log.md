@@ -3,6 +3,44 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-014 — PHP sem pacote de CA: nenhuma chamada HTTPS funcionava (2026-08-31)
+
+- **Sintoma:** ao autorizar no Google, a tela voltava com "Não deu para entrar com o Google
+  agora. Tente de novo ou use seu e-mail e senha." O Ícaro suspeitou de ser o caso de união
+  de contas (US3); **não era**.
+- **Causa:** o log da aplicação trazia o motivo exato —
+  `cURL error 60: SSL certificate problem: unable to get local issuer certificate for
+  https://www.googleapis.com/oauth2/v4/token`. O PHP 8.4 do WAMP estava **sem nenhum pacote
+  de autoridades certificadoras**: `curl.cainfo` e `openssl.cafile` vazios, e nenhum
+  `cacert.pem` em lugar algum da máquina (procurado no WAMP e no Composer). Ou seja,
+  **nenhuma** chamada HTTPS saindo do PHP funcionava — a troca do `code` com o Google só foi
+  a primeira a esbarrar nisso. O Resend em produção e qualquer API externa futura falhariam
+  igual.
+- **Resolução (autorizada pelo Ícaro):** baixado o `cacert.pem` oficial do projeto curl
+  (<https://curl.se/ca/cacert.pem> — extrato do repositório de raízes da Mozilla; 188 KB,
+  121 certificados, versão de 13/08/2026) para
+  `C:\wamp64\bin\php\php8.4.15\extras\ssl\cacert.pem`, e `curl.cainfo` + `openssl.cafile`
+  apontados para ele em **`php.ini` e `phpForApache.ini`**, com backups `.bak-antes-cacert`
+  ao lado (mesmo procedimento da instalação do Redis). **Caminho gravado com barras normais**
+  (`C:/wamp64/...`): a primeira tentativa usou barras invertidas e o `sed` as consumiu,
+  produzindo um caminho corrompido que o PHP aceitou calado.
+  Verificado depois: `googleapis.com` e `api.resend.com` respondem com TLS **verificado**.
+  Desativar a verificação foi descartado sem discussão — seria abrir a porta para
+  interceptação em vez de consertar.
+- **Status:** resolvido; US2 validada pelo Ícaro logo em seguida.
+- **Lição 1 — teste com dublê não cobre integração real.** Os 130 testes de backend usam um
+  provedor de identidade falso e **nunca fazem chamada HTTPS**. É o desenho certo (teste que
+  depende de rede e conta externa é lento e frágil), mas deixa a integração de verdade sem
+  nenhuma cobertura. Foi a validação manual que encontrou. Toda feature com integração
+  externa tem esse ponto cego — ele precisa ser coberto por validação manual explícita, não
+  por confiança nos testes.
+- **Lição 2 — o log pagou por si.** O `GoogleController` guarda o motivo técnico e mostra
+  mensagem humana na tela. Diagnóstico em um minuto. Se a exceção tivesse vazado para a
+  tela, o Ícaro veria lixo técnico e o motivo estaria perdido.
+- **Lição 3 — hipótese do usuário também se verifica.** A suspeita era união de contas;
+  aquele caminho devolve 409 e leva a `/unir-contas`, não àquela mensagem. Concordar por
+  educação teria mandado a investigação para o lado errado.
+
 ## E-013 — Servidor de dev do Next devolve 403 fora do localhost: tela viva sem hidratar (2026-08-31)
 
 - **Sintoma:** abrindo pelo IP da rede (celular), as telas carregavam mas **nada

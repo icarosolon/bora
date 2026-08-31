@@ -23,6 +23,16 @@ ficaram com o valor velho). Abrir terminal novo resolve; sem isso:
 $env:Path = 'C:\wamp64\bin\php\php8.4.15;' + $env:Path
 ```
 
+**Pacote de CA no PHP (E-014)** — sem ele, **nenhuma** chamada HTTPS do PHP funciona: nem o
+Google, nem o Resend. Conferir antes de investigar qualquer falha de integração externa:
+
+```bash
+php -r 'echo ini_get("curl.cainfo") ?: "VAZIO — ver E-014"; echo PHP_EOL;'
+```
+
+Sintoma quando falta: `cURL error 60: SSL certificate problem`. Se o WAMP atualizar o PHP,
+a configuração se perde e o sintoma volta.
+
 **Google OAuth — feito em 2026-08-30** (Ícaro). Projeto `bora-507117`, cliente OAuth 2.0
 do tipo Aplicativo da Web, app **Externo**. `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` e
 `GOOGLE_REDIRECT_URI` estão em `api/.env` e **verificados** (o Laravel lê os três). No

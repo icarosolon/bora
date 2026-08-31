@@ -4,10 +4,12 @@
 
 **Created**: 2026-08-29
 
-**Status**: **Em implementação** (portão `spec-check`: SIM em 2026-08-29; aprovada por
-Ícaro em 2026-08-30). Plano em [plan.md](./plan.md), tarefas em [tasks.md](./tasks.md).
-**Progresso: 44/119 tarefas** — Setup e Foundational concluídos e verdes; as quatro user
-stories ainda não começaram.
+**Status**: **Em implementação — US1 entregue e validada.** Portão `spec-check`: SIM
+(2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md), tarefas
+em [tasks.md](./tasks.md). **Progresso: 71/119 tarefas.** A **US1 (MVP)** cumpriu a
+Definition of Done do Princípio XI: API documentada, telas no `web/`, testes de back e
+front aprovados e **validação visual do Ícaro no celular em 2026-08-31**. Próxima fatia:
+US2 (entrar com Google).
 
 **Input**: User description: "fundação de contas e autenticação: conta única multi-papel
 (RN-PLAT-001) com login via Google OAuth ou e-mail/senha (RN-PLAT-002), incluindo as telas

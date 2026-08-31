@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\ContaController;
+use App\Http\Controllers\Api\V1\Auth\SessaoController;
+use App\Http\Controllers\Api\V1\Auth\VerificacaoEmailController;
+use App\Http\Controllers\Api\V1\EuController;
 use App\Http\Controllers\Spike\EventoSpikeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -11,8 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 | Princípio IV: versionamento path-based. TUDO fica sob /api/v1 — não existe
 | endpoint fora do prefixo. A rota /user que o `install:api` deixou em
-| /api/user foi movida para /api/v1/eu na spec 001; ela estava fora do
-| versionamento e o app mobile encontraria dois padrões.
+| /api/user virou /api/v1/eu na spec 001.
 |
 | Contrato: specs/001-contas-autenticacao/contracts/auth-api.md
 */
@@ -20,13 +22,34 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
 
     /*
-     * ANDAIME DESCARTÁVEL — spike BORA-32 (M0). Ver EventoSpikeController.
-     * Sai junto com a página /eventos do web/ na tarefa T115 da spec 001.
+     * ANDAIME DESCARTÁVEL — spike BORA-32 (M0). Sai na T115 da spec 001.
      */
     Route::get('/eventos', [EventoSpikeController::class, 'index']);
 
+    /*
+     * Público — cadastro, entrada e confirmação por link.
+     *
+     * O `throttle:autenticacao` protege as duas portas que recebem senha
+     * (FR-007). A verificação por link é pública de propósito: a pessoa abre o
+     * e-mail com frequência noutro aparelho, sem sessão.
+     */
+    Route::post('/contas', [ContaController::class, 'store'])
+        ->middleware('throttle:autenticacao');
+
+    Route::post('/sessoes', [SessaoController::class, 'store'])
+        ->middleware('throttle:autenticacao');
+
+    Route::post('/email/verificar', [VerificacaoEmailController::class, 'store']);
+
+    /*
+     * Autenticado — o `sessao.deslizante` renova o prazo a cada uso (D7).
+     */
     Route::middleware(['auth:sanctum', 'sessao.deslizante'])->group(function () {
-        // Substitui a antiga GET /api/user. Ganha o controller próprio na T061.
-        Route::get('/eu', fn (Request $request) => $request->user());
+        Route::get('/eu', [EuController::class, 'show']);
+
+        Route::delete('/sessoes/atual', [SessaoController::class, 'destroy']);
+
+        Route::post('/email/verificar/reenviar', [VerificacaoEmailController::class, 'reenviar'])
+            ->middleware('throttle:envio-de-email');
     });
 });

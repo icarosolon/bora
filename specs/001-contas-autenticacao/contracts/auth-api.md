@@ -102,7 +102,10 @@ Revoga **apenas** o token da request. **204**, sem corpo.
 
 ### `GET /api/v1/eu` — conta autenticada · **autenticado**
 
-Substitui `/api/user`. **200** com `data.conta`. **401** se o token expirou — a tela leva ao
+Substitui `/api/user`. **200** com a conta **em `data`** (não `data.conta`): é um recurso
+único, então `data` É o recurso, como faz todo API Resource do Laravel. Corrigido aqui em
+2026-08-31, na implementação — o contrato dizia `data.conta` por engano de escrita.
+**401** se o token expirou — a tela leva ao
 login preservando o destino de origem (edge case de sessão expirada).
 
 > Cada request autenticada **empurra `expires_at` para agora + 30 dias** (janela deslizante

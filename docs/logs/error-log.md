@@ -3,6 +3,49 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-010 — Parar a task do VS Code / do agente não mata o servidor de dev (2026-08-31)
+
+- **Sintoma:** depois de encerrar as tasks dos servidores, as portas 3000 e 8000
+  continuavam ocupadas. Numa depuração anterior isso levou a suspeitar de bug na
+  aplicação quando o problema era um servidor velho respondendo.
+- **Causa:** `npm run dev` e `php artisan serve` sobem processos filhos. Encerrar a task
+  (ou o comando que a iniciou) mata o pai; o filho fica órfão, ainda ouvindo na porta. O
+  `reuseExistingServer` do Playwright então **reaproveita o órfão**, que pode estar
+  servindo estado antigo.
+- **Resolução:** conferir a porta por PID e matar explicitamente:
+  `netstat -ano | grep -E ':(3000|8000)\s+.*LISTENING'` e `Stop-Process -Id <PID> -Force`.
+  Nesta sessão sobraram dois processos depois de as três tasks terem sido paradas "com
+  sucesso".
+- **Status:** contornado; não há correção definitiva do lado do projeto.
+- **Lição:** "parei o servidor" só é verdade depois de a porta aparecer livre. Antes de
+  investigar comportamento estranho no front, **conferir se a porta está servida pelo
+  processo que você acha que subiu**.
+
+## E-009 — CSP estática quebrou a hidratação do Next: app parecia certo e não funcionava (2026-08-31)
+
+- **Sintoma:** as telas da spec 001 renderizavam perfeitamente — títulos, campos, rótulos,
+  layout —, mas **nada interativo funcionava**: o formulário não enviava, o cabeçalho não
+  saía do estado de carregando. Nenhum erro visível para quem olhava a tela.
+- **Causa:** a Content-Security-Policy adicionada como header estático em
+  `web/next.config.ts` (tarefa T038, mitigação da decisão D2) usava
+  `script-src 'self'` sem nonce. O Next injeta **scripts inline** para hidratar a página;
+  a CSP os bloqueava, o React nunca hidratava e a aplicação virava HTML morto.
+- **Por que quase passou batido:** os 18 testes de componente rodam em **jsdom**, que não
+  aplica CSP — todos verdes. O `npm run build` também passava. Só o **teste e2e**, que usa
+  navegador real, pegou: o snapshot do Playwright mostrou o `<header>` vazio, sinal de que
+  o componente cliente nunca chegou a rodar no navegador.
+- **Resolução:** CSP por **nonce**, gerada por requisição em `web/src/middleware.ts` —
+  caminho suportado pelo Next, que carimba o nonce nos próprios scripts. O `next.config.ts`
+  ficou só com os headers que não dependem da requisição, com comentário explicando por que
+  a CSP não pode voltar para lá. **Afrouxar para `'unsafe-inline'` foi descartado:**
+  devolveria exatamente o buraco de XSS que a CSP existe para fechar — e é justamente onde
+  o token da sessão mora, em `localStorage` (decisão D2).
+- **Status:** resolvido e verificado: 14 testes e2e verdes em 360 e 1280.
+- **Lição:** **teste de componente em jsdom não prova que a tela funciona no navegador.**
+  Cabeçalho de segurança, CSP, service worker e afins só aparecem em navegador de verdade.
+  Toda tela desta spec tem e2e obrigatório por causa do `ux-requirements.md`; este erro
+  mostra que a exigência não é burocracia — foi ela que evitou entregar um app quebrado.
+
 ## E-008 — `composer require` falha com "Permission denied" ao gravar zip temporário (2026-08-30)
 
 - **Sintoma:** `composer require spatie/laravel-permission spatie/laravel-activitylog

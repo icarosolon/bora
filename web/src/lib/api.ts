@@ -10,7 +10,7 @@
  * em validação 422.
  */
 
-import { esquecerToken, lerToken } from '@/lib/sessao'
+import { esquecerToken, guardarDestino, lerToken } from '@/lib/sessao'
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1'
 
@@ -95,7 +95,16 @@ export async function chamarApi<T>(
     case 401:
       // Sessão expirada ou credencial recusada. Descarta o token morto para a
       // próxima navegação não repetir a chamada inútil.
-      if (autenticado) esquecerToken()
+      if (autenticado) {
+        esquecerToken()
+
+        // Guarda de onde a pessoa saiu, para ela voltar ao mesmo lugar depois
+        // de entrar de novo — em vez de cair na home e ter de se achar
+        // (edge case de sessão expirada da spec 001).
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/entrar')) {
+          guardarDestino(window.location.pathname + window.location.search)
+        }
+      }
       return { tipo: 'nao_autenticado', mensagem }
 
     case 409:

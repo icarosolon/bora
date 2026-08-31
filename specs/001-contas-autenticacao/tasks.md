@@ -112,42 +112,42 @@ entrar de novo. Tentar criar segunda conta com o mesmo e-mail e ver a recusa.
 
 ### Testes de backend (escrever antes; devem falhar)
 
-- [ ] T045 [P] [US1] `api/tests/Feature/Auth/CriarContaTest.php` — 201 com envelope correto; papel `rolezeiro` atribuído; `email_verified_at` nulo não bloqueia; Job de verificação enfileirado
-- [ ] T046 [P] [US1] `api/tests/Feature/Auth/CriarContaDuplicadaTest.php` — **prova do Princípio I**: e-mail já existente devolve 422 orientando o login e **não cria segunda conta**; conferir `COUNT(*) == 1`. Cobrir também variação de caixa e espaços (`"  Maria@Gmail.com "`)
-- [ ] T047 [P] [US1] `api/tests/Feature/Auth/ValidacaoCadastroTest.php` — e-mail malformado, senha curta e nome vazio devolvem 422 com `errors` **por campo**; nada é criado
-- [ ] T048 [P] [US1] `api/tests/Feature/Auth/LoginTest.php` — 200 com token e `expira_em`; senha errada devolve 401 com **mensagem única** que não revela qual campo falhou; conta sem senha (Google) orienta a entrar pelo Google
-- [ ] T049 [P] [US1] `api/tests/Feature/Auth/LimiteTentativasTest.php` — excedido o limite, 429 com `Retry-After` e mensagem dizendo quanto esperar
-- [ ] T050 [P] [US1] `api/tests/Feature/Auth/SairTest.php` — 204; o token da request é revogado; os demais tokens da conta **continuam válidos**
-- [ ] T051 [P] [US1] `api/tests/Feature/Auth/VerificacaoEmailTest.php` — link válido confirma; link expirado devolve 410; link já usado devolve 410; reenvio funciona e é limitado
-- [ ] T052 [P] [US1] `api/tests/Feature/Auth/DuplaSubmissaoTest.php` — duas requests concorrentes de cadastro com o mesmo e-mail produzem **uma** conta (edge case da spec)
-- [ ] T053 [P] [US1] `api/tests/Feature/Auth/AuditoriaTest.php` — criação de conta e verificação de e-mail geram registro de auditoria com autor e evento, e **nenhuma senha, hash ou token aparece no log** (Princípio V)
-- [ ] T054 [P] [US1] `api/tests/Feature/Auth/GratuidadeTest.php` — **prova do Princípio II**: percorre cadastro, login e verificação e assegura que nenhum passo exige, menciona ou condiciona pagamento; a API da feature não expõe operação de cobrança
+- [x] T045 [P] [US1] `api/tests/Feature/Auth/CriarContaTest.php` — 201 com envelope correto; papel `rolezeiro` atribuído; `email_verified_at` nulo não bloqueia; Job de verificação enfileirado
+- [x] T046 [P] [US1] `api/tests/Feature/Auth/CriarContaDuplicadaTest.php` — **prova do Princípio I**: e-mail já existente devolve 422 orientando o login e **não cria segunda conta**; conferir `COUNT(*) == 1`. Cobrir também variação de caixa e espaços (`"  Maria@Gmail.com "`)
+- [x] T047 [P] [US1] `api/tests/Feature/Auth/ValidacaoCadastroTest.php` — e-mail malformado, senha curta e nome vazio devolvem 422 com `errors` **por campo**; nada é criado
+- [x] T048 [P] [US1] `api/tests/Feature/Auth/LoginTest.php` — 200 com token e `expira_em`; senha errada devolve 401 com **mensagem única** que não revela qual campo falhou; conta sem senha (Google) orienta a entrar pelo Google
+- [x] T049 [P] [US1] `api/tests/Feature/Auth/LimiteTentativasTest.php` — excedido o limite, 429 com `Retry-After` e mensagem dizendo quanto esperar
+- [x] T050 [P] [US1] `api/tests/Feature/Auth/SairTest.php` — 204; o token da request é revogado; os demais tokens da conta **continuam válidos**
+- [x] T051 [P] [US1] `api/tests/Feature/Auth/VerificacaoEmailTest.php` — link válido confirma; link expirado devolve 410; link já usado devolve 410; reenvio funciona e é limitado
+- [x] T052 [P] [US1] `api/tests/Feature/Auth/DuplaSubmissaoTest.php` — duas requests concorrentes de cadastro com o mesmo e-mail produzem **uma** conta (edge case da spec)
+- [x] T053 [P] [US1] `api/tests/Feature/Auth/AuditoriaTest.php` — criação de conta e verificação de e-mail geram registro de auditoria com autor e evento, e **nenhuma senha, hash ou token aparece no log** (Princípio V)
+- [x] T054 [P] [US1] `api/tests/Feature/Auth/GratuidadeTest.php` — **prova do Princípio II**: percorre cadastro, login e verificação e assegura que nenhum passo exige, menciona ou condiciona pagamento; a API da feature não expõe operação de cobrança
 
 ### Implementação de backend
 
-- [ ] T055 [P] [US1] Criar `api/app/UseCases/Account/RegistrarConta.php` — normaliza o e-mail, recusa duplicata (nunca cria conta paralela), atribui `rolezeiro`, emite token de sessão e dispara o Job de verificação
-- [ ] T056 [P] [US1] Criar `api/app/UseCases/Account/AutenticarPorSenha.php` — mensagem única de falha; atualiza `ultimo_acesso_em`
-- [ ] T057 [P] [US1] Criar `api/app/UseCases/Account/VerificarEmail.php` — valida hash, expiração e uso único; marca `usado_em`
-- [ ] T058 [P] [US1] Criar `api/app/Http/Requests/Auth/CriarContaRequest.php` e `LoginRequest.php` — com `authorize()` e `rules()`; mensagens em **português, linguagem humana** ("Digite um e-mail válido, como nome@exemplo.com")
-- [ ] T059 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/ContaController.php` — `POST /api/v1/contas` (controller fino, sem regra)
-- [ ] T060 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/SessaoController.php` — `POST /api/v1/sessoes` e `DELETE /api/v1/sessoes/atual`
-- [ ] T061 [US1] Criar `api/app/Http/Controllers/Api/V1/EuController.php` — `GET /api/v1/eu`, autenticado
-- [ ] T062 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/VerificacaoEmailController.php` — `POST /api/v1/email/verificar` e `POST /api/v1/email/verificar/reenviar`
-- [ ] T063 [US1] Registrar as rotas da US1 em `api/routes/api.php` com os rate limiters da T031
+- [x] T055 [P] [US1] Criar `api/app/UseCases/Account/RegistrarConta.php` — normaliza o e-mail, recusa duplicata (nunca cria conta paralela), atribui `rolezeiro`, emite token de sessão e dispara o Job de verificação
+- [x] T056 [P] [US1] Criar `api/app/UseCases/Account/AutenticarPorSenha.php` — mensagem única de falha; atualiza `ultimo_acesso_em`
+- [x] T057 [P] [US1] Criar `api/app/UseCases/Account/VerificarEmail.php` — valida hash, expiração e uso único; marca `usado_em`
+- [x] T058 [P] [US1] Criar `api/app/Http/Requests/Auth/CriarContaRequest.php` e `LoginRequest.php` — com `authorize()` e `rules()`; mensagens em **português, linguagem humana** ("Digite um e-mail válido, como nome@exemplo.com")
+- [x] T059 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/ContaController.php` — `POST /api/v1/contas` (controller fino, sem regra)
+- [x] T060 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/SessaoController.php` — `POST /api/v1/sessoes` e `DELETE /api/v1/sessoes/atual`
+- [x] T061 [US1] Criar `api/app/Http/Controllers/Api/V1/EuController.php` — `GET /api/v1/eu`, autenticado
+- [x] T062 [US1] Criar `api/app/Http/Controllers/Api/V1/Auth/VerificacaoEmailController.php` — `POST /api/v1/email/verificar` e `POST /api/v1/email/verificar/reenviar`
+- [x] T063 [US1] Registrar as rotas da US1 em `api/routes/api.php` com os rate limiters da T031
 
 ### Testes de frontend (escrever antes; devem falhar)
 
-- [ ] T064 [P] [US1] `web/tests/unit/criar-conta.test.tsx` — erro **no campo** para e-mail inválido e senha curta; botão desabilita durante o envio; **`axe` sem violações**
-- [ ] T065 [P] [US1] `web/tests/unit/entrar.test.tsx` — credenciais erradas mostram mensagem única e oferecem "Esqueci minha senha"; 429 mostra o tempo de espera; **`axe` sem violações**
-- [ ] T066 [P] [US1] `web/tests/e2e/us1-conta.spec.ts` — jornada completa (criar conta → sair → entrar) **em 360 e 1280**, com asserção explícita de **ausência de rolagem horizontal a 360px**
+- [x] T064 [P] [US1] `web/tests/unit/criar-conta.test.tsx` — erro **no campo** para e-mail inválido e senha curta; botão desabilita durante o envio; **`axe` sem violações**
+- [x] T065 [P] [US1] `web/tests/unit/entrar.test.tsx` — credenciais erradas mostram mensagem única e oferecem "Esqueci minha senha"; 429 mostra o tempo de espera; **`axe` sem violações**
+- [x] T066 [P] [US1] `web/tests/e2e/us1-conta.spec.ts` — jornada completa (criar conta → sair → entrar) **em 360 e 1280**, com asserção explícita de **ausência de rolagem horizontal a 360px**
 
 ### Implementação de frontend
 
-- [ ] T067 [P] [US1] Criar `web/src/app/criar-conta/page.tsx` e `web/src/components/auth/FormularioCriarConta.tsx` — ação principal "Criar conta" **abaixo dos campos, na metade inferior**; aviso discreto de e-mail não confirmado após sucesso
-- [ ] T068 [P] [US1] Criar `web/src/app/entrar/page.tsx` e `web/src/components/auth/FormularioEntrar.tsx` — campos de e-mail/senha, links "Esqueci minha senha" e "Criar conta" com área de toque completa. O botão "Entrar com Google" fica como espaço reservado até a US2
-- [ ] T069 [US1] Implementar estado autenticado no cabeçalho em `web/src/components/auth/` — nome da pessoa e ação **"Sair" com rótulo de texto**, nunca só ícone
-- [ ] T070 [US1] Implementar tratamento de sessão expirada em `web/src/lib/api.ts` — 401 leva a `/entrar` **preservando o destino de origem** e retorna a ele após autenticar
-- [ ] T071 [US1] Criar `web/src/app/verificar-email/page.tsx` — confirma pelo token da URL; link expirado oferece reenviar
+- [x] T067 [P] [US1] Criar `web/src/app/criar-conta/page.tsx` e `web/src/components/auth/FormularioCriarConta.tsx` — ação principal "Criar conta" **abaixo dos campos, na metade inferior**; aviso discreto de e-mail não confirmado após sucesso
+- [x] T068 [P] [US1] Criar `web/src/app/entrar/page.tsx` e `web/src/components/auth/FormularioEntrar.tsx` — campos de e-mail/senha, links "Esqueci minha senha" e "Criar conta" com área de toque completa. O botão "Entrar com Google" fica como espaço reservado até a US2
+- [x] T069 [US1] Implementar estado autenticado no cabeçalho em `web/src/components/auth/` — nome da pessoa e ação **"Sair" com rótulo de texto**, nunca só ícone
+- [x] T070 [US1] Implementar tratamento de sessão expirada em `web/src/lib/api.ts` — 401 leva a `/entrar` **preservando o destino de origem** e retorna a ele após autenticar
+- [x] T071 [US1] Criar `web/src/app/verificar-email/page.tsx` — confirma pelo token da URL; link expirado oferece reenviar
 
 **Checkpoint**: US1 funciona ponta a ponta e é demonstrável sozinha. **É o MVP.**
 

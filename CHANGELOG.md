@@ -8,6 +8,28 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 001 — US1 (MVP) entregue e validada** (T045–T071, 71/119, 2026-08-31). É a
+  primeira feature do Bora a cumprir a **Definition of Done do Princípio XI** por inteiro:
+  API documentada + telas no `web/` + testes dos dois lados aprovados + **validação visual
+  do Ícaro no celular**.
+  - **API**: `POST /api/v1/contas` (cadastro), `POST /api/v1/sessoes` (entrar),
+    `DELETE /api/v1/sessoes/atual` (sair), `GET /api/v1/eu`,
+    `POST /api/v1/email/verificar` e `.../reenviar`.
+  - **Telas**: Entrar, Criar conta e Confirmar e-mail, mais o cabeçalho com estado
+    autenticado e "Sair" com rótulo de texto.
+  - **Testes**: 99 no backend (284 asserções), 18 de componente com `axe` e 14 e2e em
+    **360 e 1280**. Inclui os que **provam bloqueios**: conta paralela recusada nos dois
+    caminhos e por variação de escrita do e-mail (Princípio I), jornada inteira sem
+    nenhuma menção a pagamento (Princípio II), senha e token fora do log (Princípio V).
+  - **Decisões de implementação**: comparação de hash mesmo quando o e-mail não existe, para
+    o tempo de resposta não entregar quais e-mails têm conta; `LoginRequest` sem mínimo de
+    senha, porque na entrada a senha é comparada e não avaliada; verificação de e-mail
+    **pública** (a pessoa abre o link noutro aparelho), com só o reenvio exigindo sessão.
+  - Corrigido o `title` do scaffold, que ainda dizia "Create Next App".
+- **Testes de feature passam a rodar em MySQL** (decisão do Ícaro, 2026-08-30), na base
+  `bora_test`, em vez de SQLite em memória. A invariante central da feature é um **índice
+  único**, e testar num banco enquanto se roda em outro esconderia justamente o tipo de
+  falha que esses testes existem para pegar. Custo aceito: a suíte foi de ~1s para ~10s.
 - **Spec 001 — fundação implementada** (T001–T044 de 119, 2026-08-30). Setup e Foundational
   concluídos, com `php artisan test` (36 testes) e `npm run test` (7 testes) verdes e
   `npm run build` passando type-check. As quatro user stories ainda não começaram.
@@ -100,6 +122,21 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   commit.
 
 ### Fixed
+- **A CSP quebrava a hidratação do Next — o app parecia certo e não funcionava** (E-009):
+  header estático com `script-src 'self'` bloqueava os scripts inline de hidratação, então
+  formulário não enviava e cabeçalho não atualizava, **sem erro visível na tela**. Os 18
+  testes de componente passavam (jsdom não aplica CSP) e o build também; só o e2e em
+  navegador real pegou. Corrigido com **CSP por nonce** em `web/src/middleware.ts` —
+  afrouxar para `'unsafe-inline'` foi descartado por devolver o buraco de XSS que a CSP
+  existe para fechar.
+- **Classe errada de exceção no envelope de erro**: o handler capturava
+  `Symfony\...\ThrottleRequestsException`, mas o Laravel lança a
+  `Illuminate\Http\Exceptions\`. O 429 respondia "Too Many Attempts." em vez da mensagem
+  em português que a tela mostra.
+- **Um teste dava falso verde** (`SairTest`): a requisição após o logout passava porque,
+  dentro de um mesmo teste, o guard mantém o usuário já resolvido. O token *era* apagado do
+  banco. Adicionado `forgetGuards()` com comentário — sem ele, o teste afirmava algo que
+  não verificava.
 - **`composer require` abortava com "Permission denied" no zip temporário** (E-008): falha
   transitória de escrita (antivírus segurando o `.zip`), não permissão de pasta. Repetir
   resolveu. O `require` interrompido deixou `composer.json` com os pacotes e `vendor/`

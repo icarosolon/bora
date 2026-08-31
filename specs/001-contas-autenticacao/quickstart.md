@@ -210,20 +210,32 @@ resolve escolhendo um dos dois no olho.
 
 ---
 
-## Validar no celular de verdade (Princípio XI)
+## Validar no celular de verdade (Princípio XI) — receita testada
 
-A validação visual do Ícaro é feita **primeiro no celular** (`ux-requirements.md`). Duas
-situações diferentes:
+A validação visual do Ícaro é feita **primeiro no celular** (`ux-requirements.md`).
+Receita usada e verificada em 2026-08-31 (IP da máquina naquele dia: `192.168.0.105` —
+confira o seu com `Get-NetIPAddress`):
 
-- **Telas sem Google** (criar conta, entrar, esqueci a senha, redefinir): acessar pelo
-  **IP da máquina na rede local** (ex.: `http://192.168.0.10:3000`) resolve, sem
-  ferramenta nenhuma. O `next dev` precisa estar ouvindo na rede, não só em `localhost`.
-- **Tela com "Entrar com Google"**: o IP de rede local **não serve** como URI de
-  redirecionamento — o Google só aceita HTTP em endereço de loopback, e `192.168.x.x` não
-  é loopback. Aqui é preciso um **túnel HTTPS** (ngrok, Cloudflare Tunnel), com a URL do
-  túnel registrada como **segundo URI de redirecionamento** no mesmo cliente OAuth.
-  A escolha da ferramenta está no backlog; não bloqueia o desenvolvimento, só a validação
-  dessa tela específica no aparelho.
+1. **Apontar o front para o IP da rede, não para `localhost`.** Do celular, `localhost`
+   é o próprio celular. Em `web/.env.local` (não versionado):
+   `NEXT_PUBLIC_API_URL=http://<IP>:8000/api/v1`. Esse valor também alimenta o
+   `connect-src` da CSP, então basta mudar aqui.
+2. **Liberar a origem do celular no CORS.** Em `api/.env`:
+   `FRONTEND_URLS=http://localhost:3000,http://<IP>:3000`. Sem isso a tela abre e
+   **nenhuma ação funciona** — o navegador bloqueia antes de sair.
+3. **Subir ouvindo na rede** (o padrão só ouve em localhost):
+   `php artisan serve --host=0.0.0.0 --port=8000` e `npm run dev -- -H 0.0.0.0 -p 3000`,
+   mais `php artisan queue:work` para os e-mails saírem da fila.
+4. **Conferir antes de chamar o Ícaro**, para não desperdiçar o tempo dele:
+   - `curl -s -o /dev/null -w "%{http_code}" http://<IP>:3000/entrar` → 200
+   - preflight de CORS devolvendo `Access-Control-Allow-Origin` com a origem do celular
+   - o header `Content-Security-Policy` trazendo o IP em `connect-src`
+5. **Ao terminar, derrubar de verdade.** Parar a task não mata o processo filho —
+   conferir a porta por PID e matar (E-010).
+
+**Login com Google no celular** exige túnel HTTPS: o IP de rede local não serve como URI
+de redirecionamento (o Google só aceita HTTP em loopback). Item aberto no backlog; não
+bloqueia as telas sem Google.
 
 ## Portão final (Princípio XI — Definition of Done)
 

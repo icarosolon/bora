@@ -23,8 +23,22 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <!--
+            Testes rodam em MySQL, nao em SQLite (decisao do Icaro, 2026-08-30).
+
+            O padrao do Laravel e sqlite :memory:, que e mais rapido. Trocamos de
+            proposito: a invariante central da spec 001 e um INDICE UNICO em
+            users.email, e SQLite e MySQL divergem em detalhes de indice, colacao
+            e comparacao de string. Testar num banco e rodar em outro esconderia
+            exatamente o tipo de falha que estes testes existem para pegar.
+
+            A base `bora_test` e separada da `bora` de desenvolvimento: o
+            RefreshDatabase apaga tudo a cada execucao, e nunca pode tocar dados
+            de dev. Criar com:
+              CREATE DATABASE bora_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+        -->
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_DATABASE" value="bora_test"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

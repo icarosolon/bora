@@ -96,6 +96,16 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **US1 da spec 001 entregue e VALIDADA pelo Ícaro no celular** (2026-08-31). Primeira
+  feature do Bora a fechar a Definition of Done do Princípio XI por inteiro. 71/119
+  tarefas. 99 testes de backend, 18 de componente com `axe`, 14 e2e em 360 e 1280.
+- **Testes de feature rodam em MySQL, não em SQLite** (decisão do Ícaro, 2026-08-30 —
+  fecha a pendência que estava aberta aqui). Base `bora_test`, separada da `bora` de
+  desenvolvimento porque o `RefreshDatabase` apaga tudo a cada execução. Motivo: a
+  invariante central da feature é um índice único, e SQLite e MySQL divergem em índice,
+  colação e comparação de string. Custo aceito: a suíte foi de ~1s para ~10s.
+  Criar a base com:
+  `CREATE DATABASE bora_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 - **Fundação da spec 001 implementada** (T001–T044, 2026-08-30). Testes verdes dos dois
   lados. Decisões de implementação que fogem do texto da tarefa e valem saber:
   1. **Políticas de domínio recebem parâmetro por construtor**, não por `config()`. As
@@ -258,22 +268,24 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Seguir a implementação da spec 001 a partir da T045** — Setup e Foundational
-   (T001–T044) estão prontos e verdes. A próxima fatia é a **US1 (T045–T071)**, que é o
-   **MVP**: cadastro, login, sair e verificação de e-mail, incluindo os testes que provam
-   os bloqueios dos Princípios I (conta paralela recusada) e II (nada atrás de pagamento).
-   Ao fim dela: **parar e validar** antes de abrir a US2.
-2. **Decisão pendente do Ícaro:** testes de feature em SQLite (como está) ou apontados
-   para um MySQL de teste? A invariante desta feature é um índice único — vale decidir
-   antes de escrever os testes da US1, que são justamente os que a exercitam.
-3. **Ícaro: confirmar no console** que o "Salvar" dos URIs foi aplicado e que seu Gmail
-   está em **Público-alvo → Usuários de teste**. As credenciais já estão no `api/.env` e
-   verificadas; falta só essa confirmação para a US2 rodar em desenvolvimento.
-4. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
-5. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
+1. **Implementar a US2 da spec 001 (T072–T087): entrar com Google.** A US1 está entregue e
+   validada; a fundação e as telas de conta já existem. Ordem: testes de backend
+   (T072–T077) → adapter do Socialite e casos de uso (T078–T082) → tela (T083–T087).
+   Lembretes que já custaram caro:
+   - o botão "Entrar com Google" fica **acima** do formulário de e-mail/senha;
+   - o retorno do Google vai para **uma página do `web/`** (`/entrar/google/retorno`), que
+     repassa o `code` à API por POST — é o que mantém o token fora da URL;
+   - o 409 de "união necessária" **não grava nada**; quem une é a US3;
+   - toda tela nova precisa de e2e em 360 e 1280: CSP e hidratação só quebram em
+     navegador de verdade (E-009).
+2. **Antes de testar a US2:** confirmar no console do Google que o "Salvar" dos URIs foi
+   aplicado e que seu Gmail está em **Público-alvo → Usuários de teste** — sem isso o
+   retorno é `redirect_uri_mismatch` ou `access_denied`.
+3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
+4. Apagar o andaime do spike quando a spec 001 tiver sua própria tela:
    `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` de `api/routes/api.php` e
    `web/src/app/eventos/`.
-6. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
-7. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
+6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.

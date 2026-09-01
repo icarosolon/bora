@@ -54,6 +54,46 @@ correspondente ao que ela bloqueia.
   (deduplicar por ID `T\d{3}` antes de criar).
 - Issues de erro referenciam `E-NNN` do error-log.
 
+### Emenda de 2026-09-01 — granularidade das issues de tarefa
+
+**A convenção acima não foi cumprida na spec 001, e isso passou a ser deliberado.** As 119
+tarefas nunca viraram issues; foram rastreadas no próprio `tasks.md` e no histórico do git.
+Quando isso foi percebido (o quadro estava parado em 2026-08-29, com a spec já em 117/119),
+o Ícaro decidiu **não** importar retroativamente: criar 119 issues já fechadas é cerimônia
+sem informação nova.
+
+**A regra que passa a valer:**
+
+- Uma spec vira **uma issue por marco de trabalho real** — tipicamente uma por user story,
+  mais as que sobram no fim (validação visual, fechamento) —, não uma por linha do
+  `tasks.md`. O `tasks.md` continua sendo a lista fina; o Linear mostra o que está em jogo.
+- **Exceção:** se uma spec for tocada por mais de uma pessoa ao mesmo tempo, aí sim vale
+  issue por tarefa, porque o Linear passa a servir para dividir trabalho e não só para
+  informar estado. Hoje é uma pessoa só.
+- Issues de erro `E-NNN`: criar **apenas** quando o erro deixar trabalho pendente. E-005 a
+  E-018 foram resolvidos na mesma sessão em que apareceram e vivem no `error-log.md` — não
+  há o que rastrear.
+
+**Por que escrito:** convenção que ninguém cumpre e ninguém revoga vira ruído — a próxima
+pessoa não sabe se o quadro está incompleto ou se a regra mudou. Emendar de propósito é
+melhor que fingir que se cumpre.
+
+## Sincronização de 2026-09-01
+
+O quadro estava **três dias defasado** (última atualização 2026-08-29, com todo o trabalho
+das specs feito entre 30/08 e 01/09). Ajustado:
+
+| issue | ação |
+|---|---|
+| BORA-30 (spec 001 — rodar `/specify`) | → **Done**, marco M1 |
+| BORA-24 (confirmação ao unir credenciais) | → **Done**, marco M1, rótulo `decisao-pendente` removido — decidido pela D1 e implementado na US3 |
+| BORA-26 (CORS/Sanctum/OpenAPI) | **mantida aberta**, com comentário do que já existe. O pedaço "padrão de documentação por feature" é julgamento do Ícaro |
+| **BORA-34** | T118 — validação visual no celular (novo) |
+| **BORA-35** | T119 — fechamento da spec 001 (novo) |
+| **BORA-36** | envio real de e-mail: Resend, remetente, domínio (novo, M5) |
+| **BORA-37** | alarme sobre `failed_jobs` (novo, M5) |
+| **BORA-38** | emenda constitucional da D8 (novo, M0) |
+
 ## Estado
 
 - [x] Projeto criado no Linear — **Bora** (lead Ícaro)

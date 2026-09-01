@@ -354,10 +354,21 @@ se fixa `CACHE_PREFIX`/`REDIS_PREFIX` explicitamente **antes** de mexer no nome.
    nomenclatura**, que mexeu em todas as telas e no contrato da API. A refatoração não muda
    comportamento nenhum — as três suítes passam —, mas mexeu em tudo, então a passada visual
    vale como conferência: criar conta, entrar, sair, Google, unir contas, esqueci a senha.
-2. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
+2. **Dois assuntos que o Ícaro quer tratar antes de abrir a próxima spec** (pedido em
+   2026-09-01, ao encerrar o dia):
+   - **O "template" do projeto.** Ele levantou o assunto duas vezes e adiou as duas para não
+     interromper a refatoração de nomenclatura. **Não está definido o que ele quer dizer com
+     template** — pode ser kit de UI/tema para as telas do catálogo, ou o template das
+     próprias specs. Perguntar antes de assumir.
+   - **O que falta para iniciar a próxima spec** — inventário explícito, não implícito.
+     Matéria-prima já levantada: as decisões que a spec de local depende (BORA-21
+     categorias, BORA-22 verificação de propriedade, BORA-20 redes/franquias), a identidade
+     visual PENDENTE em `brand.md` (BORA-25), e se o template acima muda o ponto de partida
+     do front.
+3. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
    atual estar pronta.
-3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
-4. Governança: emenda constitucional registrando o Resend como provedor de e-mail
+4. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
+5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
-5. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
+6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.

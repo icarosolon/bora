@@ -3,53 +3,57 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { chamarApi } from '@/lib/api'
-import { consumirDestino, guardarToken } from '@/lib/sessao'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { callApi } from '@/lib/api'
+import { consumeRedirect, storeToken } from '@/lib/session'
 
-type Sessao = { conta: { id: number; nome: string }; token: string; expira_em: string }
+type SessionResponse = {
+  account: { id: number; name: string }
+  token: string
+  expires_at: string
+}
 
-function Conteudo() {
+function Content() {
   const router = useRouter()
-  const parametros = useSearchParams()
-  const [erro, setErro] = useState<string | null>(null)
+  const params = useSearchParams()
+  const [error, setError] = useState<string | null>(null)
 
   // Mesmo guarda da pagina de retorno do Google: o efeito roda duas vezes em
   // desenvolvimento, e o token do link e de uso unico -- a segunda chamada
   // falharia e sobrescreveria um sucesso com mensagem de erro.
-  const jaConfirmou = useRef(false)
+  const alreadyConfirmed = useRef(false)
 
   useEffect(() => {
-    if (jaConfirmou.current) return
-    jaConfirmou.current = true
+    if (alreadyConfirmed.current) return
+    alreadyConfirmed.current = true
 
-    const token = parametros.get('token')
+    const token = params.get('token')
 
     if (!token) {
-      setErro('Link inválido. Abra o link direto do e-mail que enviamos.')
+      setError('Link inválido. Abra o link direto do e-mail que enviamos.')
       return
     }
 
-    chamarApi<Sessao>('/uniao-credenciais/link/confirmar', {
-      metodo: 'POST',
-      corpo: { token },
+    callApi<SessionResponse>('/uniao-credenciais/link/confirmar', {
+      method: 'POST',
+      body: { token },
     }).then((r) => {
-      if (r.tipo === 'ok') {
-        guardarToken(r.dados.token)
-        router.replace(consumirDestino() ?? '/')
+      if (r.kind === 'ok') {
+        storeToken(r.data.token)
+        router.replace(consumeRedirect() ?? '/')
         return
       }
 
-      setErro(r.mensagem)
+      setError(r.message)
     })
-  }, [parametros, router])
+  }, [params, router])
 
   return (
-    <LayoutAuth titulo="Unir contas">
-      {erro ? (
+    <AuthLayout title="Unir contas">
+      {error ? (
         <>
-          <Aviso tipo="erro">{erro}</Aviso>
+          <Alert kind="error">{error}</Alert>
           <p className="mt-6 text-base">
             <Link href="/entrar" className="font-medium underline underline-offset-4">
               Voltar para entrar
@@ -57,23 +61,23 @@ function Conteudo() {
           </p>
         </>
       ) : (
-        <Aviso tipo="informacao">Confirmando…</Aviso>
+        <Alert kind="info">Confirmando…</Alert>
       )}
-    </LayoutAuth>
+    </AuthLayout>
   )
 }
 
 /** Confirmacao da uniao pelo link recebido por e-mail (plano B da D1). */
-export default function ConfirmarUniao() {
+export default function ConfirmMergePage() {
   return (
     <Suspense
       fallback={
-        <LayoutAuth titulo="Unir contas">
-          <Aviso tipo="informacao">Carregando…</Aviso>
-        </LayoutAuth>
+        <AuthLayout title="Unir contas">
+          <Alert kind="info">Carregando…</Alert>
+        </AuthLayout>
       }
     >
-      <Conteudo />
+      <Content />
     </Suspense>
   )
 }

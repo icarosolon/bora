@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FormularioBase, estadoInicial, type EstadoEnvio } from '@/components/auth/FormularioBase'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { Campo } from '@/components/ui/campo'
-import { chamarApi, erroDoCampo } from '@/lib/api'
-import { estaAutenticado } from '@/lib/sessao'
+import { BaseForm, initialState, type SubmitState } from '@/components/auth/BaseForm'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { Field } from '@/components/ui/field'
+import { callApi, fieldError } from '@/lib/api'
+import { isAuthenticated } from '@/lib/session'
 
 /**
  * Definir a primeira senha (US2-5, decisão D1 — direção inversa).
@@ -16,81 +16,81 @@ import { estaAutenticado } from '@/lib/sessao'
  * A confirmação do titular é a **sessão ativa**: por isso a tela só faz sentido
  * autenticada, e quem chega sem sessão é mandado para o login.
  */
-export default function DefinirSenha() {
+export default function SetPasswordPage() {
   const router = useRouter()
-  const [estado, setEstado] = useState<EstadoEnvio>(estadoInicial)
-  const [verificandoSessao, setVerificandoSessao] = useState(true)
+  const [state, setState] = useState<SubmitState>(initialState)
+  const [checkingSession, setCheckingSession] = useState(true)
 
   useEffect(() => {
-    if (!estaAutenticado()) {
+    if (!isAuthenticated()) {
       router.replace('/entrar')
       return
     }
-    setVerificandoSessao(false)
+    setCheckingSession(false)
   }, [router])
 
-  async function enviar(evento: React.FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    if (estado.enviando) return
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (state.submitting) return
 
-    const dados = new FormData(evento.currentTarget)
-    setEstado({ ...estadoInicial, enviando: true })
+    const form = new FormData(event.currentTarget)
+    setState({ ...initialState, submitting: true })
 
-    const resultado = await chamarApi('/senha', {
-      metodo: 'POST',
-      corpo: { senha: dados.get('senha') },
-      autenticado: true,
+    const result = await callApi('/senha', {
+      method: 'POST',
+      body: { password: form.get('password') },
+      authenticated: true,
     })
 
-    if (resultado.tipo === 'ok') {
-      setEstado({
-        ...estadoInicial,
-        sucesso: resultado.mensagem ?? 'Senha definida.',
+    if (result.kind === 'ok') {
+      setState({
+        ...initialState,
+        success: result.message ?? 'Senha definida.',
       })
       return
     }
 
-    if (resultado.tipo === 'validacao') {
-      setEstado({ ...estadoInicial, erros: resultado.erros })
+    if (result.kind === 'validation') {
+      setState({ ...initialState, errors: result.errors })
       return
     }
 
-    if (resultado.tipo === 'nao_autenticado') {
+    if (result.kind === 'unauthenticated') {
       router.replace('/entrar')
       return
     }
 
-    setEstado({ ...estadoInicial, erroGeral: resultado.mensagem })
+    setState({ ...initialState, generalError: result.message })
   }
 
-  if (verificandoSessao) {
+  if (checkingSession) {
     return (
-      <LayoutAuth titulo="Definir senha">
-        <Aviso tipo="informacao">Carregando…</Aviso>
-      </LayoutAuth>
+      <AuthLayout title="Definir senha">
+        <Alert kind="info">Carregando…</Alert>
+      </AuthLayout>
     )
   }
 
   return (
-    <LayoutAuth
-      titulo="Definir senha"
-      subtitulo="Assim você poderá entrar com o Google ou com sua senha, como preferir."
+    <AuthLayout
+      title="Definir senha"
+      subtitle="Assim você poderá entrar com o Google ou com sua senha, como preferir."
     >
-      <FormularioBase
-        estado={estado}
-        rotuloAcao="Salvar senha"
-        rotuloEnviando="Salvando…"
-        onSubmit={enviar}
+      <BaseForm
+        state={state}
+        actionLabel="Salvar senha"
+        submittingLabel="Salvando…"
+        onSubmit={submit}
       >
-        <Campo
-          name="senha"
+        <Field
+          name="password"
           type="password"
-          rotulo="Nova senha"
+          label="Nova senha"
           autoComplete="new-password"
-          dica="Pelo menos 8 caracteres."
-          erro={erroDoCampo(estado.erros, 'senha')}
+          hint="Pelo menos 8 caracteres."
+          error={fieldError(state.errors, 'password')}
         />
-      </FormularioBase>
-    </LayoutAuth>
+      </BaseForm>
+    </AuthLayout>
   )
 }

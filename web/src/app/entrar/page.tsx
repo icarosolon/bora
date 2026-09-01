@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { BotaoGoogle } from '@/components/auth/BotaoGoogle'
-import { FormularioEntrar } from '@/components/auth/FormularioEntrar'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
+import { GoogleButton } from '@/components/auth/GoogleButton'
+import { SignInForm } from '@/components/auth/SignInForm'
+import { AuthLayout } from '@/components/auth/AuthLayout'
 
 export const metadata = { title: 'Entrar — Bora' }
 
@@ -16,12 +16,12 @@ export const metadata = { title: 'Entrar — Bora' }
  * senha logo abaixo, separados por um divisor com texto (não só por linha —
  * informação nunca é passada apenas por forma).
  */
-export default function Entrar() {
+export default function SignInPage() {
   return (
-    <LayoutAuth
-      titulo="Entrar"
-      subtitulo="Que bom te ver de novo."
-      rodape={
+    <AuthLayout
+      title="Entrar"
+      subtitle="Que bom te ver de novo."
+      footer={
         <p>
           Ainda não tem conta?{' '}
           <Link href="/criar-conta" className="font-medium underline underline-offset-4">
@@ -31,7 +31,7 @@ export default function Entrar() {
       }
     >
       <div className="flex flex-col gap-6">
-        <BotaoGoogle />
+        <GoogleButton />
 
         <div className="flex items-center gap-3" aria-hidden="true">
           <span className="h-px flex-1 bg-border" />
@@ -39,7 +39,7 @@ export default function Entrar() {
           <span className="h-px flex-1 bg-border" />
         </div>
 
-        <FormularioEntrar />
+        <SignInForm />
 
         <p className="text-base">
           <Link
@@ -50,6 +50,6 @@ export default function Entrar() {
           </Link>
         </p>
       </div>
-    </LayoutAuth>
+    </AuthLayout>
   )
 }

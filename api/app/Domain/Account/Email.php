@@ -18,24 +18,24 @@ use InvalidArgumentException;
  */
 final readonly class Email
 {
-    private function __construct(public string $valor) {}
+    private function __construct(public string $value) {}
 
-    public static function de(string $entrada): self
+    public static function from(string $input): self
     {
-        $normalizado = self::normalizar($entrada);
+        $normalized = self::normalize($input);
 
-        if (! self::pareceValido($normalizado)) {
+        if (! self::looksValid($normalized)) {
             throw new InvalidArgumentException('E-mail inválido.');
         }
 
-        return new self($normalizado);
+        return new self($normalized);
     }
 
     /** Tenta criar; devolve null em vez de lançar. Útil em borda de validação. */
-    public static function tentar(string $entrada): ?self
+    public static function tryFrom(string $input): ?self
     {
         try {
-            return self::de($entrada);
+            return self::from($input);
         } catch (InvalidArgumentException) {
             return null;
         }
@@ -48,25 +48,25 @@ final readonly class Email
      * tratar "m.a.r.i.a@gmail.com" como "maria@gmail.com" é regra de UM provedor,
      * e aplicá-la a todos recusaria contas legítimas em domínios que distinguem.
      */
-    public static function normalizar(string $entrada): string
+    public static function normalize(string $input): string
     {
-        return mb_strtolower(trim($entrada));
+        return mb_strtolower(trim($input));
     }
 
-    private static function pareceValido(string $valor): bool
+    private static function looksValid(string $value): bool
     {
-        return $valor !== ''
-            && mb_strlen($valor) <= 255
-            && filter_var($valor, FILTER_VALIDATE_EMAIL) !== false;
+        return $value !== ''
+            && mb_strlen($value) <= 255
+            && filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    public function equals(self $outro): bool
+    public function equals(self $other): bool
     {
-        return $this->valor === $outro->valor;
+        return $this->value === $other->value;
     }
 
     public function __toString(): string
     {
-        return $this->valor;
+        return $this->value;
     }
 }

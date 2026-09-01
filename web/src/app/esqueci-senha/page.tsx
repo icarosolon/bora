@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { FormularioBase, estadoInicial, type EstadoEnvio } from '@/components/auth/FormularioBase'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { Campo } from '@/components/ui/campo'
-import { chamarApi, erroDoCampo } from '@/lib/api'
+import { BaseForm, initialState, type SubmitState } from '@/components/auth/BaseForm'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { Field } from '@/components/ui/field'
+import { callApi, fieldError } from '@/lib/api'
 
 /**
  * "Esqueci minha senha" (US4, decisao D6).
@@ -19,41 +19,41 @@ import { chamarApi, erroDoCampo } from '@/lib/api'
  * procurar, quanto tempo vale. Sem isso a pessoa fica olhando a caixa de
  * entrada sem saber se deu certo (ux-requirements.md).
  */
-export default function EsqueciSenha() {
-  const [estado, setEstado] = useState<EstadoEnvio>(estadoInicial)
-  const [enviado, setEnviado] = useState<string | null>(null)
+export default function ForgotPasswordPage() {
+  const [state, setState] = useState<SubmitState>(initialState)
+  const [sent, setSent] = useState<string | null>(null)
 
-  async function enviar(evento: React.FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    if (estado.enviando) return
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (state.submitting) return
 
-    const dados = new FormData(evento.currentTarget)
-    setEstado({ ...estadoInicial, enviando: true })
+    const form = new FormData(event.currentTarget)
+    setState({ ...initialState, submitting: true })
 
-    const resultado = await chamarApi('/senha/esqueci', {
-      metodo: 'POST',
-      corpo: { email: dados.get('email') },
+    const result = await callApi('/senha/esqueci', {
+      method: 'POST',
+      body: { email: form.get('email') },
     })
 
-    if (resultado.tipo === 'ok') {
-      setEstado(estadoInicial)
-      setEnviado(resultado.mensagem ?? 'Se este e-mail estiver cadastrado, você receberá um link.')
+    if (result.kind === 'ok') {
+      setState(initialState)
+      setSent(result.message ?? 'Se este e-mail estiver cadastrado, você receberá um link.')
       return
     }
 
-    if (resultado.tipo === 'validacao') {
-      setEstado({ ...estadoInicial, erros: resultado.erros })
+    if (result.kind === 'validation') {
+      setState({ ...initialState, errors: result.errors })
       return
     }
 
-    setEstado({ ...estadoInicial, erroGeral: resultado.mensagem })
+    setState({ ...initialState, generalError: result.message })
   }
 
-  if (enviado) {
+  if (sent) {
     return (
-      <LayoutAuth
-        titulo="Confira seu e-mail"
-        rodape={
+      <AuthLayout
+        title="Confira seu e-mail"
+        footer={
           <p>
             <Link href="/entrar" className="font-medium underline underline-offset-4">
               Voltar para entrar
@@ -61,19 +61,19 @@ export default function EsqueciSenha() {
           </p>
         }
       >
-        <Aviso tipo="sucesso">{enviado}</Aviso>
+        <Alert kind="success">{sent}</Alert>
         <p className="mt-4 text-base text-muted-foreground">
           Procure também na caixa de spam. O link vale por 1 hora e só pode ser usado uma vez.
         </p>
-      </LayoutAuth>
+      </AuthLayout>
     )
   }
 
   return (
-    <LayoutAuth
-      titulo="Esqueci minha senha"
-      subtitulo="Informe seu e-mail e enviaremos um link para criar uma nova senha."
-      rodape={
+    <AuthLayout
+      title="Esqueci minha senha"
+      subtitle="Informe seu e-mail e enviaremos um link para criar uma nova senha."
+      footer={
         <p>
           Lembrou?{' '}
           <Link href="/entrar" className="font-medium underline underline-offset-4">
@@ -82,21 +82,21 @@ export default function EsqueciSenha() {
         </p>
       }
     >
-      <FormularioBase
-        estado={estado}
-        rotuloAcao="Enviar link"
-        rotuloEnviando="Enviando…"
-        onSubmit={enviar}
+      <BaseForm
+        state={state}
+        actionLabel="Enviar link"
+        submittingLabel="Enviando…"
+        onSubmit={submit}
       >
-        <Campo
+        <Field
           name="email"
           type="email"
           inputMode="email"
-          rotulo="E-mail"
+          label="E-mail"
           autoComplete="email"
-          erro={erroDoCampo(estado.erros, 'email')}
+          error={fieldError(state.errors, 'email')}
         />
-      </FormularioBase>
-    </LayoutAuth>
+      </BaseForm>
+    </AuthLayout>
   )
 }

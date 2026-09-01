@@ -17,6 +17,11 @@ divergirem, o código está errado ou este arquivo está desatualizado; não se 
 - Autenticação: header `Authorization: Bearer <token>`. **Nunca** token em URL ou query.
 - Idioma das mensagens: **português**, em linguagem humana — a mensagem da API é a que a
   tela mostra (`ux-requirements.md`: erro diz o que fazer).
+- Idioma dos **nomes de campo**: **inglês** (`name`, `password`, `expires_at`,
+  `merge_token`). Só o **caminho** da rota fica em português (`/sessoes`,
+  `/email/verificar/reenviar`), porque endereço é coisa que a pessoa vê e compartilha.
+  Convenção completa: [`docs/architecture/naming-conventions.md`](../../../docs/architecture/naming-conventions.md).
+  Adotada em 2026-08-31, com a spec 001 já implementada e nada em produção.
 
 ## Códigos de status usados
 
@@ -37,7 +42,7 @@ divergirem, o código está errado ou este arquivo está desatualizado; não se 
 
 ### `POST /api/v1/contas` — criar conta (US1)
 
-**Corpo**: `nome` (obrigatório), `email` (obrigatório, e-mail válido), `senha`
+**Corpo**: `name` (obrigatório), `email` (obrigatório, e-mail válido), `password`
 (obrigatório, mínimo configurável — inicial 8).
 
 **201**
@@ -45,10 +50,10 @@ divergirem, o código está errado ou este arquivo está desatualizado; não se 
 {
   "message": "Conta criada! Boas-vindas ao Bora.",
   "data": {
-    "conta": { "id": 1, "nome": "Maria", "email": "maria@exemplo.com",
-               "email_verificado": false, "papeis": ["rolezeiro"],
-               "criada_em": "2026-08-30T14:32:07-03:00" },
-    "token": "1|abc...", "expira_em": "2026-09-29T14:32:07-03:00"
+    "account": { "id": 1, "name": "Maria", "email": "maria@exemplo.com",
+               "email_verified": false, "roles": ["rolezeiro"],
+               "created_at": "2026-08-30T14:32:07-03:00" },
+    "token": "1|abc...", "expires_at": "2026-09-29T14:32:07-03:00"
   }
 }
 ```
@@ -68,7 +73,7 @@ Se a conta existente só entra pelo Google: `"Este e-mail já entra com o Google
 > tem como saber o que fazer e a tela falharia o `ux-requirements.md`. É o comportamento
 > padrão de qualquer cadastro; o mitigante é o rate limit desta rota.
 
-**422 — validação**: `email` malformado, `senha` curta, `nome` vazio — erro por campo, em
+**422 — validação**: `email` malformado, `password` curta, `name` vazio — erro por campo, em
 linguagem humana (US1-5).
 
 ---
@@ -77,9 +82,9 @@ linguagem humana (US1-5).
 
 ### `POST /api/v1/sessoes` — entrar com e-mail e senha (US1)
 
-**Corpo**: `email`, `senha`, `dispositivo` (opcional — rótulo legível da sessão).
+**Corpo**: `email`, `password`, `device` (opcional — rótulo legível da sessão).
 
-**200**: mesmo formato de `data` do cadastro (`conta`, `token`, `expira_em`).
+**200**: mesmo formato de `data` do cadastro (`account`, `token`, `expires_at`).
 
 **401 — credenciais erradas** (mensagem única, não revela qual campo errou — FR-006):
 ```json
@@ -102,9 +107,9 @@ Revoga **apenas** o token da request. **204**, sem corpo.
 
 ### `GET /api/v1/eu` — conta autenticada · **autenticado**
 
-Substitui `/api/user`. **200** com a conta **em `data`** (não `data.conta`): é um recurso
+Substitui `/api/user`. **200** com a conta **em `data`** (não `data.account`): é um recurso
 único, então `data` É o recurso, como faz todo API Resource do Laravel. Corrigido aqui em
-2026-08-31, na implementação — o contrato dizia `data.conta` por engano de escrita.
+2026-08-31, na implementação — o contrato dizia `data.account` por engano de escrita.
 **401** se o token expirou — a tela leva ao
 login preservando o destino de origem (edge case de sessão expirada).
 
@@ -134,7 +139,7 @@ sozinho) — é a proteção contra CSRF do fluxo OAuth.
 **Corpo**: `code`, `state`.
 
 **200 — entrou ou conta criada**: mesmo `data` de sessão. Conta nova nasce com
-`email_verificado: true` (o Google já verificou) e papel `rolezeiro`.
+`email_verified: true` (o Google já verificou) e papel `rolezeiro`.
 
 **409 — união necessária** (US3-1): existe conta com este e-mail criada por e-mail/senha.
 **Nada é gravado** neste passo.
@@ -142,14 +147,14 @@ sozinho) — é a proteção contra CSRF do fluxo OAuth.
 {
   "message": "Você já tem conta no Bora com este e-mail. Confirme para unir e entrar com o Google também.",
   "data": {
-    "situacao": "uniao_necessaria",
+    "status": "merge_required",
     "email": "maria@exemplo.com",
-    "uniao_token": "opaco-de-uso-unico",
-    "expira_em": "2026-08-30T14:47:07-03:00"
+    "merge_token": "opaco-de-uso-unico",
+    "expires_at": "2026-08-30T14:47:07-03:00"
   }
 }
 ```
-O `uniao_token` é **de uso único e curto** (inicial: 15 min) e só serve para concluir esta
+O `merge_token` é **de uso único e curto** (inicial: 15 min) e só serve para concluir esta
 união — não autentica nada.
 
 **401 — cancelado ou recusado pelo Google** (US2-3):
@@ -167,7 +172,7 @@ em nenhum desses casos.
 
 ### `POST /api/v1/uniao-credenciais` — confirmar com a senha
 
-**Corpo**: `uniao_token`, `senha` (a senha da conta existente).
+**Corpo**: `merge_token`, `password` (a senha da conta existente).
 
 **200**: união concluída — devolve `data` de sessão.
 ```json
@@ -178,12 +183,12 @@ em nenhum desses casos.
 Sujeito ao **mesmo rate limit** do login (FR-007) — a spec exige que o bloqueio valha
 também nesta porta.
 
-**410 — `uniao_token` expirado ou já usado** (US3-5):
+**410 — `merge_token` expirado ou já usado** (US3-5):
 `{ "message": "Este pedido expirou. Entre com o Google de novo para recomeçar." }`
 
 ### `POST /api/v1/uniao-credenciais/link` — plano B (US3-3)
 
-**Corpo**: `uniao_token`. Envia link de confirmação ao e-mail da conta (Job na fila).
+**Corpo**: `merge_token`. Envia link de confirmação ao e-mail da conta (Job na fila).
 **200**, resposta sempre igual: `{ "message": "Enviamos um link para o seu e-mail. Ele vale por 1 hora." }`
 
 ### `POST /api/v1/uniao-credenciais/link/confirmar`
@@ -196,7 +201,7 @@ também nesta porta.
 Para conta que nasceu no Google. Exige **sessão ativa** — é isso que faz as vezes de
 confirmação do titular.
 
-**Corpo**: `senha`. **200**: `{ "message": "Senha definida. Agora você também entra com e-mail e senha." }`
+**Corpo**: `password`. **200**: `{ "message": "Senha definida. Agora você também entra com e-mail e senha." }`
 **422** se a conta já tem senha (aí o caminho é trocar senha, fora do escopo desta feature).
 
 ---
@@ -218,7 +223,7 @@ da API não muda**, senão a neutralidade se perde.
 
 ### `POST /api/v1/senha/redefinir`
 
-**Corpo**: `token`, `senha`.
+**Corpo**: `token`, `password`.
 
 **200**: `{ "message": "Senha alterada. Você já pode entrar com ela." }` — invalida a senha
 anterior e **revoga as sessões dos outros aparelhos** (FR-015).

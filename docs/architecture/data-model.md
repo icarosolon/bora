@@ -51,12 +51,12 @@ spec, e este documento aponta para lá em vez de duplicar.
   entregues e validadas; as tabelas existem e são exercitadas por 185 testes).
   Detalha a parte de **User** e **Role/Papel** acima e acrescenta duas entidades que este
   documento conceitual não previa:
-  - **ContaSocial** — vínculo com provedor externo (Google). O vínculo é pelo
+  - **SocialAccount** — vínculo com provedor externo (Google). O vínculo é pelo
     identificador do provedor, **não pelo e-mail**, para que troca de e-mail no Google não
     quebre o acesso.
-  - **TokenDeEmail** — link de uso único com validade, servindo aos três fluxos
+  - **EmailToken** — link de uso único com validade, servindo aos três fluxos
     (verificação de e-mail, união de credenciais, redefinição de senha). Guarda apenas o
     **hash** do token.
 
   Alterações previstas em `users`: `password` passa a **nullable** (conta que nasce pelo
-  Google não tem senha), `email` sempre normalizado, e nova coluna `ultimo_acesso_em`.
+  Google não tem senha), `email` sempre normalizado, e nova coluna `last_seen_at`.

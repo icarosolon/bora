@@ -37,34 +37,34 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'ultimo_acesso_em' => 'datetime',
+            'last_seen_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-    /** @return HasMany<ContaSocial, $this> */
-    public function contasSociais(): HasMany
+    /** @return HasMany<SocialAccount, $this> */
+    public function socialAccounts(): HasMany
     {
-        return $this->hasMany(ContaSocial::class);
+        return $this->hasMany(SocialAccount::class);
     }
 
-    /** @return HasMany<TokenDeEmail, $this> */
-    public function tokensDeEmail(): HasMany
+    /** @return HasMany<EmailToken, $this> */
+    public function emailTokens(): HasMany
     {
-        return $this->hasMany(TokenDeEmail::class);
+        return $this->hasMany(EmailToken::class);
     }
 
     /**
      * A conta entra por e-mail/senha? Falso enquanto ela só tiver vínculo social.
      * Usado para orientar a pessoa em vez de dar "senha incorreta" (US2-4).
      */
-    public function temSenha(): bool
+    public function hasPassword(): bool
     {
         return $this->password !== null;
     }
 
-    public function temVinculoCom(string $provedor): bool
+    public function hasLinkWith(string $provider): bool
     {
-        return $this->contasSociais()->where('provedor', $provedor)->exists();
+        return $this->socialAccounts()->where('provider', $provider)->exists();
     }
 }

@@ -8,9 +8,14 @@
  *
  * Envelope da constituição: `data` em recursos, `message` em ações, `errors`
  * em validação 422.
+ *
+ * Repare que os CAMPOS do JSON são em inglês, embora o CAMINHO da rota seja em
+ * português (`/sessoes`, `/email/verificar`). É a convenção do projeto: o
+ * caminho é endereço, visível e compartilhável; o corpo é código.
+ * Ver docs/architecture/naming-conventions.md.
  */
 
-import { esquecerToken, guardarDestino, lerToken } from '@/lib/sessao'
+import { forgetToken, readToken, storeRedirect } from '@/lib/session'
 
 /**
  * Endereço da API.
@@ -24,7 +29,7 @@ import { esquecerToken, guardarDestino, lerToken } from '@/lib/sessao'
  * próprio celular, então toda chamada morria — e a tela, que é renderizada no
  * servidor, continuava carregando normalmente, escondendo o problema.
  */
-function baseDaApi(): string {
+function apiBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
 
   if (typeof window !== 'undefined') {
@@ -35,123 +40,123 @@ function baseDaApi(): string {
 }
 
 /** Erros por campo, como a tela precisa para mostrar a mensagem no lugar certo. */
-export type ErrosPorCampo = Record<string, string[]>
+export type FieldErrors = Record<string, string[]>
 
 /**
  * Resultado discriminado: a tela trata cada caso explicitamente, em vez de
  * cair num `catch` genérico que viraria "algo deu errado" — o que o
  * ux-requirements.md proíbe.
  */
-export type Resultado<T> =
-  | { tipo: 'ok'; dados: T; mensagem?: string }
-  | { tipo: 'validacao'; erros: ErrosPorCampo; mensagem: string }
-  | { tipo: 'nao_autenticado'; mensagem: string }
-  | { tipo: 'conflito'; dados: unknown; mensagem: string }
-  | { tipo: 'expirado'; mensagem: string }
-  | { tipo: 'limite'; mensagem: string; segundos: number | null }
-  | { tipo: 'falha'; mensagem: string }
+export type Result<T> =
+  | { kind: 'ok'; data: T; message?: string }
+  | { kind: 'validation'; errors: FieldErrors; message: string }
+  | { kind: 'unauthenticated'; message: string }
+  | { kind: 'conflict'; data: unknown; message: string }
+  | { kind: 'expired'; message: string }
+  | { kind: 'rate_limited'; message: string; seconds: number | null }
+  | { kind: 'failure'; message: string }
 
-type Opcoes = {
-  metodo?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-  corpo?: unknown
-  autenticado?: boolean
+type Options = {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  body?: unknown
+  authenticated?: boolean
 }
 
-const MENSAGEM_REDE =
+const NETWORK_MESSAGE =
   'Não conseguimos falar com o Bora agora. Confira sua conexão e tente de novo.'
 
-export async function chamarApi<T>(
-  caminho: string,
-  { metodo = 'GET', corpo, autenticado = false }: Opcoes = {},
-): Promise<Resultado<T>> {
-  const cabecalhos: Record<string, string> = { Accept: 'application/json' }
+export async function callApi<T>(
+  path: string,
+  { method = 'GET', body, authenticated = false }: Options = {},
+): Promise<Result<T>> {
+  const headers: Record<string, string> = { Accept: 'application/json' }
 
-  if (corpo !== undefined) cabecalhos['Content-Type'] = 'application/json'
+  if (body !== undefined) headers['Content-Type'] = 'application/json'
 
-  if (autenticado) {
-    const token = lerToken()
-    if (token) cabecalhos.Authorization = `Bearer ${token}`
+  if (authenticated) {
+    const token = readToken()
+    if (token) headers.Authorization = `Bearer ${token}`
   }
 
-  let resposta: Response
+  let response: Response
   try {
-    resposta = await fetch(`${baseDaApi()}${caminho}`, {
-      method: metodo,
-      headers: cabecalhos,
-      body: corpo === undefined ? undefined : JSON.stringify(corpo),
+    response = await fetch(`${apiBaseUrl()}${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : JSON.stringify(body),
     })
   } catch {
     // Rede fora, DNS, CORS bloqueado: nada disso é culpa da pessoa, e a
     // mensagem precisa dizer o que fazer.
-    return { tipo: 'falha', mensagem: MENSAGEM_REDE }
+    return { kind: 'failure', message: NETWORK_MESSAGE }
   }
 
-  if (resposta.status === 204) {
-    return { tipo: 'ok', dados: undefined as T }
+  if (response.status === 204) {
+    return { kind: 'ok', data: undefined as T }
   }
 
   let payload: Record<string, unknown> = {}
   try {
-    payload = (await resposta.json()) as Record<string, unknown>
+    payload = (await response.json()) as Record<string, unknown>
   } catch {
-    if (resposta.ok) return { tipo: 'ok', dados: undefined as T }
+    if (response.ok) return { kind: 'ok', data: undefined as T }
   }
 
-  const mensagem =
-    typeof payload.message === 'string' ? payload.message : MENSAGEM_REDE
+  const message =
+    typeof payload.message === 'string' ? payload.message : NETWORK_MESSAGE
 
-  if (resposta.ok) {
-    return { tipo: 'ok', dados: payload.data as T, mensagem }
+  if (response.ok) {
+    return { kind: 'ok', data: payload.data as T, message }
   }
 
-  switch (resposta.status) {
+  switch (response.status) {
     case 422:
       return {
-        tipo: 'validacao',
-        erros: (payload.errors as ErrosPorCampo) ?? {},
-        mensagem,
+        kind: 'validation',
+        errors: (payload.errors as FieldErrors) ?? {},
+        message,
       }
 
     case 401:
       // Sessão expirada ou credencial recusada. Descarta o token morto para a
       // próxima navegação não repetir a chamada inútil.
-      if (autenticado) {
-        esquecerToken()
+      if (authenticated) {
+        forgetToken()
 
         // Guarda de onde a pessoa saiu, para ela voltar ao mesmo lugar depois
         // de entrar de novo — em vez de cair na home e ter de se achar
         // (edge case de sessão expirada da spec 001).
         if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/entrar')) {
-          guardarDestino(window.location.pathname + window.location.search)
+          storeRedirect(window.location.pathname + window.location.search)
         }
       }
-      return { tipo: 'nao_autenticado', mensagem }
+      return { kind: 'unauthenticated', message }
 
     case 409:
       // União de credenciais necessária — não é erro, é um passo a mais (US3).
-      return { tipo: 'conflito', dados: payload.data, mensagem }
+      return { kind: 'conflict', data: payload.data, message }
 
     case 410:
       // Link de e-mail expirado ou já usado.
-      return { tipo: 'expirado', mensagem }
+      return { kind: 'expired', message }
 
     case 429: {
       // Retry-After só é legível porque config/cors.php o expõe.
-      const cabecalho = resposta.headers.get('Retry-After')
-      const segundos = cabecalho ? Number.parseInt(cabecalho, 10) : NaN
+      const header = response.headers.get('Retry-After')
+      const seconds = header ? Number.parseInt(header, 10) : NaN
       return {
-        tipo: 'limite',
-        mensagem,
-        segundos: Number.isNaN(segundos) ? null : segundos,
+        kind: 'rate_limited',
+        message,
+        seconds: Number.isNaN(seconds) ? null : seconds,
       }
     }
 
     default:
-      return { tipo: 'falha', mensagem }
+      return { kind: 'failure', message }
   }
 }
 
 /** Extrai a primeira mensagem de um campo, que é o que a tela mostra ao lado dele. */
-export function erroDoCampo(erros: ErrosPorCampo, campo: string): string | undefined {
-  return erros[campo]?.[0]
+export function fieldError(errors: FieldErrors, field: string): string | undefined {
+  return errors[field]?.[0]
 }

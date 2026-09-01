@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { FormularioUnirContas } from '@/components/auth/FormularioUnirContas'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { lerUniaoPendente, type UniaoPendente } from '@/lib/sessao'
+import { MergeAccountsForm } from '@/components/auth/MergeAccountsForm'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { readPendingMerge, type PendingMerge } from '@/lib/session'
 
 /**
  * Uniao de credenciais (US3). Chega-se aqui pelo 409 do login com Google.
@@ -18,45 +18,45 @@ import { lerUniaoPendente, type UniaoPendente } from '@/lib/sessao'
  * Ate esta tela concluir, NADA foi gravado no servidor: e o que sustenta a
  * invariante do Principio I.
  */
-export default function UnirContas() {
-  const [pendente, setPendente] = useState<UniaoPendente | null>(null)
-  const [procurando, setProcurando] = useState(true)
+export default function MergeAccountsPage() {
+  const [pending, setPending] = useState<PendingMerge | null>(null)
+  const [looking, setLooking] = useState(true)
 
   // Leitura em efeito, nunca durante a renderizacao: sessionStorage nao existe
   // no servidor, e ler no JSX causaria divergencia de hidratacao (E-015).
   useEffect(() => {
-    setPendente(lerUniaoPendente())
-    setProcurando(false)
+    setPending(readPendingMerge())
+    setLooking(false)
   }, [])
 
-  if (procurando) {
+  if (looking) {
     return (
-      <LayoutAuth titulo="Unir contas">
-        <Aviso tipo="informacao">Carregando…</Aviso>
-      </LayoutAuth>
+      <AuthLayout title="Unir contas">
+        <Alert kind="info">Carregando…</Alert>
+      </AuthLayout>
     )
   }
 
   // Sem pedido guardado: aba nova, pedido velho ou visita direta. Explica e
   // devolve o caminho, em vez de mostrar formulario que falharia.
-  if (!pendente) {
+  if (!pending) {
     return (
-      <LayoutAuth titulo="Unir contas">
-        <Aviso tipo="erro">
+      <AuthLayout title="Unir contas">
+        <Alert kind="error">
           Este pedido expirou. Toque em &quot;Entrar com Google&quot; de novo para recomeçar.
-        </Aviso>
+        </Alert>
         <p className="mt-6 text-base">
           <Link href="/entrar" className="font-medium underline underline-offset-4">
             Voltar para entrar
           </Link>
         </p>
-      </LayoutAuth>
+      </AuthLayout>
     )
   }
 
   return (
-    <LayoutAuth titulo="Unir contas" subtitulo="Falta só confirmar que é você.">
-      <FormularioUnirContas token={pendente.token} email={pendente.email} />
-    </LayoutAuth>
+    <AuthLayout title="Unir contas" subtitle="Falta só confirmar que é você.">
+      <MergeAccountsForm token={pending.token} email={pending.email} />
+    </AuthLayout>
   )
 }

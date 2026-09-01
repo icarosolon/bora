@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Domain\Account\UniaoPendente;
+use App\Domain\Account\PendingMerge;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SessaoResource;
-use App\Ports\FalhaDoProvedorDeIdentidade;
-use App\UseCases\Account\AutenticarPorGoogle;
+use App\Http\Resources\SessionResource;
+use App\Ports\IdentityProviderFailure;
+use App\UseCases\Account\AuthenticateWithGoogle;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,14 +22,14 @@ use Illuminate\Support\Facades\Log;
  */
 class GoogleController extends Controller
 {
-    public function url(AutenticarPorGoogle $autenticar): JsonResponse
+    public function url(AuthenticateWithGoogle $authenticate): JsonResponse
     {
-        return response()->json(['data' => $autenticar->iniciar()]);
+        return response()->json(['data' => $authenticate->start()]);
     }
 
-    public function store(Request $request, AutenticarPorGoogle $autenticar): JsonResponse
+    public function store(Request $request, AuthenticateWithGoogle $authenticate): JsonResponse
     {
-        $dados = $request->validate([
+        $data = $request->validate([
             'code' => ['required', 'string'],
             'state' => ['required', 'string'],
         ], [
@@ -38,8 +38,8 @@ class GoogleController extends Controller
         ]);
 
         try {
-            $resultado = $autenticar->concluir($dados['code'], $dados['state']);
-        } catch (FalhaDoProvedorDeIdentidade $e) {
+            $result = $authenticate->complete($data['code'], $data['state']);
+        } catch (IdentityProviderFailure $e) {
             // O detalhe técnico fica no log; a tela recebe linguagem humana com
             // uma saída (ux-requirements.md). Sem dado pessoal no log
             // (Princípio V) — só o motivo devolvido pelo provedor.
@@ -50,20 +50,20 @@ class GoogleController extends Controller
             ], 401);
         }
 
-        if ($resultado instanceof UniaoPendente) {
+        if ($result instanceof PendingMerge) {
             // 409, não erro: existe conta com este e-mail e falta a confirmação
             // do titular. NADA foi gravado (Princípio I). A união é a US3.
             return response()->json([
                 'message' => 'Você já tem conta no Bora com este e-mail. Confirme para unir e entrar com o Google também.',
                 'data' => [
-                    'situacao' => 'uniao_necessaria',
-                    'email' => (string) $resultado->email,
-                    'uniao_token' => $resultado->token,
-                    'expira_em' => $resultado->expiraEm->format(DATE_ATOM),
+                    'status' => 'merge_required',
+                    'email' => (string) $result->email,
+                    'merge_token' => $result->token,
+                    'expires_at' => $result->expiresAt->format(DATE_ATOM),
                 ],
             ], 409);
         }
 
-        return SessaoResource::make($resultado)->response();
+        return SessionResource::make($result)->response();
     }
 }

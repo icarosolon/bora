@@ -25,8 +25,8 @@ class LoginRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email:rfc', 'max:255'],
-            'senha' => ['required', 'string', 'max:255'],
-            'dispositivo' => ['nullable', 'string', 'max:60'],
+            'password' => ['required', 'string', 'max:255'],
+            'device' => ['nullable', 'string', 'max:60'],
         ];
     }
 
@@ -36,12 +36,12 @@ class LoginRequest extends FormRequest
         return [
             'email.required' => 'Digite seu e-mail.',
             'email.email' => 'Digite um e-mail válido, como nome@exemplo.com.',
-            'senha.required' => 'Digite sua senha.',
+            'password.required' => 'Digite sua senha.',
         ];
     }
 
-    public function emailNormalizado(): Email
+    public function normalizedEmail(): Email
     {
-        return Email::de($this->validated('email'));
+        return Email::from($this->validated('email'));
     }
 }

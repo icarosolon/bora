@@ -96,6 +96,16 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Decisões tomadas
 
+- **Nomenclatura padronizada** (decisão do Ícaro, 2026-08-31): **identificador em inglês,
+  prosa em português, e a única exceção é o caminho da URL**. Escrita em
+  `docs/architecture/naming-conventions.md`; `CLAUDE.md` e `development-workflow.md` §5.1
+  apontam para lá, para as próximas specs já nascerem no padrão. Aplicada retroativamente à
+  spec 001 inteira no mesmo dia — código, banco (migrations editadas, não migrations de
+  rename), campos do JSON, testes e documentação. Três fronteiras foram decididas por ele
+  explicitamente: nomes de método de teste em inglês, banco em inglês editando as migrations
+  existentes, e **campos do JSON em inglês** — esta última revertendo uma escolha anterior
+  minha de manter o corpo em português, depois que ele apontou o custo permanente da
+  tradução de borda. Só o caminho da rota continua em português.
 - **Polish da spec 001 concluído** (T110–T117, 2026-08-31). Documentação da API conferida
   contra o contrato (14 rotas, batem exatamente), andaime do spike removido, verificação de
   vazamento de token e de logs limpa, quickstart executado contra a API real.
@@ -296,9 +306,12 @@ landing vira um segundo design system e diverge das telas do produto.
 
 ## Próximo passo
 
-1. **Validação visual final da spec 001 (T118)** e então o fechamento (T119). Duas telas
-   mudaram depois da validação e precisam de uma passada: a **união** (token saiu da URL) e
-   o **cabeçalho** (passou a refletir o login sem recarregar, E-016).
+1. **Validação visual final da spec 001 (T118)** e então o fechamento (T119). Três coisas
+   mudaram depois da validação e precisam de uma passada: a **união** (token saiu da URL), o
+   **cabeçalho** (passou a refletir o login sem recarregar, E-016) e a **refatoração de
+   nomenclatura**, que mexeu em todas as telas e no contrato da API. A refatoração não muda
+   comportamento nenhum — as três suítes passam —, mas mexeu em tudo, então a passada visual
+   vale como conferência: criar conta, entrar, sair, Google, unir contas, esqueci a senha.
 2. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
    atual estar pronta.
 3. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).

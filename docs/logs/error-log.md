@@ -3,24 +3,47 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-017 — `sed` no Git Bash come barra invertida passada por argumento (2026-08-31)
+
+- **Sintoma:** durante a refatoração de nomenclatura, 68 dos 185 testes de backend
+  quebraram com `Class "App\UseCases\Account\AuditLog" not found`. O arquivo tinha
+  `use AppSupportAuditLog;` — as barras invertidas do namespace **sumiram**.
+- **Causa:** o Git Bash do Windows (MSYS) converte argumentos que **parecem caminho** antes
+  de entregá-los ao programa. `sed -e 's/.../App\\Support\\AuditLog/'` chega ao `sed` já
+  mutilado. Não é bug do `sed`: é a camada de tradução de caminhos do MSYS. Vale para
+  qualquer executável nativo chamado com barra invertida no argumento.
+- **Resolução:** **nunca passar barra invertida por argumento** neste ambiente. Escrever as
+  substituições num **arquivo de script** (`sed -f arquivo.sed`) — o conteúdo do arquivo não
+  passa pela conversão. `cat <<'EOF'` também funciona, porque o conteúdo vai por stdin.
+- **Status:** resolvido; namespaces restaurados e 185/185 verdes.
+- **Já tinha mordido antes**, como nota lateral no E-014: o caminho do `cacert.pem` saiu
+  corrompido pelo mesmo motivo, e o PHP aceitou calado. Duas ocorrências com causa idêntica
+  e sintomas completamente diferentes — por isso agora tem entrada própria, para ser
+  encontrável na terceira.
+- **Lição:** a diferença entre as duas ocorrências foi **quão alto o erro gritou**. No
+  E-014 o PHP engoliu o caminho inválido e o sintoma apareceu semanas depois, numa chamada
+  HTTPS. Aqui, os testes acusaram na hora. A suíte não evitou o erro — ela o tornou barato.
+
 ## E-016 — Barra continuava mostrando "Entrar" depois do login (2026-08-31)
 
 - **Sintoma:** o Ícaro reportou que, após unir as contas, conseguia entrar pelo Google mas
   "não conseguia mais entrar com e-mail e senha". Na segunda mensagem ele mesmo refinou:
   **o login funcionava** — o que não funcionava era a barra superior, que continuava com o
   botão "Entrar" mesmo autenticado.
-- **Causa:** `CabecalhoConta` vive no **layout raiz**. Ele consulta `/api/v1/eu` num
+- **Causa:** `AccountHeader` vive no **layout raiz**. Ele consulta `/api/v1/eu` num
   `useEffect` de montagem, e navegação client-side **não remonta o layout** — então, ao
   entrar, a barra ficava congelada no estado anterior até um recarregamento completo.
   Medido no navegador antes de mexer: depois do login, `token: guardado`, URL `/`, barra
   `"Bora Entrar"`; depois de recarregar, `"Bora Teste Uniao Sair"`. O token sempre esteve
   válido — e o backend também: teste direto na API confirmou 200 e
-  `entra_com: ["senha","google"]` após a união.
-- **Resolução:** `guardarToken` e `esquecerToken` passam a emitir o evento `bora:sessao`;
+  `entra_com: ["senha","google"]` após a união. (Este é o payload **como foi medido na
+  hora**; no mesmo dia a API passou a responder em inglês — hoje o campo é
+  `signs_in_with: ["password","google"]`. Ver `docs/architecture/naming-conventions.md`.)
+- **Resolução:** `storeToken` e `forgetToken` passam a emitir o evento `bora:session`;
   o cabeçalho escuta e reconsulta. Escuta também o evento nativo `storage`, então **sair
   numa aba atualiza as outras** — antes, uma aba esquecida seguiria mostrando a pessoa como
   logada.
-- **Status:** resolvido; teste de regressão em `us1-conta.spec.ts`, verificado nos dois
+- **Status:** resolvido; teste de regressão em `us1-account.spec.ts`, verificado nos dois
   sentidos (falha com o bug, passa com a correção).
 - **Por que 74 testes e2e não pegaram:** nenhum fazia **login de verdade e depois olhava a
   barra**. Havia teste de que a barra oferece "Entrar" para quem não entrou, e testes de
@@ -30,7 +53,7 @@ skill `doc-sync`.
   próprios** — guardavam sessão e ao mesmo tempo mockavam `/eu` como 401, e o cliente então
   descartava o token (comportamento correto do produto). A mesma contradição já tinha
   causado uma falha intermitente antes. Em vez de corrigir caso a caso, o auxiliar
-  `comSessaoValida` foi para `tests/e2e/base.ts`, com a explicação escrita.
+  `withValidSession` foi para `tests/e2e/base.ts`, com a explicação escrita.
 - **Lição:** o relato do usuário raramente vem com a causa certa — e não deve vir. Aqui a
   primeira formulação ("não consigo mais entrar com e-mail e senha") apontava para o
   backend, e o backend estava certo. O que resolveu foi **reproduzir e medir** antes de
@@ -41,13 +64,13 @@ skill `doc-sync`.
 - **Sintoma:** o Ícaro reportou erro no console do navegador — *"A tree hydrated but some
   attributes of the server rendered HTML didn't match the client properties. This won't be
   patched up."*
-- **Causa:** `web/src/app/verificar-email/page.tsx` chamava `estaAutenticado()` **dentro do
+- **Causa:** `web/src/app/verificar-email/page.tsx` chamava `isAuthenticated()` **dentro do
   JSX**, durante a renderização. A função lê `localStorage`, que não existe no servidor:
   ele renderizava o ramo "não autenticado" e o cliente hidratava com o ramo "autenticado".
   O React acusa a divergência e, como a própria mensagem diz, **desiste de corrigir aquela
   subárvore** — a tela fica com o conteúdo errado, em silêncio.
 - **Resolução:** o estado passou a ser lido em `useEffect` e guardado em `useState`, como já
-  era feito no `CabecalhoConta`. Regra que vale para toda tela do projeto: **nada que dependa
+  era feito no `AccountHeader`. Regra que vale para toda tela do projeto: **nada que dependa
   do navegador — `localStorage`, `window`, data/hora — pode ser lido durante a renderização.**
 - **Status:** resolvido e confirmado por teste de regressão.
 - **Por que passou por 66 e2e, 37 de componente e o build:** o teste de componente roda em
@@ -138,18 +161,18 @@ skill `doc-sync`.
 - **Gravidade real, não teórica:** a janela é curta num computador rápido, mas o público do
   Bora usa **aparelho modesto em rede lenta** (`ux-requirements.md`). Lá a pessoa tocaria,
   perderia o que digitou e vazaria a senha, sem nada na tela indicando problema.
-- **Resolução:** em `FormularioBase`, o botão de envio só habilita depois de o componente
+- **Resolução:** em `BaseForm`, o botão de envio só habilita depois de o componente
   montar, e o `<form>` ganhou `method="post"` como defesa em profundidade. O rótulo diz
   **"Carregando…"** enquanto não está pronto — para uma falha de hidratação **admitir** que
   a tela não está pronta, em vez de exibir um botão morto (foi assim que o E-013 passou
-  despercebido). Teste de regressão em `us1-conta.spec.ts` falha se a senha voltar à URL.
+  despercebido). Teste de regressão em `us1-account.spec.ts` falha se a senha voltar à URL.
 - **Status:** resolvido.
 - **Aconteceu mais duas vezes depois (2026-08-31), com sintoma diferente.** No botão
   "Entrar com Google" (US2) e no plano B da união (US3) — que são `type="button"`, sem
   submissão nativa — o toque antes da hidratação era **silenciosamente ignorado**: a pessoa
   aperta e nada acontece, o que o `ux-requirements.md` proíbe. Nas três vezes quem pegou
   foi o **teste e2e**; o de componente nunca pegou, porque o jsdom não tem essa janela.
-  Na terceira, o guarda foi extraído para o hook `useHidratado` (`web/src/lib/hidratacao.ts`),
+  Na terceira, o guarda foi extraído para o hook `useHydrated` (`web/src/lib/hydration.ts`),
   com a explicação inteira num lugar só. **Todo controle que dispara ação usa esse hook.**
 - **Lição:** formulário controlado por JavaScript tem um estado intermediário — HTML
   pronto, JavaScript não — e nesse estado o navegador faz o que o HTML manda. Vale para

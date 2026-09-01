@@ -3,83 +3,87 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { chamarApi } from '@/lib/api'
-import { consumirDestino, guardarToken, guardarUniaoPendente } from '@/lib/sessao'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { callApi } from '@/lib/api'
+import { consumeRedirect, storeToken, storePendingMerge } from '@/lib/session'
 
-type Sessao = { conta: { id: number; nome: string }; token: string; expira_em: string }
+type SessionResponse = {
+  account: { id: number; name: string }
+  token: string
+  expires_at: string
+}
 
-type Situacao =
-  | { estado: 'entrando' }
-  | { estado: 'erro'; mensagem: string }
+type Status =
+  | { state: 'signing_in' }
+  | { state: 'error'; message: string }
 
-function Conteudo() {
+function Content() {
   const router = useRouter()
-  const parametros = useSearchParams()
-  const [situacao, setSituacao] = useState<Situacao>({ estado: 'entrando' })
+  const params = useSearchParams()
+  const [status, setStatus] = useState<Status>({ state: 'signing_in' })
 
   // O React roda efeitos duas vezes em desenvolvimento (StrictMode). Sem este
   // guarda, o `code` seria trocado duas vezes — e o Google só o aceita uma,
   // fazendo a segunda tentativa falhar e sobrescrever um login bem-sucedido
   // com uma mensagem de erro.
-  const jaTrocou = useRef(false)
+  const alreadyExchanged = useRef(false)
 
   useEffect(() => {
-    if (jaTrocou.current) return
-    jaTrocou.current = true
+    if (alreadyExchanged.current) return
+    alreadyExchanged.current = true
 
-    const code = parametros.get('code')
-    const state = parametros.get('state')
-    const erroDoGoogle = parametros.get('error')
+    const code = params.get('code')
+    const state = params.get('state')
+    const googleError = params.get('error')
 
     // A pessoa cancelou na tela do Google: ele volta com `error`, sem `code`.
-    if (erroDoGoogle || !code || !state) {
-      setSituacao({
-        estado: 'erro',
-        mensagem: 'Não deu para entrar com o Google agora. Tente de novo ou use seu e-mail e senha.',
+    if (googleError || !code || !state) {
+      setStatus({
+        state: 'error',
+        message: 'Não deu para entrar com o Google agora. Tente de novo ou use seu e-mail e senha.',
       })
       return
     }
 
-    chamarApi<Sessao>('/auth/google/sessoes', {
-      metodo: 'POST',
-      corpo: { code, state },
+    callApi<SessionResponse>('/auth/google/sessoes', {
+      method: 'POST',
+      body: { code, state },
     }).then((r) => {
-      if (r.tipo === 'ok') {
-        guardarToken(r.dados.token)
-        router.replace(consumirDestino() ?? '/')
+      if (r.kind === 'ok') {
+        storeToken(r.data.token)
+        router.replace(consumeRedirect() ?? '/')
         return
       }
 
-      if (r.tipo === 'conflito') {
+      if (r.kind === 'conflict') {
         // 409: já existe conta com este e-mail. Nada foi gravado; falta a
         // confirmação do titular, que é a US3.
         //
         // O token vai em `sessionStorage`, NÃO na query string: na URL ele
         // cairia no histórico do navegador, no log de servidor e no `Referer`
         // — a mesma regra que vale para o token de sessão.
-        const dados = r.dados as { uniao_token?: string; email?: string }
+        const data = r.data as { merge_token?: string; email?: string }
 
-        if (dados.uniao_token) {
-          guardarUniaoPendente({ token: dados.uniao_token, email: dados.email ?? '' })
+        if (data.merge_token) {
+          storePendingMerge({ token: data.merge_token, email: data.email ?? '' })
         }
 
         router.replace('/unir-contas')
         return
       }
 
-      setSituacao({ estado: 'erro', mensagem: r.mensagem })
+      setStatus({ state: 'error', message: r.message })
     })
-  }, [parametros, router])
+  }, [params, router])
 
   return (
-    <LayoutAuth titulo="Entrando com o Google">
-      {situacao.estado === 'entrando' ? (
-        <Aviso tipo="informacao">Entrando…</Aviso>
+    <AuthLayout title="Entrando com o Google">
+      {status.state === 'signing_in' ? (
+        <Alert kind="info">Entrando…</Alert>
       ) : (
         <>
-          <Aviso tipo="erro">{situacao.mensagem}</Aviso>
+          <Alert kind="error">{status.message}</Alert>
 
           <p className="mt-6 text-base">
             <Link href="/entrar" className="font-medium underline underline-offset-4">
@@ -88,7 +92,7 @@ function Conteudo() {
           </p>
         </>
       )}
-    </LayoutAuth>
+    </AuthLayout>
   )
 }
 
@@ -105,16 +109,16 @@ function Conteudo() {
  * transacional, não catálogo público — não há SEO a proteger (a armadilha que o
  * spike BORA-32 registrou vale para as páginas de catálogo).
  */
-export default function RetornoDoGoogle() {
+export default function GoogleCallbackPage() {
   return (
     <Suspense
       fallback={
-        <LayoutAuth titulo="Entrando com o Google">
-          <Aviso tipo="informacao">Carregando…</Aviso>
-        </LayoutAuth>
+        <AuthLayout title="Entrando com o Google">
+          <Alert kind="info">Carregando…</Alert>
+        </AuthLayout>
       }
     >
-      <Conteudo />
+      <Content />
     </Suspense>
   )
 }

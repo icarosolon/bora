@@ -3,91 +3,91 @@
 import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { FormularioBase, estadoInicial, type EstadoEnvio } from '@/components/auth/FormularioBase'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
-import { Campo } from '@/components/ui/campo'
-import { chamarApi, erroDoCampo } from '@/lib/api'
-import { esquecerToken } from '@/lib/sessao'
+import { BaseForm, initialState, type SubmitState } from '@/components/auth/BaseForm'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
+import { Field } from '@/components/ui/field'
+import { callApi, fieldError } from '@/lib/api'
+import { forgetToken } from '@/lib/session'
 
-function Conteudo() {
+function Content() {
   const router = useRouter()
-  const parametros = useSearchParams()
-  const token = parametros.get('token')
-  const [estado, setEstado] = useState<EstadoEnvio>(estadoInicial)
-  const [expirado, setExpirado] = useState<string | null>(null)
+  const params = useSearchParams()
+  const token = params.get('token')
+  const [state, setState] = useState<SubmitState>(initialState)
+  const [expired, setExpired] = useState<string | null>(null)
 
-  async function enviar(evento: React.FormEvent<HTMLFormElement>) {
-    evento.preventDefault()
-    if (estado.enviando) return
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (state.submitting) return
 
-    const dados = new FormData(evento.currentTarget)
-    setEstado({ ...estadoInicial, enviando: true })
+    const form = new FormData(event.currentTarget)
+    setState({ ...initialState, submitting: true })
 
-    const resultado = await chamarApi('/senha/redefinir', {
-      metodo: 'POST',
-      corpo: { token, senha: dados.get('senha') },
+    const result = await callApi('/senha/redefinir', {
+      method: 'POST',
+      body: { token, password: form.get('password') },
     })
 
-    if (resultado.tipo === 'ok') {
+    if (result.kind === 'ok') {
       // A API revoga todas as sessões (FR-015); o token guardado aqui já não
       // vale nada, e deixá-lo faria a próxima tela tentar usá-lo à toa.
-      esquecerToken()
+      forgetToken()
       router.replace('/entrar?senha-alterada=1')
       return
     }
 
-    if (resultado.tipo === 'validacao') {
-      setEstado({ ...estadoInicial, erros: resultado.erros })
+    if (result.kind === 'validation') {
+      setState({ ...initialState, errors: result.errors })
       return
     }
 
-    if (resultado.tipo === 'expirado') {
-      setExpirado(resultado.mensagem)
+    if (result.kind === 'expired') {
+      setExpired(result.message)
       return
     }
 
-    setEstado({ ...estadoInicial, erroGeral: resultado.mensagem })
+    setState({ ...initialState, generalError: result.message })
   }
 
   // Link velho, já usado, ou visita direta sem token: explica e devolve o
   // caminho, em vez de mostrar formulário que vai falhar de qualquer jeito.
-  if (!token || expirado) {
+  if (!token || expired) {
     return (
-      <LayoutAuth titulo="Criar nova senha">
-        <Aviso tipo="erro">
-          {expirado ?? 'Link inválido. Abra o link direto do e-mail que enviamos.'}
-        </Aviso>
+      <AuthLayout title="Criar nova senha">
+        <Alert kind="error">
+          {expired ?? 'Link inválido. Abra o link direto do e-mail que enviamos.'}
+        </Alert>
         <p className="mt-6 text-base">
           <Link href="/esqueci-senha" className="font-medium underline underline-offset-4">
             Pedir um novo link
           </Link>
         </p>
-      </LayoutAuth>
+      </AuthLayout>
     )
   }
 
   return (
-    <LayoutAuth
-      titulo="Criar nova senha"
-      subtitulo="Depois de salvar, você entra com ela. As sessões abertas em outros aparelhos serão encerradas."
+    <AuthLayout
+      title="Criar nova senha"
+      subtitle="Depois de salvar, você entra com ela. As sessões abertas em outros aparelhos serão encerradas."
     >
-      <FormularioBase
-        estado={estado}
-        rotuloAcao="Salvar nova senha"
-        rotuloEnviando="Salvando…"
-        onSubmit={enviar}
+      <BaseForm
+        state={state}
+        actionLabel="Salvar nova senha"
+        submittingLabel="Salvando…"
+        onSubmit={submit}
       >
-        <Campo
-          name="senha"
+        <Field
+          name="password"
           type="password"
-          rotulo="Nova senha"
+          label="Nova senha"
           autoComplete="new-password"
-          dica="Pelo menos 8 caracteres."
-          erro={erroDoCampo(estado.erros, 'senha')}
+          hint="Pelo menos 8 caracteres."
+          error={fieldError(state.errors, 'password')}
         />
-      </FormularioBase>
-    </LayoutAuth>
+      </BaseForm>
+    </AuthLayout>
   )
 }
 
@@ -98,16 +98,16 @@ function Conteudo() {
  * e-mail, não que é a pessoa naquele aparelho — pode ser um computador
  * emprestado. Redefinida a senha, a pessoa entra normalmente.
  */
-export default function RedefinirSenha() {
+export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <LayoutAuth titulo="Criar nova senha">
-          <Aviso tipo="informacao">Carregando…</Aviso>
-        </LayoutAuth>
+        <AuthLayout title="Criar nova senha">
+          <Alert kind="info">Carregando…</Alert>
+        </AuthLayout>
       }
     >
-      <Conteudo />
+      <Content />
     </Suspense>
   )
 }

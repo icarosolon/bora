@@ -13,15 +13,15 @@ O estado atual das tabelas foi lido do banco real antes de projetar — ver
 | Tabela | Origem | O que sustenta |
 |---|---|---|
 | `users` | **existe** — ganha colunas | a conta única (RN-PLAT-001) |
-| `contas_sociais` | **nova** | vínculo com o Google (RN-PLAT-002) |
-| `tokens_de_email` | **nova** | verificação, união e redefinição (D1, D5, D6) |
+| `social_accounts` | **nova** | vínculo com o Google (RN-PLAT-002) |
+| `email_tokens` | **nova** | verificação, união e redefinição (D1, D5, D6) |
 | `personal_access_tokens` | **existe** (Sanctum) | sessão com prazo deslizante (D7) |
 | `password_reset_tokens` | **existe** (Laravel) | **não usada** — ver nota abaixo |
 | `roles` / `permissions` / `model_has_roles` | **novas** (pacote) | papéis sobre a mesma conta |
 | `activity_log` | **nova** (pacote) | auditoria de escrita (RN-PLAT-004) |
 
 **Nota sobre `password_reset_tokens`**: a tabela existe (padrão do Laravel), mas esta
-feature usa `tokens_de_email` para os **três** fluxos de link, em vez de manter um mecanismo
+feature usa `email_tokens` para os **três** fluxos de link, em vez de manter um mecanismo
 só para senha e outro para o resto. **Julgamento do assistente, não medido**: um mecanismo
 único de token de e-mail é mais simples de auditar e testar que dois com semânticas
 diferentes. A tabela padrão fica sem uso; removê-la é decisão do Ícaro (não faço isso
@@ -40,7 +40,7 @@ Colunas existentes hoje (verificadas): `id`, `name`, `email`, `email_verified_at
 |---|---|---|
 | `email` | passa a guardar **sempre normalizado** (minúsculas, sem espaços nas pontas); mantém índice **único** | RN-PLAT-001 não pode ser burlada por variação de caixa (edge case da spec) |
 | `password` | passa a ser **nullable** | conta que nasce pelo Google não tem senha (US2-1); hoje é `NOT NULL` |
-| `ultimo_acesso_em` | **nova**, nullable | alimenta a política de sessão e o suporte; não é dado sensível |
+| `last_seen_at` | **nova**, nullable | alimenta a política de sessão e o suporte; não é dado sensível |
 
 **Invariantes** (sustentadas por banco + domínio, não só por código):
 
@@ -56,28 +56,28 @@ Colunas existentes hoje (verificadas): `id`, `name`, `email`, `email_verified_at
 
 ---
 
-## `contas_sociais` — vínculo com provedor externo
+## `social_accounts` — vínculo com provedor externo
 
 | Coluna | Tipo | Notas |
 |---|---|---|
 | `id` | bigint unsigned, PK | |
 | `user_id` | bigint unsigned, FK → `users.id` | `cascade` on delete **não** se aplica: conta não se exclui (Princípio X) |
-| `provedor` | varchar(32) | `google` nesta feature; a estrutura já aceita outros |
-| `provedor_user_id` | varchar(191) | identificador estável **do provedor** |
-| `email_no_provedor` | varchar(255), nullable | só para diagnóstico; **não** é a chave |
-| `vinculado_em` | timestamp | quando a união/criação aconteceu |
+| `provider` | varchar(32) | `google` nesta feature; a estrutura já aceita outros |
+| `provider_user_id` | varchar(191) | identificador estável **do provedor** |
+| `provider_email` | varchar(255), nullable | só para diagnóstico; **não** é a chave |
+| `linked_at` | timestamp | quando a união/criação aconteceu |
 | `created_at` / `updated_at` | timestamp | |
 
-**Índices**: único em (`provedor`, `provedor_user_id`); único em (`user_id`, `provedor`) —
+**Índices**: único em (`provider`, `provider_user_id`); único em (`user_id`, `provider`) —
 uma conta tem no máximo **um** vínculo por provedor.
 
-**Decisão de modelagem que importa**: o vínculo é pelo **`provedor_user_id`**, não pelo
+**Decisão de modelagem que importa**: o vínculo é pelo **`provider_user_id`**, não pelo
 e-mail. Isso resolve o edge case da spec "e-mail da conta Google mudou desde o vínculo": a
 pessoa continua entrando na mesma conta, porque o identificador do Google não muda.
 
 ---
 
-## `tokens_de_email` — links de uso único
+## `email_tokens` — links de uso único
 
 Serve aos três fluxos com semântica idêntica: gerar, enviar, validar uma vez, expirar.
 
@@ -85,18 +85,18 @@ Serve aos três fluxos com semântica idêntica: gerar, enviar, validar uma vez,
 |---|---|---|
 | `id` | bigint unsigned, PK | |
 | `user_id` | bigint unsigned, FK → `users.id` | |
-| `finalidade` | varchar(32) | `verificacao_email` · `uniao_credenciais` · `redefinicao_senha` |
+| `purpose` | varchar(32) | `email_verification` · `credential_merge` · `password_reset` |
 | `token_hash` | varchar(64), único | **só o hash** — o valor em claro vai no e-mail e nunca é persistido |
-| `expira_em` | timestamp | prazo por finalidade, parâmetro configurável |
-| `usado_em` | timestamp, nullable | preenchido no primeiro uso — garante uso único |
-| `dados` | json, nullable | contexto da união (ex.: provedor a vincular) |
+| `expires_at` | timestamp | prazo por finalidade, parâmetro configurável |
+| `used_at` | timestamp, nullable | preenchido no primeiro uso — garante uso único |
+| `payload` | json, nullable | contexto da união (ex.: provedor a vincular) |
 | `created_at` / `updated_at` | timestamp | |
 
-**Índices**: único em `token_hash`; índice em (`user_id`, `finalidade`).
+**Índices**: único em `token_hash`; índice em (`user_id`, `purpose`).
 
 **Regras que o modelo sustenta:**
 
-- **Uso único**: um token com `usado_em` preenchido é recusado — cobre "link já usado" da
+- **Uso único**: um token com `used_at` preenchido é recusado — cobre "link já usado" da
   spec (US3-5, US4-3).
 - **Expiração** por finalidade — valores iniciais da spec: união e redefinição **60 min**,
   verificação de e-mail **7 dias**. Ficam em config, nunca hardcoded (Princípio VII).
@@ -115,7 +115,7 @@ Colunas relevantes já presentes (verificadas): `tokenable_type`, `tokenable_id`
 
 - Na criação, `expires_at = agora + 30 dias` (parâmetro configurável), passado como 3º
   argumento de `createToken`.
-- A cada request autenticada, o middleware `RenovarExpiracaoDoToken` empurra `expires_at`
+- A cada request autenticada, o middleware `RefreshTokenExpiration` empurra `expires_at`
   para `agora + 30 dias`. `last_used_at` o próprio Sanctum já atualiza.
 - `'expiration'` em `config/sanctum.php` **permanece `null`** — se receber valor, ele
   sobrepõe o `expires_at` por token e quebra o deslizamento.
@@ -145,8 +145,8 @@ propriedades do log. Para união e troca de senha, registrar apenas que ocorreu.
 
 ```mermaid
 erDiagram
-    users ||--o{ contas_sociais : "vincula (máx. 1 por provedor)"
-    users ||--o{ tokens_de_email : "gera"
+    users ||--o{ social_accounts : "vincula (máx. 1 por provedor)"
+    users ||--o{ email_tokens : "gera"
     users ||--o{ personal_access_tokens : "abre sessão"
     users }o--o{ roles : "acumula papéis"
     users ||--o{ activity_log : "audita"
@@ -156,18 +156,18 @@ erDiagram
         varchar email UK "normalizado"
         varchar password "nullable — conta Google"
         timestamp email_verified_at "nullable — não bloqueia"
-        timestamp ultimo_acesso_em
+        timestamp last_seen_at
     }
-    contas_sociais {
+    social_accounts {
         varchar provedor "google"
-        varchar provedor_user_id "chave do vínculo, não o e-mail"
-        timestamp vinculado_em
+        varchar provider_user_id "chave do vínculo, não o e-mail"
+        timestamp linked_at
     }
-    tokens_de_email {
+    email_tokens {
         varchar finalidade "verificacao|uniao|redefinicao"
         varchar token_hash UK "nunca em claro"
-        timestamp expira_em
-        timestamp usado_em "uso único"
+        timestamp expires_at
+        timestamp used_at "uso único"
     }
     personal_access_tokens {
         timestamp expires_at "30 dias, deslizante"
@@ -198,7 +198,7 @@ erDiagram
 
 **"PENDENTE DE UNIÃO" não é estado persistido.** É o estado do *fluxo*, carregado pelo
 token de união (`finalidade = uniao_credenciais`). Nada é gravado em `users` nem em
-`contas_sociais` antes da confirmação — é o que garante o cenário US3-6 (número de contas
+`social_accounts` antes da confirmação — é o que garante o cenário US3-6 (número de contas
 com o e-mail permanece exatamente um em qualquer desfecho).
 
 ---
@@ -207,6 +207,6 @@ com o e-mail permanece exatamente um em qualquer desfecho).
 
 `docs/architecture/data-model.md` descreve **User** e **Role/Papel** de forma conceitual e
 já previa "credenciais próprias e/ou Google". Esta feature materializa a parte de contas.
-O que o documento conceitual ainda **não** citava e passa a existir: `contas_sociais` e
-`tokens_de_email`. Atualizar no `/doc-sync` da implementação, não agora — o modelo real só
+O que o documento conceitual ainda **não** citava e passa a existir: `social_accounts` e
+`email_tokens`. Atualizar no `/doc-sync` da implementação, não agora — o modelo real só
 existe quando a migration rodar.

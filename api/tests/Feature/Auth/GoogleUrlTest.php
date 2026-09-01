@@ -2,11 +2,11 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Ports\ProvedorDeIdentidade;
-use Database\Seeders\PapeisSeeder;
+use App\Ports\IdentityProvider;
+use Database\Seeders\RolesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\Support\ProvedorDeIdentidadeFake;
+use Tests\Support\FakeIdentityProvider;
 use Tests\TestCase;
 
 /**
@@ -24,12 +24,12 @@ class GoogleUrlTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(PapeisSeeder::class);
-        $this->app->instance(ProvedorDeIdentidade::class, new ProvedorDeIdentidadeFake);
+        $this->seed(RolesSeeder::class);
+        $this->app->instance(IdentityProvider::class, new FakeIdentityProvider);
     }
 
     #[Test]
-    public function devolve_a_url_de_autorizacao_e_o_state(): void
+    public function returns_the_authorization_url_and_the_state(): void
     {
         $this->getJson('/api/v1/auth/google/url')
             ->assertOk()
@@ -37,28 +37,28 @@ class GoogleUrlTest extends TestCase
     }
 
     #[Test]
-    public function o_state_vai_dentro_da_url(): void
+    public function the_state_travels_inside_the_url(): void
     {
-        $resposta = $this->getJson('/api/v1/auth/google/url')->assertOk();
+        $response = $this->getJson('/api/v1/auth/google/url')->assertOk();
 
         $this->assertStringContainsString(
-            $resposta->json('data.state'),
-            $resposta->json('data.url')
+            $response->json('data.state'),
+            $response->json('data.url')
         );
     }
 
     #[Test]
-    public function cada_pedido_gera_um_state_diferente(): void
+    public function each_request_generates_a_different_state(): void
     {
         // State reaproveitado deixaria de ser proteção: bastaria capturar um.
-        $primeiro = $this->getJson('/api/v1/auth/google/url')->json('data.state');
-        $segundo = $this->getJson('/api/v1/auth/google/url')->json('data.state');
+        $first = $this->getJson('/api/v1/auth/google/url')->json('data.state');
+        $second = $this->getJson('/api/v1/auth/google/url')->json('data.state');
 
-        $this->assertNotSame($primeiro, $segundo);
+        $this->assertNotSame($first, $second);
     }
 
     #[Test]
-    public function o_state_e_longo_o_bastante_para_nao_ser_adivinhado(): void
+    public function the_state_is_long_enough_not_to_be_guessed(): void
     {
         $state = $this->getJson('/api/v1/auth/google/url')->json('data.state');
 
@@ -66,18 +66,18 @@ class GoogleUrlTest extends TestCase
     }
 
     #[Test]
-    public function nao_exige_autenticacao(): void
+    public function does_not_require_authentication(): void
     {
         // É o primeiro passo de quem ainda não tem conta.
         $this->getJson('/api/v1/auth/google/url')->assertOk();
     }
 
     #[Test]
-    public function a_resposta_nao_expoe_o_segredo_do_cliente(): void
+    public function the_response_does_not_expose_the_client_secret(): void
     {
-        $conteudo = $this->getJson('/api/v1/auth/google/url')->getContent();
+        $content = $this->getJson('/api/v1/auth/google/url')->getContent();
 
-        $this->assertStringNotContainsString('client_secret', $conteudo);
-        $this->assertStringNotContainsString((string) config('services.google.client_secret'), $conteudo);
+        $this->assertStringNotContainsString('client_secret', $content);
+        $this->assertStringNotContainsString((string) config('services.google.client_secret'), $content);
     }
 }

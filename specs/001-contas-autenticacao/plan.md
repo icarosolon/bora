@@ -104,33 +104,33 @@ api/
 ├── app/
 │   ├── Domain/Account/                  # núcleo testável, sem framework (Princípio VII)
 │   │   ├── Email.php                    # value object: normalização + validação
-│   │   ├── PoliticaDeSessao.php         # prazo como parâmetro, não hardcoded
-│   │   └── PoliticaDeSenha.php          # comprimento mínimo configurável
+│   │   ├── SessionPolicy.php            # prazo como parâmetro, não hardcoded
+│   │   └── PasswordPolicy.php           # comprimento mínimo configurável
 │   ├── UseCases/Account/                # casos de uso — onde a regra vive
-│   │   ├── RegistrarConta.php
-│   │   ├── AutenticarPorSenha.php
-│   │   ├── AutenticarPorGoogle.php      # decide: entra, cria ou exige união
-│   │   ├── UnirCredenciais.php          # RN-PLAT-002 / D1
-│   │   ├── DefinirSenha.php             # conta nascida no Google (sessão ativa)
-│   │   ├── SolicitarRedefinicaoDeSenha.php
-│   │   ├── RedefinirSenha.php
-│   │   └── VerificarEmail.php
+│   │   ├── RegisterAccount.php
+│   │   ├── AuthenticateWithPassword.php
+│   │   ├── AuthenticateWithGoogle.php   # decide: entra, cria ou exige união
+│   │   ├── MergeCredentials.php         # RN-PLAT-002 / D1
+│   │   ├── SetPassword.php              # conta nascida no Google (sessão ativa)
+│   │   ├── RequestPasswordReset.php
+│   │   ├── ResetPassword.php
+│   │   └── VerifyEmail.php
 │   ├── Ports/                           # portas — o domínio não importa SDK
-│   │   ├── ProvedorDeIdentidade.php     # implementada por adapter do Socialite
-│   │   └── EnviadorDeEmail.php          # implementada por adapter do Resend
+│   │   ├── IdentityProvider.php         # implementada por adapter do Socialite
+│   │   └── EmailSender.php              # implementada por adapter do Resend
 │   ├── Adapters/
-│   │   ├── Socialite/GoogleIdentidade.php
+│   │   ├── Socialite/GoogleIdentityProvider.php
 │   │   └── Email/                       # Resend em produção, log em dev
 │   ├── Http/
 │   │   ├── Controllers/Api/V1/Auth/     # controllers finos, um recurso cada
 │   │   ├── Requests/Auth/               # FormRequest: authorize() + rules()
 │   │   ├── Resources/                   # nunca Model serializado direto
 │   │   └── Middleware/
-│   │       └── RenovarExpiracaoDoToken.php   # janela deslizante (research §1)
+│   │       └── RefreshTokenExpiration.php  # janela deslizante (research §1)
 │   ├── Jobs/                            # e-mails na fila (Princípio VI)
-│   └── Models/{User,ContaSocial,TokenDeEmail}.php
-├── database/migrations/                 # users (colunas novas), contas_sociais,
-│                                        # tokens_de_email + tabelas dos pacotes
+│   └── Models/{User,SocialAccount,EmailToken}.php
+├── database/migrations/                 # users (colunas novas), social_accounts,
+│                                        # email_tokens + tabelas dos pacotes
 ├── routes/api.php                       # tudo sob v1 (corrige /api/user)
 ├── config/{cors.php,sanctum.php,services.php,scramble.php}
 └── tests/
@@ -150,7 +150,7 @@ web/
 │   │   └── auth/                        # formulários (componentes cliente)
 │   └── lib/
 │       ├── api.ts                       # cliente da API pública
-│       └── sessao.ts                    # guarda do token (localStorage) — só no cliente
+│       └── session.ts                   # guarda do token (localStorage) — só no cliente
 └── tests/
     ├── unit/                            # Vitest + Testing Library + axe
     └── e2e/                             # Playwright — 360 e 1280

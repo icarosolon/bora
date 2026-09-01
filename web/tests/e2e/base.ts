@@ -4,7 +4,7 @@ import { test as base, expect, type Page } from '@playwright/test'
  * `test` estendido que **reprova quando o navegador registra erro no console**.
  *
  * Existe por causa de um defeito real: `verificar-email` chamava
- * `estaAutenticado()` durante a renderização. Como a função lê `localStorage`,
+ * `isAuthenticated()` durante a renderização. Como a função lê `localStorage`,
  * o servidor devolvia `false` e o cliente `true` — o React acusava HTML
  * divergente e **desistia de corrigir aquela subárvore**, deixando a tela num
  * estado errado sem nada visível indicar. Passou por 66 testes e2e, 37 de
@@ -18,7 +18,7 @@ import { test as base, expect, type Page } from '@playwright/test'
  */
 
 /** Ruído do ambiente de desenvolvimento, não defeito da aplicação. */
-const IGNORADOS = [
+const IGNORED = [
   // O recarregamento rápido do Next não conecta quando a página é servida por
   // um host diferente do bind — irrelevante para o comportamento da tela.
   /websocket connection to .*_next\/hmr/i,
@@ -35,30 +35,30 @@ const IGNORADOS = [
  * reprovando**. Foi exatamente um 403 em `/_next/static/chunks` que quebrou a
  * hidratação no E-013, e essa rede precisa continuar pegando aquilo.
  */
-function ehRespostaDeErroSimuladaDaApi(url: string | undefined): boolean {
+function isSimulatedApiError(url: string | undefined): boolean {
   return !!url && url.includes('/api/v1/')
 }
 
-export const test = base.extend<{ semErrosDeConsole: void }>({
-  semErrosDeConsole: [
+export const test = base.extend<{ noConsoleErrors: void }>({
+  noConsoleErrors: [
     async ({ page }, use) => {
-      const erros: string[] = []
+      const errors: string[] = []
 
       page.on('console', (m) => {
         if (m.type() !== 'error') return
 
-        const texto = m.text()
-        if (IGNORADOS.some((r) => r.test(texto))) return
-        if (ehRespostaDeErroSimuladaDaApi(m.location()?.url)) return
+        const text = m.text()
+        if (IGNORED.some((r) => r.test(text))) return
+        if (isSimulatedApiError(m.location()?.url)) return
 
-        erros.push(texto)
+        errors.push(text)
       })
 
-      page.on('pageerror', (e) => erros.push(`Erro não tratado: ${e.message}`))
+      page.on('pageerror', (e) => errors.push(`Erro não tratado: ${e.message}`))
 
       await use()
 
-      expect(erros, 'o navegador registrou erro no console').toEqual([])
+      expect(errors, 'o navegador registrou erro no console').toEqual([])
     },
     { auto: true },
   ],
@@ -78,13 +78,13 @@ export { expect }
  * Essa contradição já produziu duas falhas intermitentes; por isso o auxiliar
  * mora aqui, e não copiado em cada spec.
  */
-export async function comSessaoValida(page: Page) {
-  await page.route('**/api/v1/eu', (rota) =>
-    rota.fulfill({
+export async function withValidSession(page: Page) {
+  await page.route('**/api/v1/eu', (route) =>
+    route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        data: { id: 1, nome: 'Maria', email: 'maria@exemplo.com', email_verificado: true },
+        data: { id: 1, name: 'Maria', email: 'maria@exemplo.com', email_verified: true },
       }),
     }),
   )

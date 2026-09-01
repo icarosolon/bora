@@ -19,14 +19,14 @@ use PHPUnit\Framework\TestCase;
 class EmailTest extends TestCase
 {
     #[Test]
-    #[DataProvider('variacoesDoMesmoEmail')]
-    public function normaliza_variacoes_para_o_mesmo_valor(string $entrada): void
+    #[DataProvider('variationsOfTheSameEmail')]
+    public function normalizes_variations_to_the_same_value(string $input): void
     {
-        $this->assertSame('maria@exemplo.com', Email::de($entrada)->valor);
+        $this->assertSame('maria@exemplo.com', Email::from($input)->value);
     }
 
     /** @return array<string, array{string}> */
-    public static function variacoesDoMesmoEmail(): array
+    public static function variationsOfTheSameEmail(): array
     {
         return [
             'já normalizado' => ['maria@exemplo.com'],
@@ -39,25 +39,25 @@ class EmailTest extends TestCase
     }
 
     #[Test]
-    public function duas_variacoes_sao_consideradas_o_mesmo_email(): void
+    public function two_variations_are_considered_the_same_email(): void
     {
-        $a = Email::de('  Maria@Gmail.com ');
-        $b = Email::de('maria@gmail.com');
+        $a = Email::from('  Maria@Gmail.com ');
+        $b = Email::from('maria@gmail.com');
 
         $this->assertTrue($a->equals($b), 'Variação de caixa criaria conta paralela.');
     }
 
     #[Test]
-    #[DataProvider('emailsInvalidos')]
-    public function recusa_email_invalido(string $entrada): void
+    #[DataProvider('invalidEmails')]
+    public function rejects_an_invalid_email(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Email::de($entrada);
+        Email::from($input);
     }
 
     /** @return array<string, array{string}> */
-    public static function emailsInvalidos(): array
+    public static function invalidEmails(): array
     {
         return [
             'vazio' => [''],
@@ -72,27 +72,27 @@ class EmailTest extends TestCase
     }
 
     #[Test]
-    public function tentar_devolve_nulo_em_vez_de_lancar(): void
+    public function try_from_returns_null_instead_of_throwing(): void
     {
-        $this->assertNull(Email::tentar('sem-arroba'));
-        $this->assertNotNull(Email::tentar('maria@exemplo.com'));
+        $this->assertNull(Email::tryFrom('sem-arroba'));
+        $this->assertNotNull(Email::tryFrom('maria@exemplo.com'));
     }
 
     #[Test]
-    public function nao_confunde_enderecos_de_pessoas_diferentes(): void
+    public function does_not_confuse_addresses_of_different_people(): void
     {
         // Ponto e sufixo "+" são regra de UM provedor. Tratá-los como iguais
         // recusaria contas legítimas em domínios que os distinguem.
         $this->assertFalse(
-            Email::de('m.aria@exemplo.com')->equals(Email::de('maria@exemplo.com'))
+            Email::from('m.aria@exemplo.com')->equals(Email::from('maria@exemplo.com'))
         );
         $this->assertFalse(
-            Email::de('maria+role@exemplo.com')->equals(Email::de('maria@exemplo.com'))
+            Email::from('maria+role@exemplo.com')->equals(Email::from('maria@exemplo.com'))
         );
     }
 
     #[Test]
-    public function limitacao_conhecida_recusa_acento_no_endereco(): void
+    public function known_limitation_rejects_an_accent_in_the_address(): void
     {
         // Registro deliberado de uma limitação, não de um comportamento desejado.
         // filter_var() não aceita caractere não-ASCII na parte local nem domínio
@@ -103,7 +103,7 @@ class EmailTest extends TestCase
         // Se algum dia aparecer usuário real reprovado por isto, o lugar de
         // corrigir é aqui (idn_to_ascii antes de validar), e vira decisão do
         // Ícaro, não do implementador.
-        $this->assertNull(Email::tentar('maria+rolê@exemplo.com'));
-        $this->assertNull(Email::tentar('maria@açúcar.com.br'));
+        $this->assertNull(Email::tryFrom('maria+rolê@exemplo.com'));
+        $this->assertNull(Email::tryFrom('maria@açúcar.com.br'));
     }
 }

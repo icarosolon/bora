@@ -3,7 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Database\Seeders\PapeisSeeder;
+use Database\Seeders\RolesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -18,139 +18,142 @@ class LoginTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(PapeisSeeder::class);
+        $this->seed(RolesSeeder::class);
     }
 
-    private function conta(array $atributos = []): User
+    private function account(array $attributes = []): User
     {
         return User::factory()->create([
             'email' => 'maria@exemplo.com',
             'password' => 'senhaforte1',
-            ...$atributos,
+            ...$attributes,
         ]);
     }
 
     #[Test]
-    public function entra_com_credenciais_corretas(): void
+    public function signs_in_with_correct_credentials(): void
     {
-        $this->conta();
+        $this->account();
 
         $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'senhaforte1',
+            'password' => 'senhaforte1',
         ])->assertOk()
-            ->assertJsonStructure(['data' => ['conta' => ['id', 'nome', 'email'], 'token', 'expira_em']]);
+            ->assertJsonStructure(['data' => ['account' => ['id', 'name', 'email'], 'token', 'expires_at']]);
     }
 
     #[Test]
-    public function entra_mesmo_com_o_email_escrito_diferente(): void
+    public function signs_in_even_with_the_email_written_differently(): void
     {
-        $this->conta();
+        $this->account();
 
         $this->postJson('/api/v1/sessoes', [
             'email' => '  Maria@Exemplo.COM ',
-            'senha' => 'senhaforte1',
+            'password' => 'senhaforte1',
         ])->assertOk();
     }
 
     #[Test]
-    public function a_mensagem_de_falha_nao_revela_qual_campo_errou(): void
+    public function the_failure_message_does_not_reveal_which_field_was_wrong(): void
     {
         // FR-006: mensagem única. Dizer "e-mail não existe" entregaria quais
         // e-mails têm conta no Bora.
-        $this->conta();
+        $this->account();
 
-        $comSenhaErrada = $this->postJson('/api/v1/sessoes', [
+        $withWrongPassword = $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'senhaerrada9',
+            'password' => 'senhaerrada9',
         ])->assertUnauthorized()->json('message');
 
-        $comEmailInexistente = $this->postJson('/api/v1/sessoes', [
+        $withUnknownEmail = $this->postJson('/api/v1/sessoes', [
             'email' => 'ninguem@exemplo.com',
-            'senha' => 'senhaforte1',
+            'password' => 'senhaforte1',
         ])->assertUnauthorized()->json('message');
 
-        $this->assertSame($comSenhaErrada, $comEmailInexistente);
-        $this->assertStringContainsString('não conferem', $comSenhaErrada);
+        $this->assertSame($withWrongPassword, $withUnknownEmail);
+        $this->assertStringContainsString('não conferem', $withWrongPassword);
     }
 
     #[Test]
-    public function a_mensagem_oferece_o_caminho_de_recuperacao(): void
+    public function the_message_offers_the_recovery_path(): void
     {
-        $this->conta();
+        $this->account();
 
-        $mensagem = $this->postJson('/api/v1/sessoes', [
+        $message = $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'senhaerrada9',
+            'password' => 'senhaerrada9',
         ])->json('message');
 
-        $this->assertMatchesRegularExpression('/esqueci|senha/i', $mensagem);
+        $this->assertMatchesRegularExpression('/esqueci|senha/i', $message);
     }
 
     #[Test]
-    public function conta_sem_senha_orienta_a_entrar_pelo_google(): void
+    public function an_account_without_a_password_points_to_google(): void
     {
         // US2: a conta nasceu no Google. Repetir "e-mail ou senha não conferem"
         // deixaria a pessoa tentando uma senha que nunca existiu.
-        $conta = $this->conta(['password' => null]);
-        $conta->contasSociais()->create([
-            'provedor' => 'google',
-            'provedor_user_id' => '123',
-            'vinculado_em' => now(),
+        $account = $this->account(['password' => null]);
+        $account->socialAccounts()->create([
+            'provider' => 'google',
+            'provider_user_id' => '123',
+            'linked_at' => now(),
         ]);
 
-        $mensagem = $this->postJson('/api/v1/sessoes', [
+        $message = $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'qualquercoisa1',
+            'password' => 'qualquercoisa1',
         ])->assertUnauthorized()->json('message');
 
-        $this->assertStringContainsString('Google', $mensagem);
+        $this->assertStringContainsString('Google', $message);
     }
 
     #[Test]
-    public function o_login_registra_o_ultimo_acesso(): void
+    public function signing_in_records_the_last_access(): void
     {
-        $conta = $this->conta();
-        $this->assertNull($conta->ultimo_acesso_em);
+        $account = $this->account();
+        $this->assertNull($account->last_seen_at);
 
         $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'senhaforte1',
+            'password' => 'senhaforte1',
         ])->assertOk();
 
-        $this->assertNotNull($conta->fresh()->ultimo_acesso_em);
+        $this->assertNotNull($account->fresh()->last_seen_at);
     }
 
     #[Test]
-    public function cada_login_abre_uma_sessao_propria(): void
+    public function each_sign_in_opens_its_own_session(): void
     {
         // Entrar no celular não pode derrubar a sessão do computador.
-        $this->conta();
+        $this->account();
 
-        $primeiro = $this->postJson('/api/v1/sessoes', [
-            'email' => 'maria@exemplo.com', 'senha' => 'senhaforte1',
+        $first = $this->postJson('/api/v1/sessoes', [
+            'email' => 'maria@exemplo.com', 'password' => 'senhaforte1',
         ])->json('data.token');
 
-        $segundo = $this->postJson('/api/v1/sessoes', [
-            'email' => 'maria@exemplo.com', 'senha' => 'senhaforte1',
+        $second = $this->postJson('/api/v1/sessoes', [
+            'email' => 'maria@exemplo.com', 'password' => 'senhaforte1',
         ])->json('data.token');
 
-        $this->assertNotSame($primeiro, $segundo);
-        $this->withHeader('Authorization', 'Bearer '.$primeiro)->getJson('/api/v1/eu')->assertOk();
-        $this->withHeader('Authorization', 'Bearer '.$segundo)->getJson('/api/v1/eu')->assertOk();
+        $this->assertNotSame($first, $second);
+        $this->withHeader('Authorization', 'Bearer '.$first)->getJson('/api/v1/eu')->assertOk();
+        $this->withHeader('Authorization', 'Bearer '.$second)->getJson('/api/v1/eu')->assertOk();
     }
 
     #[Test]
-    public function a_resposta_nunca_expoe_a_senha(): void
+    public function the_response_never_exposes_the_password(): void
     {
-        $this->conta();
+        $this->account();
 
-        $conteudo = $this->postJson('/api/v1/sessoes', [
+        $content = $this->postJson('/api/v1/sessoes', [
             'email' => 'maria@exemplo.com',
-            'senha' => 'senhaforte1',
+            'password' => 'senhaforte1',
         ])->getContent();
 
-        $this->assertStringNotContainsString('senhaforte1', $conteudo);
-        $this->assertStringNotContainsString('password', $conteudo);
+        // Ver CreateAccountTest: a checagem é pela chave `"password":`, porque
+        // `signs_in_with` carrega o valor legítimo `"password"`.
+        $this->assertStringNotContainsString('senhaforte1', $content);
+        $this->assertStringNotContainsString('"password":', $content);
+        $this->assertStringNotContainsString('$2y$', $content);
     }
 }

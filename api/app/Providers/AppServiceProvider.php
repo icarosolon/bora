@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Adapters\Email\MailerEnviadorDeEmail;
-use App\Adapters\Socialite\GoogleIdentidade;
-use App\Domain\Account\PoliticaDeSenha;
-use App\Domain\Account\PoliticaDeSessao;
-use App\Ports\EnviadorDeEmail;
-use App\Ports\ProvedorDeIdentidade;
+use App\Adapters\Email\MailerEmailSender;
+use App\Adapters\Socialite\GoogleIdentityProvider;
+use App\Domain\Account\PasswordPolicy;
+use App\Domain\Account\SessionPolicy;
+use App\Ports\EmailSender;
+use App\Ports\IdentityProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -24,28 +24,28 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(
-            PoliticaDeSenha::class,
-            fn () => new PoliticaDeSenha((int) config('bora.conta.senha_minima'))
+            PasswordPolicy::class,
+            fn () => new PasswordPolicy((int) config('bora.account.minimum_password_length'))
         );
 
         $this->app->singleton(
-            PoliticaDeSessao::class,
-            fn () => new PoliticaDeSessao((int) config('bora.sessao.validade_dias'))
+            SessionPolicy::class,
+            fn () => new SessionPolicy((int) config('bora.session.lifetime_days'))
         );
 
         // Porta -> adapter (Principio VII). O provedor concreto (log em dev,
         // Resend em producao) e escolhido por MAIL_MAILER, nao por codigo.
-        $this->app->bind(EnviadorDeEmail::class, MailerEnviadorDeEmail::class);
+        $this->app->bind(EmailSender::class, MailerEmailSender::class);
 
         // Idem para o login social: quem conhece o Socialite é só o adapter.
         // É esta amarração que os testes da US2 trocam por um provedor falso,
         // para exercitar cancelamento e falha sem depender do Google.
-        $this->app->bind(ProvedorDeIdentidade::class, GoogleIdentidade::class);
+        $this->app->bind(IdentityProvider::class, GoogleIdentityProvider::class);
     }
 
     public function boot(): void
     {
-        $this->registrarLimitesDeTentativa();
+        $this->registerRateLimits();
     }
 
     /**
@@ -59,15 +59,15 @@ class AppServiceProvider extends ServiceProvider
      * exige o bloqueio nas duas portas, senão a união vira o caminho livre para
      * adivinhar a senha.
      */
-    private function registrarLimitesDeTentativa(): void
+    private function registerRateLimits(): void
     {
-        $porMinuto = (int) config('bora.tentativas.por_minuto');
+        $perMinute = (int) config('bora.attempts.per_minute');
 
-        RateLimiter::for('autenticacao', function (Request $request) use ($porMinuto) {
+        RateLimiter::for('authentication', function (Request $request) use ($perMinute) {
             /*
              * O balde é POR ALVO, não um só por origem.
              *
-             * O login manda `email`; a união manda `uniao_token` (que identifica
+             * O login manda `email`; a união manda `merge_token` (que identifica
              * a conta-alvo) e não manda e-mail nenhum. Chavear só pelo e-mail
              * fazia todas as rotas sem esse campo colapsarem num balde único por
              * IP — e aí uma pessoa que entra pelo Google e depois confirma a
@@ -75,22 +75,22 @@ class AppServiceProvider extends ServiceProvider
              *
              * Sem alvo identificável, sobra o IP — que já tem o teto abaixo.
              */
-            $alvo = mb_strtolower(trim((string) $request->input('email')))
-                ?: (string) $request->input('uniao_token')
-                ?: 'sem-alvo';
+            $target = mb_strtolower(trim((string) $request->input('email')))
+                ?: (string) $request->input('merge_token')
+                ?: 'no-target';
 
             return [
-                Limit::perMinute($porMinuto)->by($alvo.'|'.$request->ip()),
+                Limit::perMinute($perMinute)->by($target.'|'.$request->ip()),
                 // Teto por IP, mais folgado: contém varredura de muitos alvos a
                 // partir da mesma origem sem travar uso legítimo compartilhado
                 // (um bar com wi-fi para todo mundo, que é o cenário do Bora).
-                Limit::perMinute($porMinuto * 4)->by($request->ip()),
+                Limit::perMinute($perMinute * 4)->by($request->ip()),
             ];
         });
 
         // Envio de e-mail (recuperação, reenvio de verificação, link de união):
         // limite mais apertado, porque cada acerto custa um e-mail de verdade.
-        RateLimiter::for('envio-de-email', function (Request $request) {
+        RateLimiter::for('email-sending', function (Request $request) {
             $email = mb_strtolower(trim((string) $request->input('email')));
 
             return [

@@ -29,9 +29,9 @@ Schedule::command('sanctum:prune-expired --hours=24')->daily();
  * eventual vazamento — mesmo sendo hash.
  */
 Schedule::call(function () {
-    \App\Models\TokenDeEmail::query()
+    \App\Models\EmailToken::query()
         ->where(function ($q) {
-            $q->whereNotNull('usado_em')->orWhere('expira_em', '<', now());
+            $q->whereNotNull('used_at')->orWhere('expires_at', '<', now());
         })
         ->where('created_at', '<', now()->subDays(7))
         ->delete();

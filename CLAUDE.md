@@ -39,6 +39,15 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
 - Complementos: **portas & adapters** (domínio nunca importa SDK externo); **Clean Code**
   (funções pequenas, SRP, erro explícito, núcleo testável sem framework).
 
+## Nomenclatura (vinculante)
+**Identificador em inglês, prosa em português. Única exceção: o caminho da URL.**
+Classes, arquivos, métodos, variáveis, tabelas, colunas, chaves de config, **campos do
+JSON** e nomes de método de teste → inglês. Comentários, mensagens da API, textos de tela e
+descrições de teste em string → português. Rotas ficam em português (`/sessoes/atual`,
+`/email/verificar/reenviar`); o corpo delas, não (`{"email", "password"}`). Vocabulário do
+produto (`rolezeiro`) não se traduz. Regra completa e o porquê:
+`docs/architecture/naming-conventions.md`.
+
 ## Entrega de feature (Princípio XI — inegociável)
 Feature pronta = API completa e documentada **+ tela 100% no frontend** (conforme
 `docs/product/ux-requirements.md`) **+ testes automatizados de back e front aprovados**
@@ -84,6 +93,7 @@ Nada é "pronto só no backend".
 - Método: `docs/development-workflow.md`
 - Visão / negócio / marca: `docs/product/{vision,monetization,brand}.md`
 - Regras (catálogo): `docs/domain/`
+- Nomenclatura: `docs/architecture/naming-conventions.md`
 - ADRs: `docs/adr/`
 - Backlog / erros / Linear: `docs/logs/`
 - Telas originais do Figma: `docs/product/design/figma/`

@@ -95,10 +95,27 @@ docs/
 ├─ adr/NNNN-<slug>.md                    # adr-new
 ├─ architecture/
 │  ├─ data-model.md
+│  ├─ naming-conventions.md              # inglês no código, português na prosa e na URL
 │  └─ api-conventions.md                 # aponta para a constituição
 └─ logs/{backlog.md, error-log.md, linear-import.md}
 CHANGELOG.md                             # raiz, Keep a Changelog + SemVer
 ```
+
+## 5.1 Nomenclatura (vinculante)
+
+**Identificador em inglês, prosa em português. Única exceção: o caminho da URL.**
+
+- **Inglês:** classes, arquivos, métodos, variáveis, constantes, chaves de configuração e
+  de ambiente, tabelas, colunas, **campos do JSON da API**, chaves de erro de validação,
+  chaves de storage do navegador e nomes de método de teste em PHP.
+- **Português:** comentários, mensagens da API, textos de tela, rótulos e as descrições de
+  teste que são string (Playwright, Vitest) — porque string é prosa, não identificador.
+- **Rotas em português**, tanto na API (`/sessoes/atual`) quanto no `web/` (`/criar-conta`):
+  o endereço é visível e compartilhável. O **corpo** da requisição não acompanha:
+  `POST /sessoes` recebe `{ "email", "password" }`.
+- Vocabulário do produto (`rolezeiro`, `rolê`) não se traduz, nem em banco.
+
+Regra completa, com a justificativa de cada fronteira: `docs/architecture/naming-conventions.md`.
 
 ## 6. Onde ficam as regras de negócio
 

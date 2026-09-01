@@ -4,28 +4,28 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { LayoutAuth } from '@/components/auth/LayoutAuth'
-import { Aviso } from '@/components/ui/aviso'
+import { AuthLayout } from '@/components/auth/AuthLayout'
+import { Alert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { chamarApi } from '@/lib/api'
-import { estaAutenticado } from '@/lib/sessao'
+import { callApi } from '@/lib/api'
+import { isAuthenticated } from '@/lib/session'
 
-type Situacao =
-  | { estado: 'verificando' }
-  | { estado: 'confirmado'; mensagem: string }
-  | { estado: 'expirado'; mensagem: string }
-  | { estado: 'falha'; mensagem: string }
+type Status =
+  | { state: 'verifying' }
+  | { state: 'confirmed'; message: string }
+  | { state: 'expired'; message: string }
+  | { state: 'failure'; message: string }
 
-function Conteudo() {
-  const parametros = useSearchParams()
-  const token = parametros.get('token')
-  const [situacao, setSituacao] = useState<Situacao>({ estado: 'verificando' })
-  const [reenviando, setReenviando] = useState(false)
-  const [reenviado, setReenviado] = useState<string | null>(null)
+function Content() {
+  const params = useSearchParams()
+  const token = params.get('token')
+  const [status, setStatus] = useState<Status>({ state: 'verifying' })
+  const [resending, setResending] = useState(false)
+  const [resent, setResent] = useState<string | null>(null)
 
   /*
    * Estado de sessão em `useState` + `useEffect`, e NÃO chamando
-   * `estaAutenticado()` direto no JSX.
+   * `isAuthenticated()` direto no JSX.
    *
    * A função lê `localStorage`, que não existe no servidor: ela devolvia
    * `false` na renderização do servidor e podia devolver `true` na hidratação.
@@ -35,52 +35,52 @@ function Conteudo() {
    * Regra que vale para toda tela deste projeto: nada que dependa do navegador
    * (localStorage, window, data/hora) pode ser lido durante a renderização.
    */
-  const [autenticado, setAutenticado] = useState(false)
-  useEffect(() => setAutenticado(estaAutenticado()), [])
+  const [authenticated, setAuthenticated] = useState(false)
+  useEffect(() => setAuthenticated(isAuthenticated()), [])
 
   useEffect(() => {
     if (!token) {
-      setSituacao({
-        estado: 'falha',
-        mensagem: 'Link incompleto. Abra o link direto do e-mail que enviamos.',
+      setStatus({
+        state: 'failure',
+        message: 'Link incompleto. Abra o link direto do e-mail que enviamos.',
       })
       return
     }
 
-    chamarApi('/email/verificar', { metodo: 'POST', corpo: { token } }).then((r) => {
-      if (r.tipo === 'ok') {
-        setSituacao({ estado: 'confirmado', mensagem: r.mensagem ?? 'E-mail confirmado.' })
-      } else if (r.tipo === 'expirado') {
-        setSituacao({ estado: 'expirado', mensagem: r.mensagem })
+    callApi('/email/verificar', { method: 'POST', body: { token } }).then((r) => {
+      if (r.kind === 'ok') {
+        setStatus({ state: 'confirmed', message: r.message ?? 'E-mail confirmado.' })
+      } else if (r.kind === 'expired') {
+        setStatus({ state: 'expired', message: r.message })
       } else {
-        setSituacao({ estado: 'falha', mensagem: r.mensagem })
+        setStatus({ state: 'failure', message: r.message })
       }
     })
   }, [token])
 
-  async function reenviar() {
-    setReenviando(true)
-    const r = await chamarApi('/email/verificar/reenviar', {
-      metodo: 'POST',
-      autenticado: true,
+  async function resend() {
+    setResending(true)
+    const r = await callApi('/email/verificar/reenviar', {
+      method: 'POST',
+      authenticated: true,
     })
-    setReenviando(false)
-    setReenviado(
-      r.tipo === 'ok'
-        ? (r.mensagem ?? 'Enviamos um novo link.')
-        : r.mensagem,
+    setResending(false)
+    setResent(
+      r.kind === 'ok'
+        ? (r.message ?? 'Enviamos um novo link.')
+        : r.message,
     )
   }
 
   return (
-    <LayoutAuth titulo="Confirmar e-mail">
-      {situacao.estado === 'verificando' && (
-        <Aviso tipo="informacao">Confirmando seu e-mail…</Aviso>
+    <AuthLayout title="Confirmar e-mail">
+      {status.state === 'verifying' && (
+        <Alert kind="info">Confirmando seu e-mail…</Alert>
       )}
 
-      {situacao.estado === 'confirmado' && (
+      {status.state === 'confirmed' && (
         <>
-          <Aviso tipo="sucesso">{situacao.mensagem}</Aviso>
+          <Alert kind="success">{status.message}</Alert>
           <p className="mt-6">
             <Link href="/" className="font-medium underline underline-offset-4">
               Ir para o Bora
@@ -89,24 +89,24 @@ function Conteudo() {
         </>
       )}
 
-      {(situacao.estado === 'expirado' || situacao.estado === 'falha') && (
+      {(status.state === 'expired' || status.state === 'failure') && (
         <>
-          <Aviso tipo="erro">{situacao.mensagem}</Aviso>
+          <Alert kind="error">{status.message}</Alert>
 
           {/* Só oferece reenvio a quem está logado: o endpoint exige sessão. */}
-          {autenticado ? (
+          {authenticated ? (
             <>
               <Button
                 type="button"
-                onClick={reenviar}
-                disabled={reenviando}
+                onClick={resend}
+                disabled={resending}
                 className="mt-6 min-h-11 w-full text-base"
               >
-                {reenviando ? 'Enviando…' : 'Enviar um novo link'}
+                {resending ? 'Enviando…' : 'Enviar um novo link'}
               </Button>
-              {reenviado && (
+              {resent && (
                 <div className="mt-4">
-                  <Aviso tipo="informacao">{reenviado}</Aviso>
+                  <Alert kind="info">{resent}</Alert>
                 </div>
               )}
             </>
@@ -120,7 +120,7 @@ function Conteudo() {
           )}
         </>
       )}
-    </LayoutAuth>
+    </AuthLayout>
   )
 }
 
@@ -132,10 +132,10 @@ function Conteudo() {
  * requisito de SEO a proteger (a armadilha que o spike BORA-32 registrou vale
  * para as páginas de catálogo).
  */
-export default function VerificarEmail() {
+export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<LayoutAuth titulo="Confirmar e-mail"><Aviso tipo="informacao">Carregando…</Aviso></LayoutAuth>}>
-      <Conteudo />
+    <Suspense fallback={<AuthLayout title="Confirmar e-mail"><Alert kind="info">Carregando…</Alert></AuthLayout>}>
+      <Content />
     </Suspense>
   )
 }

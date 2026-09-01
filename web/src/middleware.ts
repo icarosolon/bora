@@ -21,7 +21,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
 
-  const emDesenvolvimento = process.env.NODE_ENV === 'development'
+  const isDevelopment = process.env.NODE_ENV === 'development'
 
   /*
    * O `connect-src` precisa liberar exatamente o host que o navegador vai
@@ -44,22 +44,22 @@ export function middleware(request: NextRequest) {
     // é o host que o navegador pediu — e a CSP sairia liberando `0.0.0.0:8000`,
     // bloqueando tanto o computador quanto o celular.
     const host = (request.headers.get('host') ?? 'localhost:3000').split(':')[0]
-    const protocolo = request.headers.get('x-forwarded-proto') ?? 'http'
+    const protocol = request.headers.get('x-forwarded-proto') ?? 'http'
 
-    apiHost = `${protocolo}://${host}:8000`
+    apiHost = `${protocol}://${host}:8000`
   }
 
   const csp = [
     "default-src 'self'",
     // 'unsafe-eval' só em desenvolvimento: o recarregamento rápido do Next
     // depende dele. Em produção fica de fora.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${emDesenvolvimento ? " 'unsafe-eval'" : ''}`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDevelopment ? " 'unsafe-eval'" : ''}`,
     // Estilo inline não executa código; o Tailwind e o Next injetam estilo.
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob:",
     // Em dev o Next usa websocket para o recarregamento rápido.
-    `connect-src 'self' ${apiHost}${emDesenvolvimento ? ' ws: wss:' : ''}`,
+    `connect-src 'self' ${apiHost}${isDevelopment ? ' ws: wss:' : ''}`,
     "form-action 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -69,17 +69,17 @@ export function middleware(request: NextRequest) {
   // O Next lê a CSP do header da REQUISIÇÃO para descobrir o nonce e aplicá-lo
   // aos próprios scripts. Sem estas duas linhas, o nonce do header de resposta
   // não bate com o dos scripts e o bloqueio continua.
-  const cabecalhosDaRequisicao = new Headers(request.headers)
-  cabecalhosDaRequisicao.set('x-nonce', nonce)
-  cabecalhosDaRequisicao.set('Content-Security-Policy', csp)
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-nonce', nonce)
+  requestHeaders.set('Content-Security-Policy', csp)
 
-  const resposta = NextResponse.next({
-    request: { headers: cabecalhosDaRequisicao },
+  const response = NextResponse.next({
+    request: { headers: requestHeaders },
   })
 
-  resposta.headers.set('Content-Security-Policy', csp)
+  response.headers.set('Content-Security-Policy', csp)
 
-  return resposta
+  return response
 }
 
 export const config = {

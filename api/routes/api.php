@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Auth\ContaController;
+use App\Http\Controllers\Api\V1\Auth\AccountController;
 use App\Http\Controllers\Api\V1\Auth\GoogleController;
-use App\Http\Controllers\Api\V1\Auth\SenhaController;
-use App\Http\Controllers\Api\V1\Auth\SessaoController;
-use App\Http\Controllers\Api\V1\Auth\UniaoCredenciaisController;
-use App\Http\Controllers\Api\V1\Auth\VerificacaoEmailController;
-use App\Http\Controllers\Api\V1\EuController;
+use App\Http\Controllers\Api\V1\Auth\PasswordController;
+use App\Http\Controllers\Api\V1\Auth\SessionController;
+use App\Http\Controllers\Api\V1\Auth\CredentialMergeController;
+use App\Http\Controllers\Api\V1\Auth\EmailVerificationController;
+use App\Http\Controllers\Api\V1\MeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,17 +26,17 @@ Route::prefix('v1')->group(function () {
     /*
      * Público — cadastro, entrada e confirmação por link.
      *
-     * O `throttle:autenticacao` protege as duas portas que recebem senha
+     * O `throttle:authentication` protege as duas portas que recebem senha
      * (FR-007). A verificação por link é pública de propósito: a pessoa abre o
      * e-mail com frequência noutro aparelho, sem sessão.
      */
-    Route::post('/contas', [ContaController::class, 'store'])
-        ->middleware('throttle:autenticacao');
+    Route::post('/contas', [AccountController::class, 'store'])
+        ->middleware('throttle:authentication');
 
-    Route::post('/sessoes', [SessaoController::class, 'store'])
-        ->middleware('throttle:autenticacao');
+    Route::post('/sessoes', [SessionController::class, 'store'])
+        ->middleware('throttle:authentication');
 
-    Route::post('/email/verificar', [VerificacaoEmailController::class, 'store']);
+    Route::post('/email/verificar', [EmailVerificationController::class, 'store']);
 
     /*
      * Google (US2). A URL de autorização é pública — é o primeiro passo de quem
@@ -46,7 +46,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/auth/google/url', [GoogleController::class, 'url']);
 
     Route::post('/auth/google/sessoes', [GoogleController::class, 'store'])
-        ->middleware('throttle:autenticacao');
+        ->middleware('throttle:authentication');
 
     /*
      * União de credenciais (US3). Público: quem chega aqui ainda não tem sessão
@@ -56,13 +56,13 @@ Route::prefix('v1')->group(function () {
      * união viraria a porta livre para adivinhar a senha de uma conta,
      * contornando o bloqueio da tela de entrar.
      */
-    Route::post('/uniao-credenciais', [UniaoCredenciaisController::class, 'store'])
-        ->middleware('throttle:autenticacao');
+    Route::post('/uniao-credenciais', [CredentialMergeController::class, 'store'])
+        ->middleware('throttle:authentication');
 
-    Route::post('/uniao-credenciais/link', [UniaoCredenciaisController::class, 'enviarLink'])
-        ->middleware('throttle:envio-de-email');
+    Route::post('/uniao-credenciais/link', [CredentialMergeController::class, 'sendLink'])
+        ->middleware('throttle:email-sending');
 
-    Route::post('/uniao-credenciais/link/confirmar', [UniaoCredenciaisController::class, 'confirmarLink']);
+    Route::post('/uniao-credenciais/link/confirmar', [CredentialMergeController::class, 'confirmLink']);
 
     /*
      * Recuperação de senha (US4). Pública por necessidade: quem esqueceu a
@@ -71,23 +71,23 @@ Route::prefix('v1')->group(function () {
      * O pedido leva o limitador de envio de e-mail: cada acerto custa um e-mail
      * de verdade, e sem limite isto vira ferramenta de varredura e de spam.
      */
-    Route::post('/senha/esqueci', [SenhaController::class, 'esqueci'])
-        ->middleware('throttle:envio-de-email');
+    Route::post('/senha/esqueci', [PasswordController::class, 'forgot'])
+        ->middleware('throttle:email-sending');
 
-    Route::post('/senha/redefinir', [SenhaController::class, 'redefinir']);
+    Route::post('/senha/redefinir', [PasswordController::class, 'reset']);
 
     /*
-     * Autenticado — o `sessao.deslizante` renova o prazo a cada uso (D7).
+     * Autenticado — o `sliding-session` renova o prazo a cada uso (D7).
      */
-    Route::middleware(['auth:sanctum', 'sessao.deslizante'])->group(function () {
-        Route::get('/eu', [EuController::class, 'show']);
+    Route::middleware(['auth:sanctum', 'sliding-session'])->group(function () {
+        Route::get('/eu', [MeController::class, 'show']);
 
-        Route::delete('/sessoes/atual', [SessaoController::class, 'destroy']);
+        Route::delete('/sessoes/atual', [SessionController::class, 'destroy']);
 
         // Primeira senha de conta nascida no Google (US2-5, D1 inversa).
-        Route::post("/senha", [SenhaController::class, "store"]);
+        Route::post('/senha', [PasswordController::class, 'store']);
 
-        Route::post('/email/verificar/reenviar', [VerificacaoEmailController::class, 'reenviar'])
-            ->middleware('throttle:envio-de-email');
+        Route::post('/email/verificar/reenviar', [EmailVerificationController::class, 'resend'])
+            ->middleware('throttle:email-sending');
     });
 });

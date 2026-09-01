@@ -7,6 +7,56 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Changed
+- **Convenção de nomenclatura adotada e aplicada retroativamente** (2026-08-31, decisão do
+  Ícaro): **identificador em inglês, prosa em português, e a única exceção é o caminho da
+  URL**. Escrita em `docs/architecture/naming-conventions.md`, referenciada em `CLAUDE.md`
+  e em `development-workflow.md` §5.1, para as próximas specs já nascerem no padrão.
+  Feita agora porque nada foi para produção — é o momento mais barato que vai existir.
+  - **Renomeado no `api/`**: 38 classes e arquivos (`ContaController` → `AccountController`,
+    `TokenDeEmail` → `EmailToken`, `PoliticaDeSessao` → `SessionPolicy`, `Auditoria` →
+    `AuditLog`, `UnirCredenciais` → `MergeCredentials`…), métodos, variáveis, constantes,
+    ações de controller (`esqueci` → `forgot`, `reenviar` → `resend`), chaves de
+    `config/bora.php` e variáveis de ambiente `BORA_*`.
+  - **Renomeado no banco**, editando as migrations existentes em vez de criar migrations de
+    rename — nada em produção, e um `create` em português seguido de um `rename` seria ruído
+    permanente: `contas_sociais` → `social_accounts`, `tokens_de_email` → `email_tokens`, e
+    as colunas (`provedor` → `provider`, `expira_em` → `expires_at`, `usado_em` → `used_at`,
+    `vinculado_em` → `linked_at`, `ultimo_acesso_em` → `last_seen_at`, `dados` → `payload`).
+  - **Renomeado no `web/`**: componentes (`FormularioBase` → `BaseForm`, `CabecalhoConta` →
+    `AccountHeader`, `Aviso` → `Alert`, `Campo` → `Field`…), `lib/sessao.ts` →
+    `lib/session.ts`, `lib/hidratacao.ts` → `lib/hydration.ts`, e as chaves de storage
+    (`bora.sessao.token` → `bora.session.token`).
+  - **Renomeado nos testes**: 22 arquivos e **155 métodos** de teste do backend, mais os
+    testes de componente e e2e. As *descrições* de teste em string (Playwright, Vitest)
+    ficaram em português — string é prosa, não identificador; é a regra aplicada
+    mecanicamente, não uma exceção improvisada.
+- **Campos do JSON da API passaram para inglês** — decisão revista no meio do trabalho, a
+  pedido do Ícaro. A primeira decisão foi manter o corpo em português junto com a rota; ele
+  questionou o custo e estava certo: com o banco em inglês e o corpo em português, toda
+  coluna nova custaria uma linha de tradução no Resource e no FormRequest **para sempre**, e
+  a chave do erro de validação poderia dessincronizar do nome do campo em silêncio — o que
+  faz a tela perder o destaque no campo certo. O caminho da rota continua em português
+  (`/sessoes/atual`, `/email/verificar/reenviar`), porque endereço é coisa que a pessoa vê
+  e compartilha; o corpo, não.
+  - `{"nome","senha","dispositivo"}` → `{"name","password","device"}`;
+    `{"conta","expira_em","entra_com","papeis","criada_em","email_verificado"}` →
+    `{"account","expires_at","signs_in_with","roles","created_at","email_verified"}`;
+    `uniao_token` → `merge_token`; `situacao: "uniao_necessaria"` → `status: "merge_required"`.
+  - `contracts/auth-api.md` e a spec 001 atualizados junto. **Verificado**: o OpenAPI que o
+    Scramble gera tem as mesmas 14 rotas, com caminho em português e **zero campo em
+    português**.
+- **Vocabulário do produto não foi traduzido**: `rolezeiro` continua `rolezeiro`, inclusive
+  como valor em banco. Padronizar isso não seria padronizar; seria apagar a voz do produto.
+- **Uma asserção de teste ficou mais precisa, não mais frouxa.** `the_response_never_exposes_the_password`
+  barrava a palavra `password` na resposta inteira. Com a API em inglês, `signs_in_with`
+  passou a carregar o valor legítimo `"password"` — que diz por qual caminho a conta entra e
+  não é segredo. A asserção passou a barrar a **chave** `"password":`, o valor em claro e
+  qualquer hash `$2y$`. Afrouxar seria perder a rede; detector que grita sem motivo ensina a
+  ser ignorado.
+- Suítes após a mudança: **185 backend** (573 asserções), **37 de componente**, **76 e2e**,
+  build e TypeScript limpos.
+
 ### Added
 - **Spec 001 — fase de Polish (T110–T117)** concluída, 117/119. Falta só a validação visual
   final e o fechamento.
@@ -17,7 +67,7 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
     `v1/eventos` e `web/src/app/eventos/`. Zero referências sobrando; a doc caiu de 15 para
     14 rotas, confirmando.
   - **Verificação de vazamento**: nenhum token cruza para componente de servidor
-    (`lib/sessao` só é importado por componentes cliente), o HTML servido não contém token
+    (`lib/session` só é importado por componentes cliente), o HTML servido não contém token
     de sessão, e nos logs há **zero** hashes bcrypt, tokens Bearer ou campos de senha. A
     auditoria não guarda chave sensível.
   - **Quickstart contra a API real**: conta criada, token autentica, duplicata recusada
@@ -38,7 +88,7 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **US3 — API**: `POST /api/v1/uniao-credenciais` (confirma com a senha),
     `.../link` (plano B) e `.../link/confirmar`. **Telas**: `/unir-contas` e
     `/unir-contas/confirmar`.
-  - **`UniaoInvarianteTest` é a prova do bloqueio do Princípio I** no único ponto do
+  - **`MergeInvariantTest` é a prova do bloqueio do Princípio I** no único ponto do
     produto em que duas identidades se encontram: verifica **uma conta só** em todos os
     desfechos — confirmada, abandonada, senha errada, token expirado, três tentativas, e
     senha depois de pedir o link —, mais o índice único do banco.
@@ -70,7 +120,7 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   - **`state` de uso único, consumido antes de falar com o provedor** — se sobrevivesse a
     uma tentativa malsucedida, deixaria um valor válido circulando, que é justamente o que
     ele existe para impedir.
-  - **O vínculo casa pelo `provedor_user_id`, não pelo e-mail**: quem troca o endereço no
+  - **O vínculo casa pelo `provider_user_id`, não pelo e-mail**: quem troca o endereço no
     Google continua entrando na mesma conta, com teste dedicado.
   - **Guarda contra o efeito duplo do StrictMode** na página de retorno: sem ele, o `code`
     seria trocado duas vezes, e como o Google só aceita uma, a segunda tentativa
@@ -110,14 +160,14 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
     7.15.5, como o plano previu), `spatie/laravel-permission` 8.3.0,
     `spatie/laravel-activitylog` 5.1.0 e `dedoc/scramble` v0.13.42.
   - **Banco**: `users` ganha `password` **nullable** (conta que nasce no Google não tem
-    senha) e `ultimo_acesso_em`; novas `contas_sociais` (vínculo pelo `provedor_user_id`,
-    **não** pelo e-mail, com dois índices únicos) e `tokens_de_email` (uso único, só o
+    senha) e `last_seen_at`; novas `social_accounts` (vínculo pelo `provider_user_id`,
+    **não** pelo e-mail, com dois índices únicos) e `email_tokens` (uso único, só o
     **hash** — o valor em claro nunca é persistido). 18 tabelas, todas InnoDB.
   - **Domínio sem framework** (Princípio VII): `Email` (normalização que sustenta a
-    invariante de conta única), `PoliticaDeSenha`, `PoliticaDeSessao`, `SessaoAberta` e as
-    portas `ProvedorDeIdentidade` / `EnviadorDeEmail`. As políticas recebem o parâmetro
+    invariante de conta única), `PasswordPolicy`, `SessionPolicy`, `OpenSession` e as
+    portas `IdentityProvider` / `EmailSender`. As políticas recebem o parâmetro
     por **construtor**, não por `config()` — assim o núcleo se testa sem subir o Laravel.
-  - **Janela deslizante da sessão** (D7) implementada em `RenovarExpiracaoDoToken`, com
+  - **Janela deslizante da sessão** (D7) implementada em `RefreshTokenExpiration`, com
     teste que também **trava `sanctum.expiration` em `null`**: valor ali sobrepõe o
     `expires_at` por token e quebraria o deslizamento em silêncio.
   - **API**: tudo sob `/api/v1`; `/api/user` **deixou de existir** (virou `/api/v1/eu`).
@@ -125,12 +175,12 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
     `Retry-After`, 5xx sem vazar detalhe). CORS com origem explícita e
     `supports_credentials` em `false`; `Retry-After` **exposto** — sem isso a tela não
     conseguiria dizer quanto esperar após um 429.
-  - **Auditoria**: classe `Auditoria` com lista de chaves barradas, para que um descuido
+  - **Auditoria**: classe `AuditLog` com lista de chaves barradas, para que um descuido
     futuro num caso de uso não consiga gravar senha, hash ou token no log (Princípio V).
   - **`web/`**: `lib/api.ts` (resultado discriminado por status, sem regra de negócio),
-    `lib/sessao.ts` (token em `localStorage`, módulo só de cliente), **CSP estrita** em
+    `lib/session.ts` (token em `localStorage`, módulo só de cliente), **CSP estrita** em
     `next.config.ts` como mitigação obrigatória da D2, primitivas acessíveis (`Campo`,
-    `Aviso`) e `LayoutAuth` mobile-first literal.
+    `Aviso`) e `AuthLayout` mobile-first literal.
   - **Removido o "Test User" do `DatabaseSeeder`**: numa feature cuja invariante é "uma
     conta por e-mail", seeder que cria conta silenciosamente atrapalha o teste manual.
     Conta de teste passa a nascer por factory, dentro do teste que precisa dela.
@@ -196,16 +246,16 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### Fixed
 - **A barra continuava mostrando "Entrar" depois do login** (E-016, reportado pelo Ícaro):
-  o login funcionava e o token era guardado, mas `CabecalhoConta` vive no **layout raiz** e
+  o login funcionava e o token era guardado, mas `AccountHeader` vive no **layout raiz** e
   só consultava `/eu` ao montar — navegação client-side não remonta o layout, então a barra
   ficava congelada até um recarregamento. Corrigido com um evento de sessão que o cabeçalho
   escuta; escuta também o `storage`, então **sair numa aba atualiza as outras**. Nenhum dos
   74 testes e2e pegava, porque nenhum fazia login de verdade e depois olhava a barra.
 - **Premissa contraditória em testes e2e**, exposta pela correção acima: três testes
   guardavam sessão e ao mesmo tempo mockavam `/eu` como 401 — e o cliente descarta o token
-  nesse caso, comportamento correto do produto. Auxiliar `comSessaoValida` extraído para
+  nesse caso, comportamento correto do produto. Auxiliar `withValidSession` extraído para
   `tests/e2e/base.ts`, com a explicação escrita, em vez de corrigir caso a caso.
-- **Divergência de hidratação em `/verificar-email`** (E-015): `estaAutenticado()` era
+- **Divergência de hidratação em `/verificar-email`** (E-015): `isAuthenticated()` era
   chamado durante a renderização e lê `localStorage`, que não existe no servidor — o React
   acusava HTML divergente e **desistia de corrigir a subárvore**, deixando a tela com o
   conteúdo errado em silêncio. Passou por 66 e2e, 37 de componente e o build, porque jsdom
@@ -216,13 +266,13 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   rotas do Google e da união não enviam esse campo — então todas colapsavam num balde único
   por IP. Efeito real: quem entrasse pelo Google e depois confirmasse a união **se trancava
   sozinho**, misturando fluxos sem relação. A chave passou a ser o **alvo** (e-mail, ou o
-  `uniao_token` que identifica a conta), mantendo o teto por IP. **Atenção ao adicionar
-  rota nova com `throttle:autenticacao`:** ela precisa mandar um alvo identificável.
+  `merge_token` que identifica a conta), mantendo o teto por IP. **Atenção ao adicionar
+  rota nova com `throttle:authentication`:** ela precisa mandar um alvo identificável.
 - **O detector de dado sensível da auditoria dava falso positivo.** Ele varria o JSON
-  inteiro procurando palavras proibidas, e o valor legítimo `confirmado_via: "senha"`
+  inteiro procurando palavras proibidas, e o valor legítimo `confirmed_via: "password"`
   disparava o alarme. Passou a inspecionar **chaves**, recursivamente — detector que grita
   sem motivo ensina a ser ignorado.
-- **Guarda de hidratação extraído para o hook `useHidratado`** depois de o mesmo defeito
+- **Guarda de hidratação extraído para o hook `useHydrated`** depois de o mesmo defeito
   aparecer pela terceira vez (formulário, botão do Google, plano B da união). Sempre pego
   pelo e2e, **nunca** pelo teste de componente: jsdom não tem essa janela. Ver E-012.
 - **PHP do WAMP não conseguia fazer NENHUMA chamada HTTPS** (E-014): `curl.cainfo` e
@@ -265,7 +315,7 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   `Symfony\...\ThrottleRequestsException`, mas o Laravel lança a
   `Illuminate\Http\Exceptions\`. O 429 respondia "Too Many Attempts." em vez da mensagem
   em português que a tela mostra.
-- **Um teste dava falso verde** (`SairTest`): a requisição após o logout passava porque,
+- **Um teste dava falso verde** (`LogoutTest`): a requisição após o logout passava porque,
   dentro de um mesmo teste, o guard mantém o usuário já resolvido. O token *era* apagado do
   banco. Adicionado `forgetGuards()` com comentário — sem ele, o teste afirmava algo que
   não verificava.

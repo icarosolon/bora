@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\RenovarExpiracaoDoToken;
+use App\Http\Middleware\RefreshTokenExpiration;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -18,9 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Janela deslizante da sessão (D7). Ver RenovarExpiracaoDoToken.
+        // Janela deslizante da sessão (D7). Ver RefreshTokenExpiration.
         $middleware->alias([
-            'sessao.deslizante' => RenovarExpiracaoDoToken::class,
+            'sliding-session' => RefreshTokenExpiration::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -51,13 +51,13 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             if ($e instanceof ThrottleRequestsException) {
-                $segundos = (int) ($e->getHeaders()['Retry-After'] ?? 60);
-                $espera = $segundos >= 60
-                    ? ceil($segundos / 60).' minuto'.($segundos >= 120 ? 's' : '')
-                    : $segundos.' segundos';
+                $seconds = (int) ($e->getHeaders()['Retry-After'] ?? 60);
+                $wait = $seconds >= 60
+                    ? ceil($seconds / 60).' minuto'.($seconds >= 120 ? 's' : '')
+                    : $seconds.' segundos';
 
                 return response()->json([
-                    'message' => "Muitas tentativas. Aguarde {$espera} e tente de novo.",
+                    'message' => "Muitas tentativas. Aguarde {$wait} e tente de novo.",
                 ], 429, $e->getHeaders());
             }
 

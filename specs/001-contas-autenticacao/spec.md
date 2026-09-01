@@ -12,6 +12,14 @@ As quatro user stories estão entregues e foram validadas pelo Ícaro em 2026-08
 Polish está concluído: documentação da API conferida contra o contrato, andaime do spike
 removido, verificação de vazamento de token feita e quickstart executado.
 
+> **Refatoração de nomenclatura (2026-08-31, depois do Polish).** O projeto adotou
+> `docs/architecture/naming-conventions.md` — identificador em inglês, prosa em português,
+> exceção só no caminho da URL — e a spec 001 inteira foi convertida: código, banco, testes,
+> **campos do JSON** e este conjunto de documentos. Os caminhos das rotas **não mudaram**;
+> os campos do corpo, sim (`nome`→`name`, `uniao_token`→`merge_token`, `expira_em`→
+> `expires_at`…). Nenhum comportamento mudou e as três suítes seguem verdes, mas a mudança
+> tocou todas as telas — por isso a validação visual da T118 vale como reconferência.
+
 **Falta (T118):** uma última passada visual, porque **duas telas mudaram depois da
 validação** — a união (token saiu da URL, passou a `sessionStorage`) e o cabeçalho (passou
 a refletir o login sem recarregar, E-016).

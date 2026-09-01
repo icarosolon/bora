@@ -86,15 +86,15 @@ npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing
 php artisan migrate
 ```
 
-Cria `contas_sociais`, `tokens_de_email`, as tabelas de papéis e `activity_log`, e altera
-`users` (`password` nullable, `ultimo_acesso_em`). Detalhe em
+Cria `social_accounts`, `email_tokens`, as tabelas de papéis e `activity_log`, e altera
+`users` (`password` nullable, `last_seen_at`). Detalhe em
 [data-model.md](./data-model.md).
 
 **Conferir que nasceram InnoDB** (E-003 — o MySQL do WAMP tem MyISAM como padrão; o projeto
 força InnoDB em `config/database.php`, que **não se desfaz**):
 
 ```bash
-php artisan db:table contas_sociais
+php artisan db:table social_accounts
 ```
 
 ---
@@ -155,7 +155,7 @@ não por `curl` — a feature só está pronta com a tela (Princípio XI).
 3. **Esperado**: tela "Unir contas" explicando o que será unido, pedindo a senha.
 4. Confirmar com a **senha correta**. **Esperado**: união feita, autenticado, mensagem
    "agora você pode entrar com Google ou com sua senha". Conferir: **uma** linha em `users`,
-   **uma** em `contas_sociais`.
+   **uma** em `social_accounts`.
 5. Repetir do zero e, na tela de união, escolher **"Receber link por e-mail"**; abrir o link
    do log. **Esperado**: união concluída igual ao passo 4.
 6. Repetir e **cancelar**. **Esperado**: nada unido, nenhuma conta nova — a contagem de

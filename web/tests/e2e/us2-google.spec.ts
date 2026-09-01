@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { comSessaoValida, expect, test } from './base'
+import { withValidSession, expect, test } from './base'
 
 /**
  * US2 — entrar com Google, nas duas larguras obrigatórias.
@@ -10,7 +10,7 @@ import { comSessaoValida, expect, test } from './base'
  * backend já não cubram. O que se verifica aqui é a TELA.
  */
 
-async function semRolagemHorizontal(page: Page) {
+async function noHorizontalScroll(page: Page) {
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,
     clientWidth: document.documentElement.clientWidth,
@@ -20,8 +20,8 @@ async function semRolagemHorizontal(page: Page) {
 }
 
 test.beforeEach(async ({ page }) => {
-  await page.route('**/api/v1/eu', (rota) =>
-    rota.fulfill({
+  await page.route('**/api/v1/eu', (route) =>
+    route.fulfill({
       status: 401,
       contentType: 'application/json',
       body: JSON.stringify({ message: 'Faça login para continuar.' }),
@@ -33,30 +33,30 @@ test.describe('botão do Google na tela de entrar', () => {
   test('aparece acima do formulário de e-mail e senha', async ({ page }) => {
     await page.goto('/entrar')
 
-    const botaoGoogle = page.getByRole('button', { name: 'Entrar com Google' })
-    const campoEmail = page.getByLabel('E-mail')
+    const googleButton = page.getByRole('button', { name: 'Entrar com Google' })
+    const emailField = page.getByLabel('E-mail')
 
-    await expect(botaoGoogle).toBeVisible()
+    await expect(googleButton).toBeVisible()
 
     // O caminho de menor fricção vem primeiro (US2, decisão de tela).
-    const yBotao = (await botaoGoogle.boundingBox())?.y ?? 0
-    const yCampo = (await campoEmail.boundingBox())?.y ?? 0
-    expect(yBotao).toBeLessThan(yCampo)
+    const buttonY = (await googleButton.boundingBox())?.y ?? 0
+    const fieldY = (await emailField.boundingBox())?.y ?? 0
+    expect(buttonY).toBeLessThan(fieldY)
 
-    await semRolagemHorizontal(page)
+    await noHorizontalScroll(page)
   })
 
   test('tem alvo de toque confortável', async ({ page }) => {
     await page.goto('/entrar')
 
-    const caixa = await page.getByRole('button', { name: 'Entrar com Google' }).boundingBox()
+    const box = await page.getByRole('button', { name: 'Entrar com Google' }).boundingBox()
 
-    expect(caixa?.height ?? 0).toBeGreaterThanOrEqual(44)
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
   })
 
   test('leva para a URL de autorização devolvida pela API', async ({ page }) => {
-    await page.route('**/api/v1/auth/google/url', (rota) =>
-      rota.fulfill({
+    await page.route('**/api/v1/auth/google/url', (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ data: { url: '/entrar?veio-do-google=1', state: 'estado-1' } }),
@@ -72,16 +72,16 @@ test.describe('botão do Google na tela de entrar', () => {
 
 test.describe('retorno do Google', () => {
   test('entra e guarda o token quando dá certo', async ({ page }) => {
-    await comSessaoValida(page)
-    await page.route('**/api/v1/auth/google/sessoes', (rota) =>
-      rota.fulfill({
+    await withValidSession(page)
+    await page.route('**/api/v1/auth/google/sessoes', (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
           data: {
-            conta: { id: 1, nome: 'Maria' },
+            account: { id: 1, name: 'Maria' },
             token: 'tok-google',
-            expira_em: '2026-09-30T00:00:00-03:00',
+            expires_at: '2026-09-30T00:00:00-03:00',
           },
         }),
       }),
@@ -90,17 +90,17 @@ test.describe('retorno do Google', () => {
     await page.goto('/entrar/google/retorno?code=abc&state=xyz')
 
     await expect(page).toHaveURL(/\/$|\/\?/)
-    expect(await page.evaluate(() => localStorage.getItem('bora.sessao.token'))).toBe('tok-google')
+    expect(await page.evaluate(() => localStorage.getItem('bora.session.token'))).toBe('tok-google')
   })
 
   test('o token nunca aparece na URL', async ({ page }) => {
-    await comSessaoValida(page)
-    await page.route('**/api/v1/auth/google/sessoes', (rota) =>
-      rota.fulfill({
+    await withValidSession(page)
+    await page.route('**/api/v1/auth/google/sessoes', (route) =>
+      route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          data: { conta: { id: 1, nome: 'Maria' }, token: 'tok-secreto', expira_em: '2026-09-30T00:00:00-03:00' },
+          data: { account: { id: 1, name: 'Maria' }, token: 'tok-secreto', expires_at: '2026-09-30T00:00:00-03:00' },
         }),
       }),
     )
@@ -113,8 +113,8 @@ test.describe('retorno do Google', () => {
   })
 
   test('mostra mensagem humana e caminho de volta quando o Google recusa', async ({ page }) => {
-    await page.route('**/api/v1/auth/google/sessoes', (rota) =>
-      rota.fulfill({
+    await page.route('**/api/v1/auth/google/sessoes', (route) =>
+      route.fulfill({
         status: 401,
         contentType: 'application/json',
         body: JSON.stringify({
@@ -127,7 +127,7 @@ test.describe('retorno do Google', () => {
 
     await expect(page.getByRole('main').getByRole('alert')).toContainText('e-mail e senha')
     await expect(page.getByRole('link', { name: 'Voltar para entrar' })).toBeVisible()
-    await semRolagemHorizontal(page)
+    await noHorizontalScroll(page)
   })
 
   test('trata o cancelamento na tela do Google', async ({ page }) => {
@@ -135,21 +135,21 @@ test.describe('retorno do Google', () => {
     await page.goto('/entrar/google/retorno?error=access_denied')
 
     await expect(page.getByRole('main').getByRole('alert')).toContainText('Google')
-    expect(await page.evaluate(() => localStorage.getItem('bora.sessao.token'))).toBeNull()
+    expect(await page.evaluate(() => localStorage.getItem('bora.session.token'))).toBeNull()
   })
 
   test('manda para a união quando o e-mail já tem conta', async ({ page }) => {
-    await page.route('**/api/v1/auth/google/sessoes', (rota) =>
-      rota.fulfill({
+    await page.route('**/api/v1/auth/google/sessoes', (route) =>
+      route.fulfill({
         status: 409,
         contentType: 'application/json',
         body: JSON.stringify({
           message: 'Você já tem conta no Bora com este e-mail.',
           data: {
-            situacao: 'uniao_necessaria',
+            status: 'merge_required',
             email: 'maria@exemplo.com',
-            uniao_token: 'tok-uniao',
-            expira_em: '2026-08-31T13:00:00-03:00',
+            merge_token: 'tok-uniao',
+            expires_at: '2026-08-31T13:00:00-03:00',
           },
         }),
       }),
@@ -160,13 +160,13 @@ test.describe('retorno do Google', () => {
     // A tela de destino é da US3; aqui garante-se o encaminhamento e que
     // NENHUMA sessão foi aberta (nada foi gravado no servidor tampouco).
     await expect(page).toHaveURL(/\/unir-contas$/)
-    expect(await page.evaluate(() => localStorage.getItem('bora.sessao.token'))).toBeNull()
+    expect(await page.evaluate(() => localStorage.getItem('bora.session.token'))).toBeNull()
 
     // O token de união vai por `sessionStorage`, NUNCA pela URL: na query
     // string ele cairia no histórico, no log de servidor e no `Referer`.
     expect(page.url(), 'token de união não pode ir na URL').not.toContain('tok-uniao')
     expect(
-      await page.evaluate(() => sessionStorage.getItem('bora.uniao.pendente')),
+      await page.evaluate(() => sessionStorage.getItem('bora.merge.pending')),
       'o pedido precisa ficar guardado para a tela de união',
     ).toContain('tok-uniao')
   })

@@ -7,6 +7,17 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Fixed
+- **E-018 — worker de fila obsoleto engolia todos os e-mails** depois da refatoração de
+  nomenclatura. O `queue:work` é daemon: tinha o `AppServiceProvider` antigo em memória
+  (binding com o nome velho da porta) e carregava o Job novo do disco, que pede
+  `App\Ports\EmailSender`. Resultado: verificação de cadastro, redefinição de senha e link
+  de união falhavam **em silêncio** — a API respondia 200, porque falha de envio não derruba
+  a operação (D5). Worker reiniciado e os três fluxos verificados ao vivo. O `quickstart.md`
+  passou a mandar reiniciar processos de longa duração depois de renomear classe ou mexer em
+  binding. Nenhuma suíte pegou porque em teste a fila é `sync` — 185 testes verdes não dizem
+  nada sobre processos que já estavam no ar.
+
 ### Changed
 - **Convenção de nomenclatura adotada e aplicada retroativamente** (2026-08-31, decisão do
   Ícaro): **identificador em inglês, prosa em português, e a única exceção é o caminho da

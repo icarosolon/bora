@@ -3,6 +3,46 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-018 — Worker de fila obsoleto engoliu todos os e-mails depois da refatoração (2026-09-01)
+
+- **Sintoma:** nenhum e-mail transacional saía — verificação de cadastro, redefinição de
+  senha e link de união. A API respondia 200 normalmente (por desenho: falha de envio não
+  derruba a operação, decisão D5), então **nada aparecia errado na tela**. Em
+  `failed_jobs`: `Target [App\Ports\EmailSender] is not instantiable`.
+- **Como foi descoberto:** o Ícaro perguntou se "esqueci a senha" já mandava o link. A
+  pergunta obrigou a abrir o que executa, em vez de responder de memória — e o defeito
+  apareceu na primeira tentativa de provar.
+- **Causa:** o `queue:work` é um **daemon**, e estava no ar desde antes da refatoração de
+  nomenclatura. O processo tinha o `AppServiceProvider` **antigo** já carregado em memória,
+  que registrava a porta com o nome velho (`EnviadorDeEmail`). Só que o autoloader do
+  Composer carrega classe nova **sob demanda, do disco** — então o mesmo processo resolveu o
+  Job novo (`SendTransactionalEmail`), que pede `EmailSender`, uma porta que ninguém tinha
+  registrado ali. Processo meio velho, meio novo: a pior combinação, porque cada metade
+  parece coerente sozinha.
+- **Resolução:** reiniciar o `queue:work`. **Regra que fica:** renomear ou mover classe, e
+  qualquer mudança de binding em service provider, exige **reiniciar todo processo PHP de
+  longa duração** (`queue:work`, `schedule:work`, Horizon). O `php artisan serve` **não**
+  precisa — ele delega a um `php -S`, que sobe um processo por requisição e por isso pegou o
+  código novo sozinho. Foi justamente essa assimetria que escondeu o problema: a API
+  funcionava perfeitamente enquanto a fila estava quebrada.
+- **Por que nenhuma das três suítes pegou:** no `phpunit.xml`, `QUEUE_CONNECTION=sync` — o
+  Job roda **inline, no processo do teste**, com código fresco. É a escolha certa para
+  teste (worker de verdade tornaria a suíte lenta e intermitente), mas significa que
+  **nenhuma prova automatizada exercita o worker real**. 185 testes verdes não dizem nada
+  sobre processos que já estavam no ar.
+- **Consequência real:** a conta `icarosolon@gmail.com`, criada durante a janela quebrada,
+  ficou sem o e-mail de confirmação. O token em claro **não está no banco** (o banco guarda
+  só o hash, por desenho), mas estava no **payload serializado em `failed_jobs`** — foi de
+  lá que o link se recuperou. Vale registrar como consequência de segurança: enquanto um
+  job de e-mail está em `failed_jobs`, o link de uso único está em texto naquela tabela.
+- **Status:** resolvido; worker reiniciado e os três fluxos de e-mail verificados ao vivo.
+- **Lição — a terceira ocorrência da mesma família.** E-006 (PATH velho num processo longo),
+  E-010 (servidor de dev que sobrevive ao "parar a task") e agora este. O padrão é sempre o
+  mesmo: **estado carregado na memória de um processo que ninguém reiniciou**. E as três
+  vezes o sintoma foi diferente o bastante para não lembrar das anteriores. Depois de
+  qualquer refatoração ampla, conferir os processos de longa duração é passo obrigatório —
+  não basta a suíte ficar verde.
+
 ## E-017 — `sed` no Git Bash come barra invertida passada por argumento (2026-08-31)
 
 - **Sintoma:** durante a refatoração de nomenclatura, 68 dos 185 testes de backend

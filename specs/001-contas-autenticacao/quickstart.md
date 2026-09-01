@@ -121,6 +121,14 @@ A fila precisa estar rodando, senão nenhum e-mail é processado (Princípio VI 
 php artisan queue:work
 ```
 
+> **Reinicie o worker depois de renomear classe ou mexer em service provider.** Ele é um
+> daemon: carrega os bindings uma vez e nunca mais. Como o autoloader traz classe nova do
+> disco sob demanda, o processo fica meio velho e meio novo, e todo e-mail passa a falhar em
+> silêncio — a API continua respondendo 200, porque falha de envio não derruba a operação
+> (D5). O `php artisan serve` **não** precisa de reinício: ele sobe um processo por
+> requisição. Foi essa assimetria que escondeu o E-018. Nenhuma suíte pega isso: em teste a
+> fila é `sync`.
+
 ---
 
 ## Cenários de validação manual

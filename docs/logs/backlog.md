@@ -86,6 +86,48 @@ não-técnico. Os primitivos (botão, container, tipografia, tokens de cor) nasc
 `web/src/components/ui`, compartilhados com o app; se nascerem dentro de `landing/`, a
 landing vira um segundo design system e diverge das telas do produto.
 
+### Envio real de e-mail (antes do primeiro usuário de verdade)
+
+**Estado verificado em 2026-09-01, abrindo os arquivos:** o envio **não está configurado**.
+`MAIL_MAILER=log`, `RESEND_KEY` vazio — nenhuma mensagem sai da máquina; todas caem em
+`api/storage/logs/laravel.log`. Isso é o comportamento **certo** para desenvolvimento
+(decisão D8), e vale para os três fluxos: verificação de e-mail, redefinição de senha e link
+de união.
+
+O mailer `resend` **já existe** em `config/mail.php` (veio do scaffold do Laravel), então
+não há código a escrever — é configuração e DNS.
+
+**O que falta, item a item:**
+
+| item | valor hoje | por quê importa |
+|---|---|---|
+| `MAIL_MAILER` | `log` | precisa virar `resend` em produção |
+| `RESEND_KEY` | vazio | chave da conta |
+| domínio verificado no Resend | não existe | sem SPF/DKIM o e-mail cai em spam ou é recusado |
+| `MAIL_FROM_ADDRESS` | `hello@example.com` | padrão do scaffold, nunca tocado |
+| `MAIL_FROM_NAME` | `${APP_NAME}` | herda o item abaixo |
+| `APP_NAME` | **`Laravel`** | as 19 mensagens já geradas saem como `From: Laravel <hello@example.com>` |
+
+**Armadilha registrada, para não morder na hora da troca:** `APP_NAME` não alimenta só o
+remetente. Sem `CACHE_PREFIX` e `REDIS_PREFIX` explícitos — e eles **não** estão no `.env` —
+o Laravel deriva os prefixos de cache, Redis e sessão do slug de `APP_NAME`
+(`config/cache.php:121`, `config/database.php:155`, `config/session.php:132`). Trocar
+`APP_NAME` de `Laravel` para `Bora` **invalida todas as chaves de cache no instante da
+troca**: em produção isso derruba quem estiver no meio de um login com Google (o `state`
+vive no cache) ou com uma união pendente. Ou se faz numa janela em que isso é aceitável, ou
+se fixa `CACHE_PREFIX`/`REDIS_PREFIX` explicitamente **antes** de mexer no nome.
+
+- **Gatilho:** antes do primeiro usuário real — não antes.
+- **Dependência:** o endereço remetente depende do **domínio**, que depende do registro de
+  marca no INPI, hoje PENDENTE (item na tabela acima). Configurar o Resend com um domínio
+  que talvez mude é retrabalho garantido.
+- **Por que isto está escrito em vez de ser "óbvio na hora":** a falha é **silenciosa por
+  desenho**. Pela decisão D5, falha de envio não derruba a operação que a originou — a API
+  responde 200, a conta é criada, a tela diz que deu certo, e a pessoa simplesmente nunca
+  recebe o e-mail. Foi exatamente assim que o E-018 passou despercebido por horas. Vale
+  considerar, junto com a configuração, um **alarme sobre `failed_jobs`**: hoje ninguém é
+  avisado quando um e-mail morre ali.
+
 ## Infra do método
 
 - **Linear**: projeto **Bora** criado em 2026-08-28

@@ -19,6 +19,12 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`FRONTEND_URL` passou a existir no `api/.env.example`.** Ela não estava lá: um clone
+  novo caía no default embutido no código sem saber que a variável existia. São duas
+  variáveis parecidas e fáceis de trocar uma pela outra — `FRONTEND_URLS` (plural) é a lista
+  de origens do CORS; `FRONTEND_URL` (singular) é a base dos links enviados por e-mail. O
+  comentário agora diz a diferença e lembra de apontar para o IP da máquina ao validar no
+  celular, senão o link chega com `localhost`, que no celular é o próprio celular (E-011).
 - **Convenção de nomenclatura adotada e aplicada retroativamente** (2026-08-31, decisão do
   Ícaro): **identificador em inglês, prosa em português, e a única exceção é o caminho da
   URL**. Escrita em `docs/architecture/naming-conventions.md`, referenciada em `CLAUDE.md`

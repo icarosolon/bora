@@ -16,6 +16,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
 | **Ferramenta de túnel HTTPS** (ngrok, Cloudflare Tunnel…) para validar o **login com Google no celular** — o IP de rede local não serve como URI de redirecionamento, o Google só aceita HTTP em loopback | **validação visual da spec 001 no celular** (Princípio XI, US2). As telas sem Google validam por IP de rede local, sem túnel | `ux-requirements.md`, `specs/001-contas-autenticacao/` |
 | Emenda constitucional formalizando o Resend como provedor de e-mail transacional (decisão já tomada — ver Decisões tomadas) | governança | constituição (lista PENDENTE do Stack) |
+| Padrão de documentação OpenAPI **por feature**: cada feature documenta o quê, com que detalhe, conferido por quem e quando (BORA-26). A ferramenta já está decidida — Scramble, D3; falta a regra | toda spec com API | spec 001 D3, BORA-40 |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
 | Lista inicial de categorias de local | cadastro de local, filtros | `RN-LOCAL-002` |

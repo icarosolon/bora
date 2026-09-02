@@ -125,6 +125,40 @@ mudou; a leitura dela é que estava errada.
 quando deixa trabalho pendente. Ele está resolvido; o que ele deixou pendente é o portão,
 e isso é a BORA-40.
 
+
+## Conferência periódica do quadro inteiro (2026-09-02)
+
+Primeira auditoria completa, a pedido do Ícaro, cruzando **três fontes**: as 47 issues do
+quadro, a tabela "Decisões pendentes" do `backlog.md` e os marcadores `PENDENTE` reais nos
+catálogos de `docs/domain/`.
+
+**Resultado: 4 divergências, todas corrigidas na hora.** As três primeiras são linhas de
+backlog que nunca viraram issue — a importação inicial cobriu BORA-1..29 e **nada garantiu
+que linhas acrescentadas depois virassem issue**.
+
+| divergência | correção |
+|---|---|
+| Túnel HTTPS estava no backlog desde 2026-08-31, sem issue | **BORA-46** (M0, `decisao-pendente`) |
+| "Contagem real de casas com música ao vivo" sem issue | **BORA-47** (M5, `decisao-pendente`) |
+| "Validar premissas do orçamento" sem issue | **BORA-48** (M5, `decisao-pendente`) |
+| **Direção inversa:** BORA-26 aberta e rotulada `decisao-pendente`, **sem linha no backlog** — a linha saiu quando a D2 decidiu a metade do CORS, e a metade viva (padrão de documentação OpenAPI por feature) ficou sem rastro no repositório | issue renomeada para dizer só o que resta, com a metade decidida marcada como tal; linha correspondente devolvida à tabela do backlog |
+
+**Achado adjacente, fora do quadro:** a `RN-EVENTO-004` (`docs/domain/eventos.md`) ainda diz
+"notifica quem salvou/segue os envolvidos" — frase escrita **antes** de a `RN-DESC-003`
+separar as duas ações. O PENDENTE da separação tinha sido anotado em `descoberta.md`, e a
+regra afetada ficou sem aviso: quem lesse `eventos.md` sozinho leria uma promessa que o
+produto talvez não vá cumprir. `PENDENTE` cruzado acrescentado ali.
+
+**O que os catálogos NÃO revelaram:** todos os `PENDENTE` de `docs/domain/` têm issue
+correspondente. A divergência estava só entre backlog e quadro, nunca entre catálogo e
+quadro.
+
+**Sobre a periodicidade.** O passo 7 do `doc-sync` (criado hoje) só age sobre regras que a
+sessão **tocou** — não pega linha de backlog acrescentada sem issue, que foi exatamente o
+buraco desta auditoria. Uma conferência completa como esta continua sendo necessária de
+tempos em tempos; **quando, é chamada do Ícaro** — não há automação e não se inventa
+cadência aqui.
+
 ## Estado
 
 - [x] Projeto criado no Linear — **Bora** (lead Ícaro)

@@ -45,3 +45,10 @@ Cancelamento não apaga o evento: marca como cancelado e notifica quem salvou/se
 envolvidos (`RN-DESC-003`).
 
 PENDENTE: janela de edição após publicação (mudar data/atração notifica quem interagiu?).
+
+PENDENTE: **"quem salvou/segue" acima está desatualizado.** A frase foi escrita quando
+salvar e seguir eram a mesma coisa; desde 2026-09-02 a `RN-DESC-003` os separou — **salvar
+é silencioso e não notifica**. Falta decidir se o **cancelamento** é a exceção que também
+avisa quem apenas salvou. A pergunta está detalhada em `descoberta.md` (`RN-DESC-003`).
+Enquanto não for decidida, esta regra **não** deve ser lida como promessa de notificação a
+quem salvou.

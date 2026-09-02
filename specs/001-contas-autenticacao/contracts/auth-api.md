@@ -52,11 +52,27 @@ divergirem, o código está errado ou este arquivo está desatualizado; não se 
   "data": {
     "account": { "id": 1, "name": "Maria", "email": "maria@exemplo.com",
                "email_verified": false, "roles": ["rolezeiro"],
+               "signs_in_with": ["password"],
                "created_at": "2026-08-30T14:32:07-03:00" },
     "token": "1|abc...", "expires_at": "2026-09-29T14:32:07-03:00"
   }
 }
 ```
+
+> **`signs_in_with`** — quais caminhos de entrada a conta tem hoje: `"password"` quando há
+> senha definida, mais um item por provedor vinculado (`"google"`). É o **mesmo objeto
+> conta** em toda resposta que a devolve (`POST /contas`, `POST /sessoes`,
+> `POST /auth/google/sessoes`, `POST /uniao-credenciais`, `GET /eu`), produzido por um único
+> `AccountResource`.
+>
+> Não é enfeite: a tela decide com ele. Sem `"password"` na lista, o `web/` oferece o
+> caminho para **Definir senha** (FR-012/US2-5); com `"password"`, não oferece. Cliente que
+> ignore este campo deixa a pessoa nascida do Google sem caminho para ganhar uma senha —
+> foi exatamente esse o defeito E-019.
+>
+> **Ficou fora deste contrato até 2026-09-02**, embora a API o devolva desde a US2. A T112
+> conferiu as **rotas** contra o contrato (as 14 batem), não os **campos** de cada payload;
+> por isso a divergência sobreviveu ao Polish.
 
 **422 — e-mail já cadastrado** (Princípio I: não cria conta paralela). A mensagem muda
 conforme o meio de entrada que a conta já tem, porque a tela precisa orientar o próximo

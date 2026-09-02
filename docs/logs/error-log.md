@@ -34,6 +34,12 @@ skill `doc-sync`.
   declarado**. Testes novos: 6 de componente (com `axe`) e 3 e2e em 360 e 1280, incluindo o
   caso negativo (quem tem senha não vê a faixa) e o silêncio quando a API não informa
   `signs_in_with`.
+- **Achado vizinho, encontrado ao rodar o `/doc-sync` desta mesma correção:** `signs_in_with`
+  **nunca esteve no contrato** (`contracts/auth-api.md`), embora a API o devolva desde a US2
+  em toda resposta que carrega a conta — e a faixa nova **decide** com ele. A T112 dizia
+  "documentação da API conferida contra o contrato" e conferiu as **14 rotas**; ninguém
+  comparou os **campos** de cada payload. Corrigido no mesmo dia. Mesma família do defeito
+  principal: a verificação existia, mas media outra coisa que não a que faltava.
 - **Status:** resolvido.
 - **Lição:** **listar a tela não basta; o caminho até ela é parte da tela.** Toda tela
   declarada numa spec precisa dizer de onde se chega nela, e o `spec-check` deveria cobrar

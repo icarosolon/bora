@@ -18,6 +18,13 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   a API não informa `signs_in_with`.
 
 ### Fixed
+- **`signs_in_with` entrou no contrato da API** (`specs/001-contas-autenticacao/contracts/auth-api.md`).
+  A API devolve esse campo desde a US2, em toda resposta que carrega a conta, mas o contrato
+  nunca o documentou — e agora a tela **decide** com ele (sem `"password"` na lista, oferece
+  "Definir senha"). A T112 conferiu as **rotas** contra o contrato, não os **campos** de cada
+  payload, e foi por isso que a divergência sobreviveu ao Polish. Campo não documentado que a
+  tela consome é justamente o que quebra o app mobile depois, já que ele vai consumir a mesma
+  API sem ver este código.
 - **E-019 — a tela "Definir senha" estava implementada e inalcançável.** Caso de uso, rota,
   tela e teste de backend existiam desde a US2; **nada no produto levava até lá**, então
   quem nascia do Google não tinha caminho visível para ganhar uma senha — tentava entrar

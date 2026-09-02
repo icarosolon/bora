@@ -376,13 +376,19 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    criável no celular sem túnel HTTPS. **Fronteira registrada de propósito:** o login com
    Google e a união **nunca** foram validados no celular — só no computador —, e continuarão
    assim enquanto a ferramenta de túnel for decisão pendente.
-2. **Assunto do "template": já tratado em paralelo**, em `docs/product/design-system.md`
-   (sessão de 2026-09-01, arquivo ainda **sem rastreio no git**). Ele define o template como
+2. **Assunto do "template": tratado em paralelo e agora commitado**, em
+   `docs/product/design-system.md` (sessões de 2026-09-01 e 02). Define o template como
    quatro camadas — kit de UI/tema, shell, receitas de tela, contrato + portão — e marca a
-   origem de cada decisão (Ícaro / Proposta / Derivada). Está como *decisões travadas, norma
-   ainda não escrita*: **não é vinculante** até as lacunas da seção "Em aberto" fecharem e o
-   Ícaro ratificar. **Próxima ação:** fechar aquelas lacunas, ratificar e commitar o
-   arquivo. Enquanto isso, a régua vinculante segue sendo `ux-requirements.md`.
+   origem de cada decisão (Ícaro / Proposta / Derivada). **Dezenove decisões**: as camadas
+   1, 2 e 4 mais a **camada 3 inteira** (D13–D19, arquétipos de tela). Está como *decisões
+   travadas, norma ainda não escrita*: **não é vinculante** até as lacunas da seção "Em
+   aberto" fecharem e o Ícaro ratificar (BORA-39 — a metade "commitar" está feita, falta
+   ratificar). Enquanto isso, a régua vinculante segue sendo `ux-requirements.md`.
+   **Lacunas que mais pesam:** medir o orçamento real de caracteres dos rótulos da barra na
+   fonte real; escolher a tipografia (hoje é o Geist do scaffold, por omissão); a lista de
+   papéis semânticos de cor; e a hierarquia visual do Detalhe, que acumulou sete controles
+   depois da D19. **Quatro propostas do assistente aguardam objeção do Ícaro** (D8, D10,
+   D11 e as duas da D19) — enquanto não forem confirmadas, não têm o peso de decisão dele.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
    - **Bloqueiam a spec** (decisões do Ícaro, todas na tabela acima): BORA-21 lista inicial

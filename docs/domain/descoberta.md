@@ -21,11 +21,27 @@ publicação?). Com histórico e consentimento, aplica-se `RN-DESC-005`.
 
 ## RN-DESC-003 — Seguir e salvar
 
-Usuário salva locais e artistas (telas "Locais salvos"/"Artistas salvos"). Salvar habilita
-notificação de evento novo, alteração e cancelamento dos salvos (`RN-EVENTO-004`).
+**São duas ações distintas** (decidido pelo Ícaro em 2026-09-02), válidas tanto para locais
+quanto para artistas:
 
-PENDENTE: "salvar" e "seguir" são a mesma ação ou duas (salvar = bookmark silencioso,
-seguir = com notificação)?
+- **Salvar** — marcador silencioso. Guarda o local ou o artista na lista do usuário (telas
+  "Locais salvos"/"Artistas salvos") e **não dispara notificação**.
+- **Seguir** — acompanhar. Habilita notificação de evento novo e de alteração dos
+  envolvidos (`RN-EVENTO-004`), sujeita a consentimento LGPD explícito com opt-out
+  funcional (Constituição, Princípio III).
+
+As duas são independentes: a pessoa pode ter uma, outra ou ambas.
+
+Como são dois verbos próximos, a interface **não pode** distingui-los só por rótulo ou por
+ícone — cada controle carrega uma linha curta dizendo o que faz. Exigência derivada de
+`docs/product/ux-requirements.md` ("cada tela se explica sozinha ou falhou") e registrada
+em `docs/product/design-system.md` (D19), que também define **Seguir** como a ação
+principal do perfil de artista.
+
+PENDENTE: o **cancelamento** de evento notifica também quem apenas **salvou**? A
+`RN-EVENTO-004` diz hoje "notifica quem salvou/segue os envolvidos" — texto escrito antes
+desta separação. Cancelamento é plausivelmente a única notificação que quem só salvou
+pode querer sem ter pedido para acompanhar. Decisão do Ícaro.
 
 ---
 

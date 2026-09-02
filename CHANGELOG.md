@@ -8,6 +8,22 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **O "template" do projeto foi definido, em `docs/product/design-system.md`** (sessões de
+  2026-09-01 e 02). A palavra era ambígua e foi desambiguada **antes** de qualquer
+  proposta: são **quatro camadas** — kit de UI/tema, shell/moldura, receitas de tela e
+  contrato + portão de teste. Dezenove decisões, cada uma com a **origem marcada** (Ícaro /
+  proposta ainda não objetada / derivada de regra já vinculante), mais os fatos verificados
+  no repositório que as motivaram, o que é opinião e o que **falta medir**. Destaques: tema
+  claro **e** escuro seguindo o aparelho, sem alternador (D3); **duas molduras**, consumo e
+  gestão (D5); barra inferior de cinco itens (D9); refluxo dirigido pelo conteúdo e
+  **nunca** por media query de largura, porque o aumento de fonte do sistema não muda a
+  largura do viewport e escaparia dos testes de 360/1280 (D12); e **quatro arquétipos de
+  tela**, em lista fechada (D13). Registra também uma tensão de processo: um template
+  **não passa no próprio `spec-check`** do projeto, porque não tem tela — a saída é
+  documento normativo, com precedente no `naming-conventions.md`. O documento **ainda não é
+  vinculante**: segue como "decisões travadas, norma não escrita" até as lacunas de "Em
+  aberto" fecharem e o Ícaro ratificar (BORA-39). Até lá a régua continua sendo
+  `ux-requirements.md`.
 - **Caminho visível para "Definir senha"** (spec 001, FR-012/US2-5). Faixa abaixo do
   cabeçalho, exibida **apenas** enquanto a conta não tem senha (`signs_in_with` sem
   `password`), levando a `/definir-senha` em um toque; some dentro da própria tela e some
@@ -45,6 +61,16 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-DESC-003` saiu de PENDENTE: "salvar" e "seguir" são duas ações distintas**
+  (decisão do Ícaro em 2026-09-02, contra a recomendação do assistente, que era uma ação só
+  mais uma preferência de notificação em Conta). **Salvar** é marcador silencioso;
+  **seguir** habilita notificação de evento novo e alteração, sob consentimento LGPD
+  explícito (Princípio III). São independentes — a pessoa pode ter uma, outra ou ambas. Por
+  serem dois verbos próximos, a regra agora **exige microtexto** em cada controle: rótulo e
+  ícone não bastam para ensinar a diferença a quem usa o produto de vez em quando. Abre um
+  PENDENTE novo e mais estreito: se o **cancelamento** de evento notifica também quem
+  apenas salvou, já que a `RN-EVENTO-004` ("notifica quem salvou/segue") foi escrita antes
+  desta separação.
 - **`FRONTEND_URL` passou a existir no `api/.env.example`.** Ela não estava lá: um clone
   novo caía no default embutido no código sem saber que a variável existia. São duas
   variáveis parecidas e fáceis de trocar uma pela outra — `FRONTEND_URLS` (plural) é a lista

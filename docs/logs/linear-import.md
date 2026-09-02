@@ -107,6 +107,8 @@ das specs feito entre 30/08 e 01/09). Ajustado:
 | **BORA-42** | `npm run lint` com 7 erros pré-existentes (novo, M2) |
 | **BORA-43** | a home ainda é o scaffold do Next (novo, M3) |
 | **BORA-44** | T120 — dar caminho visível à tela "Definir senha" (novo, M1, **Done**), relacionada à BORA-34 e à BORA-40 |
+| BORA-9 (`RN-DESC-003` — salvar vs. seguir) | → **Done**, rótulo `decisao-pendente` removido. Decidido pelo Ícaro em 2026-09-02 na sessão paralela (commit `1a22661`): são **duas ações distintas**. O quadro estava atrasado em relação ao catálogo |
+| **BORA-45** | cancelamento de evento notifica quem apenas **salvou**? (novo, M3, `decisao-pendente`) — pendência que **nasceu** da decisão da BORA-9: a `RN-EVENTO-004` diz "notifica quem salvou/segue", texto escrito antes da separação |
 
 **Marco M1 — Contas em 100%.**
 

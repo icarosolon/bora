@@ -30,7 +30,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Viabilidade/custo do Google Places para exibir avaliações (máx. ~5, com atribuição) — **registrar ADR** | avaliações | `RN-AVAL-003` |
 | Política de moderação (o que remove, prazo, quem modera) | avaliações, conteúdo | `RN-AVAL-004` |
 | Ordenação padrão do feed sem histórico (cold start) | descoberta | `RN-DESC-002` |
-| "Salvar" e "seguir": uma ação ou duas | descoberta | `RN-DESC-003` |
+| Cancelamento de evento notifica também quem apenas **salvou**? (nasceu da separação salvar/seguir — BORA-45) | eventos, notificações | `RN-EVENTO-004`, `RN-DESC-003` |
 | Mapa embutido vs link externo; provedor de mapas e custo | rotas | `RN-DESC-004` |
 | Sinais da personalização v1 e critério mínimo (cold start) | personalização | `RN-DESC-005` |
 | Canais de notificação (push web/e-mail/WhatsApp) e provedores | notificações | `RN-DESC-006`, constituição |
@@ -405,7 +405,10 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    transacional (decisão D8 da spec 001).
 6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.
-7. **Linear sincronizado em 2026-09-02:** BORA-34 e BORA-35 em Done, marco M1 em 100%, e
-   cinco issues novas para o que ficou pendente — BORA-39 (ratificar o `design-system.md`),
-   BORA-40 (portão que não cobra o caminho até a tela), BORA-41 (excluir conta / LGPD),
-   BORA-42 (`lint`) e BORA-43 (home no scaffold). Detalhe em `linear-import.md`.
+7. **Linear sincronizado em 2026-09-02.** Marco M1 em 100%. Fechadas: BORA-34 (T118),
+   BORA-35 (T119), **BORA-44** (T120 — criada a pedido do Ícaro) e **BORA-9** (`RN-DESC-003`,
+   salvar ≠ seguir, com o rótulo `decisao-pendente` removido). Abertas para o que ficou
+   pendente: BORA-39 (ratificar o `design-system.md` — a metade "commitar" está feita),
+   BORA-40 (portão que não cobra o caminho até a tela nem os campos do payload), BORA-41
+   (excluir conta / LGPD), BORA-42 (`lint`), BORA-43 (home no scaffold) e **BORA-45**
+   (cancelamento notifica quem só salvou?). Detalhe em `linear-import.md`.

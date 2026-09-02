@@ -137,11 +137,11 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
 
 | item | estado verificado | por que não foi feito agora |
 |---|---|---|
-| **A home é o scaffold do Next** | `web/src/app/page.tsx` ainda é a página de `create-next-app` — logo do Vercel, "To get started, edit the page.tsx file", tudo em inglês. É o destino do login (`router.replace('/')`) | a home de produto ("O que temos para hoje?") é spec futura; trocá-la agora seria abrir feature fora de spec |
-| **`npm run lint` falha** | 7 erros, todos `react-hooks/set-state-in-effect`, em `lib/hydration.ts`, `verificar-email`, `unir-contas`, `unir-contas/confirmar` e `entrar/google/retorno`. Pré-existentes: nenhum nos arquivos tocados em 2026-09-01 | mexer em `useEffect` de cinco telas já validadas, sem teste que prove o ganho, arrisca regressão de hidratação (E-015) para resolver aviso de estilo |
-| **Não existe "excluir minha conta"** | `AuditLog` tem seis eventos (`account_created`, `credentials_merged`, `password_set`, `password_reset`, `email_verified`, `session_ended`) e **nenhum** de exclusão; não há rota de exclusão em `api/routes/api.php` | nunca esteve no escopo da 001. Mas **direito de eliminação é LGPD**, que a constituição invoca — precisa de spec própria, com decisão sobre anonimizar vs. apagar e o que acontece com histórico |
-| **O `spec-check` não cobra o caminho até a tela** | é a causa raiz do E-019: a spec listava cinco telas e o portão conferiu as cinco; a tela sem porta não estava na lista, então não havia o que cobrar | mexer no portão é mudança de método, não de código — decisão do Ícaro |
-| **`SKILL.md` do `doc-sync` pede trailer `Claude Fable 5`** | os commits do repositório usam `Claude Opus 5`; a skill diz outra coisa | correção trivial, mas é documento de método: confirmar antes de editar |
+| **A home é o scaffold do Next** — BORA-43 | `web/src/app/page.tsx` ainda é a página de `create-next-app` — logo do Vercel, "To get started, edit the page.tsx file", tudo em inglês. É o destino do login (`router.replace('/')`) | a home de produto ("O que temos para hoje?") é spec futura; trocá-la agora seria abrir feature fora de spec |
+| **`npm run lint` falha** — BORA-42 | 7 erros, todos `react-hooks/set-state-in-effect`, em `lib/hydration.ts`, `verificar-email`, `unir-contas`, `unir-contas/confirmar` e `entrar/google/retorno`. Pré-existentes: nenhum nos arquivos tocados em 2026-09-01 | mexer em `useEffect` de cinco telas já validadas, sem teste que prove o ganho, arrisca regressão de hidratação (E-015) para resolver aviso de estilo |
+| **Não existe "excluir minha conta"** — BORA-41 | `AuditLog` tem seis eventos (`account_created`, `credentials_merged`, `password_set`, `password_reset`, `email_verified`, `session_ended`) e **nenhum** de exclusão; não há rota de exclusão em `api/routes/api.php` | nunca esteve no escopo da 001. Mas **direito de eliminação é LGPD**, que a constituição invoca — precisa de spec própria, com decisão sobre anonimizar vs. apagar e o que acontece com histórico |
+| **O `spec-check` não cobra o caminho até a tela nem os campos do payload** — BORA-40 | é a causa raiz do E-019: a spec listava cinco telas e o portão conferiu as cinco; a tela sem porta não estava na lista, então não havia o que cobrar | mexer no portão é mudança de método, não de código — decisão do Ícaro |
+| ~~`SKILL.md` do `doc-sync` pedia trailer `Claude Fable 5`~~ | **RESOLVIDO em 2026-09-02**, autorizado pelo Ícaro: a skill passou a pedir `Claude Opus 5`, que é o que os commits do repositório já usavam. Era o único lugar do `.claude/` com o nome antigo | — |
 
 ## Infra do método
 
@@ -399,5 +399,7 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    transacional (decisão D8 da spec 001).
 6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.
-7. **Linear:** BORA-34 (T118) e BORA-35 (T119) podem ir para Done. A T120 não tem issue —
-   nasceu depois do último sync; criar se valer o registro.
+7. **Linear sincronizado em 2026-09-02:** BORA-34 e BORA-35 em Done, marco M1 em 100%, e
+   cinco issues novas para o que ficou pendente — BORA-39 (ratificar o `design-system.md`),
+   BORA-40 (portão que não cobra o caminho até a tela), BORA-41 (excluir conta / LGPD),
+   BORA-42 (`lint`) e BORA-43 (home no scaffold). Detalhe em `linear-import.md`.

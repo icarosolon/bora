@@ -40,7 +40,7 @@ nunca execute `git push`.
    - Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).
    - Subject em **ASCII, sem acentos**, no imperativo, até ~72 caracteres.
    - Corpo explicando **o quê e por quê**, com o ID da spec e as `RN-<CTX>-NNN` tocadas.
-   - Trailer `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.
+   - Trailer `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
    - Nunca `--no-verify`; se um hook falhar, investigue a causa em vez de contornar.
 
 Ex.:
@@ -49,7 +49,7 @@ feat: cadastro de local com categorias
 
 Implementa spec 0002. Atualiza CHANGELOG, backlog. Sem regra nova.
 
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
 ```
 
 ## Saída

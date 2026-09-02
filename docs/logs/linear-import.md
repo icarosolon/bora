@@ -94,6 +94,30 @@ das specs feito entre 30/08 e 01/09). Ajustado:
 | **BORA-37** | alarme sobre `failed_jobs` (novo, M5) |
 | **BORA-38** | emenda constitucional da D8 (novo, M0) |
 
+
+## Sincronização de 2026-09-02 — fechamento da spec 001
+
+| issue | ação |
+|---|---|
+| BORA-34 (T118 — validação visual) | → **Done**. Descrição reescrita com o que de fato aconteceu: percurso de conta validado **no celular**, Google e a faixa "Definir senha" **no computador**, e o defeito E-019 que a validação encontrou |
+| BORA-35 (T119 — fechamento) | → **Done**. Descrição com os dois commits (`7f8a6ac`, `5a78aa4`) e o achado do `signs_in_with` fora do contrato |
+| **BORA-39** | ratificar e commitar o `design-system.md` (novo, M2) — hoje sem rastreio no git |
+| **BORA-40** | `spec-check`: cobrar o caminho até a tela e os campos do payload (novo, M2) — causa raiz do E-019 |
+| **BORA-41** | "excluir minha conta": direito de eliminação da LGPD não existe (novo, M5, `decisao-pendente`) |
+| **BORA-42** | `npm run lint` com 7 erros pré-existentes (novo, M2) |
+| **BORA-43** | a home ainda é o scaffold do Next (novo, M3) |
+
+**Marco M1 — Contas em 100%.**
+
+**A T120 não virou issue, de propósito.** Ela nasceu e morreu dentro da T118, e a convenção
+emendada em 2026-09-01 diz que uma spec vira issue **por marco de trabalho real**, não por
+linha do `tasks.md` — criar issue já fechada é cerimônia sem informação nova. O registro
+dela vive no `tasks.md`, no `E-019` e na descrição da BORA-34.
+
+**O E-019 também não virou issue**, pela mesma convenção: erro só vira issue quando deixa
+trabalho pendente. Ele está resolvido; o que ele deixou pendente é o portão, e isso é a
+BORA-40.
+
 ## Estado
 
 - [x] Projeto criado no Linear — **Bora** (lead Ícaro)

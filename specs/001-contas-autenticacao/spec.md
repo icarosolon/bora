@@ -4,9 +4,20 @@
 
 **Created**: 2026-08-29
 
-**Status**: **117/119 — falta só a validação visual final.** Portão `spec-check`: SIM
-(2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em [plan.md](./plan.md), tarefas
-em [tasks.md](./tasks.md).
+**Status**: **IMPLEMENTADA — 120/120, validada pelo Ícaro em 2026-09-02.** Portão
+`spec-check`: SIM (2026-08-29); spec aprovada por Ícaro (2026-08-30). Plano em
+[plan.md](./plan.md), tarefas em [tasks.md](./tasks.md).
+
+A validação visual (T118) aconteceu em duas etapas, e a fronteira entre elas fica
+registrada de propósito: o **percurso de conta** foi validado **no celular** (criar conta,
+cabeçalho reagindo sem recarregar, sair, entrar, união); o **login com Google** e a **faixa
+"Definir senha"** foram validados **no computador**, porque conta que só entra pelo Google
+não é criável no celular enquanto não houver túnel HTTPS — o Google não aceita IP de rede
+local como URI de redirecionamento. Isso não é dívida escondida: é o item de túnel HTTPS
+que já está no backlog.
+
+A T120 nasceu **durante** a T118: a tela "Definir senha" existia, funcionava e era
+inalcançável (E-019).
 
 As quatro user stories estão entregues e foram validadas pelo Ícaro em 2026-08-31, e o
 Polish está concluído: documentação da API conferida contra o contrato, andaime do spike
@@ -332,8 +343,21 @@ coluna no celular, linguagem simples, alvos ≥ 44px, contraste AA, feedback de 
   1 toque a partir de Entrar.
 - **Redefinir senha** — ação principal: salvar a nova senha. Caminho: link recebido por
   e-mail.
+- **Definir senha** — ação principal: salvar a senha (botão "Salvar senha"). Para quem
+  nasceu do Google e quer também entrar com e-mail e senha (FR-012, US2-5); exige sessão
+  ativa. **Caminho: faixa abaixo do cabeçalho**, visível em qualquer página **apenas**
+  enquanto a conta não tem senha (`signs_in_with` sem `password`), 1 toque; a faixa não
+  aparece dentro da própria tela.
 - Complemento de navegação (não é tela): estado autenticado no cabeçalho, com nome/avatar
   e ação "Sair" (rótulo de texto, não só ícone).
+
+> **Por que esta tela entrou na lista depois.** Ela existia, funcionava e tinha teste de
+> backend, mas **nada no produto levava até ela** — só quem digitasse a URL chegava. A
+> FR-012 estava escrita; o **ponto de entrada** não, e é aqui que ele se declara. O defeito
+> só apareceu na validação visual (T118), quando o Ícaro tentou entrar com e-mail e senha
+> numa conta nascida do Google e recebeu, corretamente, "Esta conta entra com o Google" —
+> sem caminho visível para sair daquilo. **Lição para as próximas specs: listar a tela não
+> basta; o caminho até ela é parte da tela.**
 
 ### Comportamento no celular (dispositivo principal)
 

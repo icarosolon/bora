@@ -78,13 +78,27 @@ export { expect }
  * Essa contradição já produziu duas falhas intermitentes; por isso o auxiliar
  * mora aqui, e não copiado em cada spec.
  */
-export async function withValidSession(page: Page) {
+export async function withValidSession(
+  page: Page,
+  /**
+   * Formas de entrar da conta simulada. O padrão é conta com senha porque é o
+   * caso da maioria dos testes; quem exercita a conta nascida do Google passa
+   * `['google']` e recebe a faixa "Definir senha" (US2-5).
+   */
+  signsInWith: string[] = ['password'],
+) {
   await page.route('**/api/v1/eu', (route) =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        data: { id: 1, name: 'Maria', email: 'maria@exemplo.com', email_verified: true },
+        data: {
+          id: 1,
+          name: 'Maria',
+          email: 'maria@exemplo.com',
+          email_verified: true,
+          signs_in_with: signsInWith,
+        },
       }),
     }),
   )

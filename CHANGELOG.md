@@ -7,7 +7,26 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [Unreleased]
 
+### Added
+- **Caminho visível para "Definir senha"** (spec 001, FR-012/US2-5). Faixa abaixo do
+  cabeçalho, exibida **apenas** enquanto a conta não tem senha (`signs_in_with` sem
+  `password`), levando a `/definir-senha` em um toque; some dentro da própria tela e some
+  sozinha assim que a senha é definida. Fica em faixa, e não no cabeçalho, porque a 360px a
+  barra já ocupa a largura toda com o nome e "Sair". Decidida a partir do estado que o
+  `AccountHeader` já mantém, sem uma segunda consulta a `/eu`. Cobertura nova: 6 testes de
+  componente com `axe` e 3 e2e em 360 e 1280, incluindo o caso negativo e o silêncio quando
+  a API não informa `signs_in_with`.
+
 ### Fixed
+- **E-019 — a tela "Definir senha" estava implementada e inalcançável.** Caso de uso, rota,
+  tela e teste de backend existiam desde a US2; **nada no produto levava até lá**, então
+  quem nascia do Google não tinha caminho visível para ganhar uma senha — tentava entrar
+  por e-mail e senha, era corretamente mandado de volta ao Google, e ficava sem saída. A
+  seção "Telas entregues" da spec listava cinco telas e não listava esta, então o
+  `spec-check` não tinha caminho a cobrar. A spec passou a listá-la **com o ponto de entrada
+  declarado**. Encontrado na validação visual (T118), por pergunta do Ícaro — nenhuma das
+  três suítes podia pegar, porque todas perguntam se a tela funciona, não se existe porta
+  para ela.
 - **E-018 — worker de fila obsoleto engolia todos os e-mails** depois da refatoração de
   nomenclatura. O `queue:work` é daemon: tinha o `AppServiceProvider` antigo em memória
   (binding com o nome velho da porta) e carregava o Job novo do disco, que pede

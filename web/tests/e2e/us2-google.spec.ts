@@ -171,3 +171,58 @@ test.describe('retorno do Google', () => {
     ).toContain('tok-uniao')
   })
 })
+
+/**
+ * US2-5 / FR-012 — conta nascida do Google ganhar uma senha.
+ *
+ * O caso existe porque a tela `/definir-senha` esteve implementada e
+ * **inalcançável**: nada no produto levava até ela, então a pessoa que entrava
+ * pelo Google não tinha caminho visível para ganhar uma senha. Estes testes
+ * cobrem o CAMINHO, que é justamente o que faltava — a tela em si já tinha
+ * teste de backend.
+ */
+test.describe('caminho para definir a primeira senha', () => {
+  async function entrarComoContaDoGoogle(page: Page) {
+    await withValidSession(page, ['google'])
+    await page.goto('/')
+    await page.evaluate(() => localStorage.setItem('bora.session.token', 'tok-google'))
+    await page.reload()
+  }
+
+  test('oferece definir senha a quem só entra pelo Google', async ({ page }) => {
+    await entrarComoContaDoGoogle(page)
+
+    const link = page.getByRole('link', { name: 'Definir senha' })
+    await expect(link).toBeVisible()
+
+    // Alvo de toque: ux-requirements.md exige 44px de altura.
+    const box = await link.boundingBox()
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
+
+    // A faixa é larga; a 360px ela não pode empurrar a página para os lados.
+    await noHorizontalScroll(page)
+  })
+
+  test('o toque leva à tela de definir senha, e lá a faixa some', async ({ page }) => {
+    await entrarComoContaDoGoogle(page)
+
+    await page.getByRole('link', { name: 'Definir senha' }).click()
+
+    await expect(page).toHaveURL(/\/definir-senha$/)
+    await expect(page.getByRole('heading', { name: 'Definir senha' })).toBeVisible()
+
+    // Oferecer o caminho para onde a pessoa já chegou seria ruído.
+    await expect(page.getByRole('link', { name: 'Definir senha' })).toHaveCount(0)
+    await noHorizontalScroll(page)
+  })
+
+  test('não aparece para quem já tem senha', async ({ page }) => {
+    await withValidSession(page, ['password', 'google'])
+    await page.goto('/')
+    await page.evaluate(() => localStorage.setItem('bora.session.token', 'tok-sessao'))
+    await page.reload()
+
+    await expect(page.getByRole('button', { name: 'Sair' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Definir senha' })).toHaveCount(0)
+  })
+})

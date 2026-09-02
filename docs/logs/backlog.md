@@ -1,7 +1,9 @@
 # Backlog
 
 Status: pendências extraídas da ideia original e das decisões de 2026-08-28 em diante.
-Spec 001 em 117/119: falta a validação visual final (T118) e o fechamento.
+**Spec 001 CONCLUÍDA em 2026-09-02** — 120/120, com a T120 aberta e fechada durante a
+própria validação visual (E-019). Primeira feature do Bora a cumprir a Definition of Done
+do Princípio XI por inteiro.
 
 ## Decisões pendentes que bloqueiam spec
 
@@ -128,6 +130,19 @@ se fixa `CACHE_PREFIX`/`REDIS_PREFIX` explicitamente **antes** de mexer no nome.
   considerar, junto com a configuração, um **alarme sobre `failed_jobs`**: hoje ninguém é
   avisado quando um e-mail morre ali.
 
+## Dívidas técnicas conhecidas
+
+Levantadas em 2026-09-01, durante a validação visual da spec 001. Nenhuma delas foi
+inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado.
+
+| item | estado verificado | por que não foi feito agora |
+|---|---|---|
+| **A home é o scaffold do Next** | `web/src/app/page.tsx` ainda é a página de `create-next-app` — logo do Vercel, "To get started, edit the page.tsx file", tudo em inglês. É o destino do login (`router.replace('/')`) | a home de produto ("O que temos para hoje?") é spec futura; trocá-la agora seria abrir feature fora de spec |
+| **`npm run lint` falha** | 7 erros, todos `react-hooks/set-state-in-effect`, em `lib/hydration.ts`, `verificar-email`, `unir-contas`, `unir-contas/confirmar` e `entrar/google/retorno`. Pré-existentes: nenhum nos arquivos tocados em 2026-09-01 | mexer em `useEffect` de cinco telas já validadas, sem teste que prove o ganho, arrisca regressão de hidratação (E-015) para resolver aviso de estilo |
+| **Não existe "excluir minha conta"** | `AuditLog` tem seis eventos (`account_created`, `credentials_merged`, `password_set`, `password_reset`, `email_verified`, `session_ended`) e **nenhum** de exclusão; não há rota de exclusão em `api/routes/api.php` | nunca esteve no escopo da 001. Mas **direito de eliminação é LGPD**, que a constituição invoca — precisa de spec própria, com decisão sobre anonimizar vs. apagar e o que acontece com histórico |
+| **O `spec-check` não cobra o caminho até a tela** | é a causa raiz do E-019: a spec listava cinco telas e o portão conferiu as cinco; a tela sem porta não estava na lista, então não havia o que cobrar | mexer no portão é mudança de método, não de código — decisão do Ícaro |
+| **`SKILL.md` do `doc-sync` pede trailer `Claude Fable 5`** | os commits do repositório usam `Claude Opus 5`; a skill diz outra coisa | correção trivial, mas é documento de método: confirmar antes de editar |
+
 ## Infra do método
 
 - **Linear**: projeto **Bora** criado em 2026-08-28
@@ -138,6 +153,12 @@ se fixa `CACHE_PREFIX`/`REDIS_PREFIX` explicitamente **antes** de mexer no nome.
 
 ## Decisões tomadas
 
+- **A entrada para "Definir senha" foi corrigida dentro da spec 001** (decisão do Ícaro,
+  2026-09-01, durante a T118). A tela existia e funcionava, mas nada no produto levava até
+  ela (E-019). Alternativas oferecidas: corrigir agora, ou registrar e fechar a 001. Ele
+  escolheu **corrigir dentro da 001** — e depois escolheu a **faixa abaixo do cabeçalho**,
+  em vez de link no cabeçalho, para não apertar os alvos de toque a 360px. A lição ficou
+  escrita na própria spec: **listar a tela não basta; o caminho até ela é parte da tela.**
 - **Nomenclatura padronizada** (decisão do Ícaro, 2026-08-31): **identificador em inglês,
   prosa em português, e a única exceção é o caminho da URL**. Escrita em
   `docs/architecture/naming-conventions.md`; `CLAUDE.md` e `development-workflow.md` §5.1
@@ -348,27 +369,35 @@ se fixa `CACHE_PREFIX`/`REDIS_PREFIX` explicitamente **antes** de mexer no nome.
 
 ## Próximo passo
 
-1. **Validação visual final da spec 001 (T118)** e então o fechamento (T119). Três coisas
-   mudaram depois da validação e precisam de uma passada: a **união** (token saiu da URL), o
-   **cabeçalho** (passou a refletir o login sem recarregar, E-016) e a **refatoração de
-   nomenclatura**, que mexeu em todas as telas e no contrato da API. A refatoração não muda
-   comportamento nenhum — as três suítes passam —, mas mexeu em tudo, então a passada visual
-   vale como conferência: criar conta, entrar, sair, Google, unir contas, esqueci a senha.
-2. **Dois assuntos que o Ícaro quer tratar antes de abrir a próxima spec** (pedido em
-   2026-09-01, ao encerrar o dia):
-   - **O "template" do projeto.** Ele levantou o assunto duas vezes e adiou as duas para não
-     interromper a refatoração de nomenclatura. **Não está definido o que ele quer dizer com
-     template** — pode ser kit de UI/tema para as telas do catálogo, ou o template das
-     próprias specs. Perguntar antes de assumir.
-   - **O que falta para iniciar a próxima spec** — inventário explícito, não implícito.
-     Matéria-prima já levantada: as decisões que a spec de local depende (BORA-21
-     categorias, BORA-22 verificação de propriedade, BORA-20 redes/franquias), a identidade
-     visual PENDENTE em `brand.md` (BORA-25), e se o template acima muda o ponto de partida
-     do front.
-3. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
-   atual estar pronta.
-4. Segunda na fila: cadastro/perfil de local, que destrava o catálogo (`/speckit-specify`).
+1. **A spec 001 está fechada.** A validação visual (T118) foi feita em duas etapas: o
+   percurso de conta no **celular** (criar conta, cabeçalho mudando sozinho, sair, entrar,
+   união — "tudo funcionou, o cabeçalho mudou sozinho e nada ficou apertado"), e a **faixa
+   "Definir senha"** no computador, com login Google real, porque conta só-Google não é
+   criável no celular sem túnel HTTPS. **Fronteira registrada de propósito:** o login com
+   Google e a união **nunca** foram validados no celular — só no computador —, e continuarão
+   assim enquanto a ferramenta de túnel for decisão pendente.
+2. **Assunto do "template": já tratado em paralelo**, em `docs/product/design-system.md`
+   (sessão de 2026-09-01, arquivo ainda **sem rastreio no git**). Ele define o template como
+   quatro camadas — kit de UI/tema, shell, receitas de tela, contrato + portão — e marca a
+   origem de cada decisão (Ícaro / Proposta / Derivada). Está como *decisões travadas, norma
+   ainda não escrita*: **não é vinculante** até as lacunas da seção "Em aberto" fecharem e o
+   Ícaro ratificar. **Próxima ação:** fechar aquelas lacunas, ratificar e commitar o
+   arquivo. Enquanto isso, a régua vinculante segue sendo `ux-requirements.md`.
+3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
+   não implícito:
+   - **Bloqueiam a spec** (decisões do Ícaro, todas na tabela acima): BORA-21 lista inicial
+     de categorias de local, BORA-22 verificação de propriedade do estabelecimento, BORA-20
+     redes/franquias (um perfil por unidade?). Sem as três, o `spec-check` reprova.
+   - **Bloqueia a tela, não a spec:** identidade visual PENDENTE em `brand.md` (BORA-25) — o
+     redesenho (logo flat, dark-first, tokens semânticos) e o Figma aposentado. O
+     `design-system.md` do item 2 é o caminho para destravar isto.
+   - **Não bloqueia:** a home ainda é o scaffold do Next (ver dívidas técnicas). Ela vira
+     tela de produto na spec do feed, não na de local.
+4. **Só então abrir a próxima feature.** O Princípio XI proíbe começar a próxima antes de a
+   atual estar pronta — e agora ela está.
 5. Governança: emenda constitucional registrando o Resend como provedor de e-mail
    transacional (decisão D8 da spec 001).
 6. **A revisitar quando o `laravel/socialite` suportar guzzle 8** — hoje o projeto fica em
    guzzle 7.15.5 por causa dele; a volta é um `composer update`.
+7. **Linear:** BORA-34 (T118) e BORA-35 (T119) podem ir para Done. A T120 não tem issue —
+   nasceu depois do último sync; criar se valer o registro.

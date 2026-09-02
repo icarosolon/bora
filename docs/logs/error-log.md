@@ -3,6 +3,45 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-019 — Tela implementada e inalcançável: "Definir senha" sem caminho até ela (2026-09-01)
+
+- **Sintoma:** o Ícaro tentou entrar com e-mail e senha numa conta nascida do Google e
+  recebeu "Esta conta entra com o Google. Toque em 'Entrar com Google'." — mensagem
+  **correta**. A pergunta seguinte é que expôs o defeito: "depois que a pessoa vincula a
+  conta não deveria permitir o login via e-mail e senha?"
+- **Causa:** duas direções diferentes estavam sendo confundidas, e só uma tinha caminho.
+  A **união** (`MergeCredentials`) nunca toca na senha: ela grava o vínculo social, então
+  conta que **já tinha** senha continua entrando pelos dois — isso sempre funcionou. A
+  direção inversa — conta nascida do Google **ganhar** uma senha — é a FR-012/US2-5, e
+  estava implementada de ponta a ponta: caso de uso `SetPassword`, rota `POST /senha`, tela
+  `/definir-senha` e teste de backend. **Só que nada no produto levava até a tela.** Busca
+  por `definir-senha` em todo o `web/`: zero referências fora do nome da pasta. O cabeçalho
+  só oferecia "Sair"; o retorno do Google ia para `/`. A tela só abria digitando a URL.
+  Resultado para a pessoa: um beco — entra pelo Google, não tem senha; tenta e-mail e
+  senha, é mandada de volta ao Google; e nenhum caminho visível para ganhar uma senha.
+- **Por que passou pelo portão:** a seção "Telas entregues nesta feature" da spec listava
+  cinco telas e **não** listava "Definir senha". A FR-012 estava escrita como requisito
+  funcional, mas o `spec-check` cobra a **lista de telas** — e ali a tela não existia, logo
+  não havia caminho a cobrar. O requisito estava na spec; o ponto de entrada, em lugar
+  nenhum.
+- **Por que nenhum teste pegou:** os testes de backend cobriam o caso de uso e a rota; os
+  de front cobriam as telas que **existem no fluxo**. Nenhum perguntava "existe caminho até
+  esta tela?", que é uma pergunta sobre navegação, não sobre tela.
+- **Resolução:** faixa `SetPasswordNotice` abaixo do cabeçalho, visível apenas enquanto
+  `signs_in_with` não contém `password`, decidida pelo estado que o `AccountHeader` já
+  mantém (sem segunda consulta a `/eu`). Não foi para dentro do cabeçalho porque a 360px a
+  barra já ocupa a largura toda com nome e "Sair". A spec ganhou a tela **com o caminho
+  declarado**. Testes novos: 6 de componente (com `axe`) e 3 e2e em 360 e 1280, incluindo o
+  caso negativo (quem tem senha não vê a faixa) e o silêncio quando a API não informa
+  `signs_in_with`.
+- **Status:** resolvido.
+- **Lição:** **listar a tela não basta; o caminho até ela é parte da tela.** Toda tela
+  declarada numa spec precisa dizer de onde se chega nela, e o `spec-check` deveria cobrar
+  isso — hoje ele cobra a existência da tela, não a existência da porta. Vale também a
+  lição do E-016 repetida: o relato do usuário não veio com a causa certa (a premissa era
+  sobre união), mas apontou para o lugar certo. Foi a pergunta dele, e não a suíte, que
+  encontrou o defeito.
+
 ## E-018 — Worker de fila obsoleto engoliu todos os e-mails depois da refatoração (2026-09-01)
 
 - **Sintoma:** nenhum e-mail transacional saía — verificação de cadastro, redefinição de

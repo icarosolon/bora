@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { callApi } from '@/lib/api'
+import { SetPasswordNotice } from '@/components/auth/SetPasswordNotice'
 import { SESSION_EVENT, forgetToken, readToken } from '@/lib/session'
 
 type Account = {
@@ -11,6 +12,12 @@ type Account = {
   name: string
   email: string
   email_verified: boolean
+  /**
+   * Quais caminhos de entrada esta conta tem — `['password']`, `['google']` ou
+   * os dois. Opcional no tipo porque respostas mais antigas em cache podem não
+   * trazer o campo; na dúvida, não se oferece nada.
+   */
+  signs_in_with?: string[]
 }
 
 /**
@@ -78,31 +85,48 @@ export function AccountHeader() {
   // Enquanto não se sabe, não pisca "Entrar" para quem está logado.
   if (loading) return <header className="min-h-14" />
 
-  return (
-    <header className="flex min-h-14 items-center justify-between gap-4 border-b px-4 py-2">
-      <Link href="/" className="text-lg font-semibold">
-        Bora
-      </Link>
+  /*
+   * A faixa mora aqui, e não no layout raiz, porque este componente já é o dono
+   * do estado de sessão: montá-la separada obrigaria uma segunda consulta a
+   * `/eu` a cada carregamento, para responder a mesma pergunta.
+   *
+   * `signs_in_with` ausente é tratado como "tem senha": só se oferece definir
+   * senha quando a API afirma que não há.
+   */
+  const missingPassword =
+    account !== null &&
+    Array.isArray(account.signs_in_with) &&
+    !account.signs_in_with.includes('password')
 
-      {account ? (
-        <div className="flex items-center gap-3">
-          <span className="text-base">{account.name}</span>
-          <button
-            type="button"
-            onClick={signOut}
-            className="min-h-11 rounded-md border px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            Sair
-          </button>
-        </div>
-      ) : (
-        <Link
-          href="/entrar"
-          className="flex min-h-11 items-center rounded-md border px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          Entrar
+  return (
+    <>
+      <header className="flex min-h-14 items-center justify-between gap-4 border-b px-4 py-2">
+        <Link href="/" className="text-lg font-semibold">
+          Bora
         </Link>
-      )}
-    </header>
+
+        {account ? (
+          <div className="flex items-center gap-3">
+            <span className="text-base">{account.name}</span>
+            <button
+              type="button"
+              onClick={signOut}
+              className="min-h-11 rounded-md border px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              Sair
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/entrar"
+            className="flex min-h-11 items-center rounded-md border px-4 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            Entrar
+          </Link>
+        )}
+      </header>
+
+      {missingPassword && <SetPasswordNotice />}
+    </>
   )
 }

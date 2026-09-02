@@ -267,8 +267,12 @@ entrar com ela.
 - [x] T115 Remover o andaime do spike: `api/app/Http/Controllers/Spike/`, o bloco `v1/eventos` em `api/routes/api.php` e `web/src/app/eventos/`
 - [x] T116 [P] Rodar o `quickstart.md` inteiro (V1 a V5) manualmente e corrigir o que divergir
 - [x] T117 [P] Atualizar `docs/architecture/data-model.md` e `docs/architecture/api-conventions.md` trocando "projetado, ainda não implementado" pelo estado real
-- [ ] T118 **Validação visual do Ícaro — primeiro no celular** (Princípio XI). Tela reprovada no celular **não** se apresenta em desktop. Sem esta aprovação a feature não está pronta e a próxima não começa
-- [ ] T119 Rodar `/doc-sync` — CHANGELOG, backlog, error-log e catálogo; commit sem push
+- [x] T118 **Validação visual do Ícaro — primeiro no celular** (Princípio XI). Tela reprovada no celular **não** se apresenta em desktop. Sem esta aprovação a feature não está pronta e a próxima não começa
+- [x] T119 Rodar `/doc-sync` — CHANGELOG, backlog, error-log e catálogo; commit sem push
+
+### Aberta durante a T118
+
+- [x] T120 **Dar caminho visível à tela "Definir senha"** (FR-012/US2-5, E-019). Faixa `SetPasswordNotice` abaixo do cabeçalho, condicionada a `signs_in_with` sem `password`; spec emendada com a tela **e o ponto de entrada**; 6 testes de componente com `axe` e 3 e2e em 360 e 1280. Nasceu de pergunta do Ícaro na validação visual: a tela existia, funcionava e era inalcançável
 
 ---
 

@@ -106,17 +106,22 @@ das specs feito entre 30/08 e 01/09). Ajustado:
 | **BORA-41** | "excluir minha conta": direito de eliminação da LGPD não existe (novo, M5, `decisao-pendente`) |
 | **BORA-42** | `npm run lint` com 7 erros pré-existentes (novo, M2) |
 | **BORA-43** | a home ainda é o scaffold do Next (novo, M3) |
+| **BORA-44** | T120 — dar caminho visível à tela "Definir senha" (novo, M1, **Done**), relacionada à BORA-34 e à BORA-40 |
 
 **Marco M1 — Contas em 100%.**
 
-**A T120 não virou issue, de propósito.** Ela nasceu e morreu dentro da T118, e a convenção
-emendada em 2026-09-01 diz que uma spec vira issue **por marco de trabalho real**, não por
-linha do `tasks.md` — criar issue já fechada é cerimônia sem informação nova. O registro
-dela vive no `tasks.md`, no `E-019` e na descrição da BORA-34.
+**Sobre a BORA-44, e vale registrar porque é correção de leitura minha.** Eu tinha deixado
+a T120 sem issue, alegando a convenção emendada em 2026-09-01. O Ícaro pediu que fosse
+criada — e ele está certo: a convenção diz "uma issue **por marco de trabalho real**, não
+uma por linha do `tasks.md`", e a T120 **é** um marco de trabalho real (defeito próprio,
+correção própria, commit próprio, testes próprios). O que a convenção recusa é issue por
+linha de tarefa e importação retroativa em massa, não issue fechada para trabalho que de
+fato aconteceu. **Apliquei a regra mais apertada do que ela é escrita.** A convenção não
+mudou; a leitura dela é que estava errada.
 
-**O E-019 também não virou issue**, pela mesma convenção: erro só vira issue quando deixa
-trabalho pendente. Ele está resolvido; o que ele deixou pendente é o portão, e isso é a
-BORA-40.
+**O E-019 continua sem issue**, e aí a convenção se aplica direto: erro só vira issue
+quando deixa trabalho pendente. Ele está resolvido; o que ele deixou pendente é o portão,
+e isso é a BORA-40.
 
 ## Estado
 

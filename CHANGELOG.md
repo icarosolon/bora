@@ -61,6 +61,22 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Camada 3 do `design-system.md` fechada, e cinco decisões saíram de "proposta" para
+  ratificadas** (2026-09-02). O Ícaro confirmou **D8** (seletor de moldura no topo — é o que
+  faz a D7 passar nos ~3 toques), **D10** (moldura de gestão: Agenda + Perfil, com ação
+  principal definida pela instância), **D11** (trilho lateral a partir de 768px) e as duas
+  metades da **D19** (Seguir como ação principal do artista; "Seguindo" como selo de texto
+  dentro de Salvos). Nova **D20** — hierarquia do Detalhe em três níveis, que encolhe o
+  problema antes de resolvê-lo: agenda e avaliações nunca foram ação, são conteúdo, e sobra
+  "um botão + uma fileira de quatro". A D20 **emenda a D9 e a D11**: no Detalhe a barra de
+  navegação **some** e dá lugar à ação principal, porque duas barras empilhadas comeriam
+  metade da tela sob zoom de 200%. Disso decorre uma regra dura: **o "voltar" é link para
+  destino nomeado, nunca `history.back()`** — o Detalhe é justamente a tela que chega por
+  link compartilhado, e sem isso quem abre um evento pelo WhatsApp ficaria preso, sem
+  caminho para o resto do produto, no primeiro contato com o Bora. No desktop o trilho
+  permanece: o motivo de sumir é altura, e altura não falta a 1280. Rótulo da ação de
+  compartilhar: **"Convidar"** — "Compartilhar" não cabe na fatia de 90px e "Chamar"
+  colidiria com "Ligar", na mesma fileira.
 - **`RN-DESC-003` saiu de PENDENTE: "salvar" e "seguir" são duas ações distintas**
   (decisão do Ícaro em 2026-09-02, contra a recomendação do assistente, que era uma ação só
   mais uma preferência de notificação em Conta). **Salvar** é marcador silencioso;

@@ -169,7 +169,7 @@ assistente (que era uma rodada de fundação antes). Decorre disso:
 Uma home só, previsível, sem estado persistido — e reforça o Princípio I: até o dono do bar
 é rolezeiro. Custo aceito: o gestor paga um toque a mais, sempre.
 
-### D8 — Seletor de moldura persistente no topo (origem: proposta)
+### D8 — Seletor de moldura persistente no topo (origem: Ícaro — ratificada em 2026-09-02)
 
 **A D7 só passa na régua acompanhada desta.** `ux-requirements.md` exige *"qualquer
 conteúdo importante a no máximo ~3 toques da home"*. Com o seletor enterrado dentro de
@@ -212,7 +212,7 @@ se o feed já tiver filtros no topo — dois caminhos para o mesmo lugar, quando
 navegação **rasa**, não larga. É a candidata a corte se a barra apertar. Isso se descobre
 com o Ícaro usando, não raciocinando.
 
-### D10 — Moldura de gestão: Agenda + Perfil + ação da instância (origem: proposta)
+### D10 — Moldura de gestão: Agenda + Perfil + ação da instância (origem: Ícaro — ratificada em 2026-09-02)
 
 | | Rótulo | Bar | Artista |
 |---|---|---|---|
@@ -228,7 +228,7 @@ artista **não tem ação de criação nenhuma**: o trabalho dele é reativo, de
 A ação persistente é propriedade da **instância** da moldura, não do tipo — isso não reabre
 a D5.
 
-### D11 — A partir de 768px a barra vira trilho lateral (origem: proposta)
+### D11 — A partir de 768px a barra vira trilho lateral (origem: Ícaro — ratificada em 2026-09-02)
 
 Mesmos itens, mesma ordem, mesmos rótulos. É a leitura literal da frase do
 `ux-requirements.md`: o conteúdo ganha a largura (**mostra mais**) e os controles
@@ -367,9 +367,9 @@ Vale para locais e artistas.
 > domínio** (`docs/domain/descoberta.md`) pela skill `domain-rule` — não vale como regra
 > por estar registrada aqui.
 
-**Leitura proposta da ação principal do artista:** o Ícaro respondeu "salvar para
-**acompanhar**", e acompanhar é o que "seguir" significa. Logo a ação principal do perfil de
-artista é **Seguir**, e Salvar desce para secundária. Proposta, aguardando objeção.
+**Ação principal do artista é Seguir** (ratificado pelo Ícaro em 2026-09-02). Ele respondeu
+"salvar para **acompanhar**", e acompanhar é o que "seguir" significa; a leitura foi
+apresentada como tal e confirmada. Salvar desce para secundária.
 
 **Três consequências, e nenhuma é opinião:**
 
@@ -384,9 +384,53 @@ artista é **Seguir**, e Salvar desce para secundária. Proposta, aguardando obj
 3. **"Seguindo" ficou sem casa.** A D9 deu vaga na barra para **Salvos**. Com duas ações
    existe também um conjunto "Seguindo", que não tem destino — e o produto já dividia salvos
    entre locais e artistas, o que ameaça virar uma grade de 2×2.
-   **Proposta:** uma lista só em `Salvos`, cada item marcado com um selo **de texto**
-   ("seguindo") quando for o caso — informação nunca só por cor. Evita quatro abas.
-   Alternativa descartada por ora: duas abas (Salvos / Seguindo). Aguardando objeção.
+   **Decidido** (Ícaro, 2026-09-02): uma lista só em `Salvos`, cada item marcado com um
+   selo **de texto** ("seguindo") quando for o caso — informação nunca só por cor. Evita
+   quatro abas. Alternativa descartada: duas abas (Salvos / Seguindo).
+
+### D20 — Hierarquia do Detalhe, e a barra de navegação dá lugar à ação principal (origem: Ícaro — emenda D9 e D11)
+
+Decidido em 2026-09-02. Fecha o último buraco da camada 3.
+
+**O problema encolheu antes de ser resolvido.** As "sete coisas" do perfil do local não são
+sete ações do mesmo tipo — agenda e avaliações nunca foram ação, são **conteúdo**:
+
+| Nível | O quê | No perfil do local |
+|---|---|---|
+| **1 — ação principal** | uma, verbo, metade inferior | **Como chegar** |
+| **2 — ações diretas** | fileira de ícone + rótulo, ≥44px | ligar, salvar, seguir, convidar |
+| **3 — conteúdo** | seções que se rola, não botões | descrição, agenda, avaliações, Instagram |
+
+Sobra "um botão + uma fileira de quatro", não sete controles concorrendo.
+
+**O conflito com a camada 2, e a decisão.** O Detalhe é alcançado a partir da barra de cinco
+itens (D9) — então uma ação principal fixa embaixo empilharia **duas barras** no rodapé. A
+360px já é caro; com o refluxo de duas linhas a 200% (D12), come metade da tela.
+
+**Decidido: no Detalhe a barra de navegação some** e dá lugar à ação principal. Reforça que
+Detalhe é tela em que se **entrou**, não aba em que se **está**.
+
+**Consequência 1 — o "voltar" passa de recomendável a OBRIGATÓRIO**, porque vira o único
+caminho de saída.
+
+**Consequência 2 — e esta é uma correção do próprio raciocínio que recomendou a opção:** o
+Detalhe é justamente a tela que **chega por link compartilhado** (é o caso do SSR/SEO da
+Constituição). Quem abre um evento pelo WhatsApp não tem histórico de navegação — e, sem a
+barra, ficaria **preso**, sem caminho para o resto do produto, no primeiro contato com o
+Bora. Portanto:
+
+> **O "voltar" é link para destino nomeado, nunca `history.back()`.** "Voltar para Hoje",
+> "Voltar para o Caetano". Chegada fria tem porta de entrada, e a régua já proibia depender
+> do gesto do navegador.
+
+**Consequência 3 — a regra vale só onde o espaço é escasso.** No desktop (≥768px, D11) o
+**trilho lateral permanece** no Detalhe: o motivo de sumir é altura, e altura não falta a
+1280. Sumir no desktop seria tirar navegação sem ganhar nada.
+
+**Rótulo da ação de compartilhar: "Convidar"** (Ícaro, 2026-09-02). "Compartilhar" tem 12
+caracteres e não cabe na fatia de 90px da fileira de quatro; "Chamar" — a expressão que ele
+usou ao descrever a ação — colidiria com "Ligar", que está na mesma fileira. "Convidar" tem
+8 caracteres, cabe, e é o que a pessoa está de fato fazendo.
 
 ### D17 — A receita do Formulário já existe e passa a ser obrigatória (origem: proposta)
 
@@ -481,9 +525,10 @@ provisória tiver **o mesmo perfil de contraste** da marca real. Prototipar com 
 - **`RN-DESC-003` está decidida (D19) mas ainda não escrita no catálogo.** A regra só vale
   depois de entrar em `docs/domain/descoberta.md` pela skill `domain-rule`. Enquanto não
   entrar, o catálogo e este documento discordam.
-- **Duas propostas da D19 aguardando objeção do Ícaro:** que a ação principal do perfil de
-  artista seja **Seguir** (e não Salvar), e que "Seguindo" caiba dentro de `Salvos` como
-  selo de texto, em vez de ganhar aba ou vaga própria.
+- **Ainda como proposta do assistente, não ratificadas:** D13 (os quatro arquétipos), D17
+  (o Formulário existente vira obrigatório), D18 (a Ferramenta recebe política da API como
+  parâmetro) e o refluxo em duas linhas recomendado na D12. Não foram levadas ao Ícaro em
+  2026-09-02 — D8, D10, D11 e D19 foram, e essas ele ratificou.
 - **Hierarquia visual do Detalhe** — a régua exige "uma ação principal", mas o perfil do
   local acumula sete controles (D19). A receita precisa declarar níveis, não só o topo.
 - **Estado "ainda não sei" do ♥** — precisa ser desenhado (rótulo, aparência) e não pode

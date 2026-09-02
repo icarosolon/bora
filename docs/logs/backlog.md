@@ -385,11 +385,15 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    travadas, norma ainda não escrita*: **não é vinculante** até as lacunas da seção "Em
    aberto" fecharem e o Ícaro ratificar (BORA-39 — a metade "commitar" está feita, falta
    ratificar). Enquanto isso, a régua vinculante segue sendo `ux-requirements.md`.
-   **Lacunas que mais pesam:** medir o orçamento real de caracteres dos rótulos da barra na
-   fonte real; escolher a tipografia (hoje é o Geist do scaffold, por omissão); a lista de
-   papéis semânticos de cor; e a hierarquia visual do Detalhe, que acumulou sete controles
-   depois da D19. **Quatro propostas do assistente aguardam objeção do Ícaro** (D8, D10,
-   D11 e as duas da D19) — enquanto não forem confirmadas, não têm o peso de decisão dele.
+   **Em 2026-09-02 o Ícaro ratificou D8, D10, D11 e as duas metades da D19**, e a **D20**
+   fechou a camada 3 (hierarquia do Detalhe; a barra de navegação some no Detalhe e o
+   "voltar" vira link para destino nomeado, nunca `history.back()`).
+   **Lacunas que restam** (todas na BORA-39): medir o orçamento real de caracteres dos
+   rótulos da barra na fonte real; escolher a tipografia (hoje é o Geist do scaffold, por
+   omissão); a lista de papéis semânticos de cor; e ratificar as quatro propostas que nunca
+   foram à mesa — **D13** (os quatro arquétipos), **D17** (o Formulário existente virar
+   obrigatório), **D18** (a Ferramenta receber política da API como parâmetro) e o refluxo
+   em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
    - **Bloqueiam a spec** (decisões do Ícaro, todas na tabela acima): BORA-21 lista inicial

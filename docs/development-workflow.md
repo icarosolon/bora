@@ -22,7 +22,7 @@ trabalhar; no Linear, porém, cada produto tem seu próprio time).
 | `domain-rule` | Catálogo de regras transversais `RN-<CTX>-NNN` | manual |
 | `adr-new` | ADRs em `docs/adr/` | manual |
 | `screen-help` | Ajuda de tela (fonte única app + docs) | manual |
-| `doc-sync` | Ritual de fim de sessão (CHANGELOG, backlog, error-log, catálogo) + commit (**sem push**) | manual |
+| `doc-sync` | Ritual de fim de sessão (CHANGELOG, backlog, error-log, catálogo, **quadro do Linear**) + commit (**sem push**) | manual |
 
 ## 3. Ciclo de trabalho
 

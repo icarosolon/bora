@@ -18,7 +18,8 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Emenda constitucional formalizando o Resend como provedor de e-mail transacional (decisão já tomada — ver Decisões tomadas) | governança | constituição (lista PENDENTE do Stack) |
 | Padrão de documentação OpenAPI **por feature**: cada feature documenta o quê, com que detalhe, conferido por quem e quando (BORA-26). A ferramenta já está decidida — Scramble, D3; falta a regra | toda spec com API | spec 001 D3, BORA-40 |
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
-| Verificação de propriedade do estabelecimento | cadastro de local | `RN-LOCAL-001` |
+| Método automático que sucede a aprovação manual da reivindicação | cadastro de local | `RN-LOCAL-005` |
+| Desempate entre duas reivindicações do mesmo local | cadastro de local | `RN-LOCAL-005` |
 | Lista inicial de categorias de local | cadastro de local, filtros | `RN-LOCAL-002` |
 | Redes/franquias: um perfil por unidade? | cadastro de local | `RN-LOCAL-004` |
 | Lista inicial de gêneros musicais ("Tiktok" é gênero ou coleção?) | cadastro de artista, filtros | `RN-ART-002` |
@@ -396,9 +397,14 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **Bloqueiam a spec** (decisões do Ícaro, todas na tabela acima): BORA-21 lista inicial
-     de categorias de local, BORA-22 verificação de propriedade do estabelecimento, BORA-20
-     redes/franquias (um perfil por unidade?). Sem as três, o `spec-check` reprova.
+   - **Bloqueiam a spec** (decisões do Ícaro, na tabela acima): BORA-21 lista inicial de
+     categorias de local e BORA-20 redes/franquias (um perfil por unidade?). Sem as duas, o
+     `spec-check` reprova.
+   - ~~BORA-22 verificação de propriedade~~ — **decidida em 2026-09-03** e escrita na
+     `RN-LOCAL-005`: qualquer conta cria o perfil, ele nasce **não reivindicado**, e a porta
+     da verificação fica na **publicação de evento**, não no cadastro. Fase 1 verifica por
+     **aprovação manual**. Gerou BORA-49 (método automático sucessor) e BORA-50 (desempate
+     entre reivindicações) — **nenhuma das duas bloqueia a spec de cadastro de local**.
    - **Bloqueia a tela, não a spec:** identidade visual PENDENTE em `brand.md` (BORA-25) — o
      redesenho (logo flat, dark-first, tokens semânticos) e o Figma aposentado. O
      `design-system.md` do item 2 é o caminho para destravar isto.

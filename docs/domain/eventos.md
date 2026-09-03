@@ -9,6 +9,10 @@ ID: `RN-EVENTO-NNN`. Specs referenciam o ID, não reescrevem o texto.
 O evento é criado pelo estabelecimento (gestor do local), no local dele. Artista não cria
 evento; artista é convidado (`RN-EVENTO-002`).
 
+**Só local reivindicado publica evento** (`RN-LOCAL-005`, decidido em 2026-09-03). Perfil
+criado por terceiro e ainda não reivindicado aparece no catálogo, mas não publica — a porta
+da verificação de propriedade fica aqui, na publicação, e não no cadastro.
+
 Origem: anotação do Ícaro — "Quem cria evento? Estabelecimento e convida o grupo musical,
 que precisa confirmar a participação!"
 

@@ -61,6 +61,23 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-LOCAL-001` saiu de PENDENTE e nasceu a `RN-LOCAL-005` — verificação de propriedade
+  do estabelecimento** (decisão do Ícaro em 2026-09-03, fecha a BORA-22). A pergunta estava
+  mal cortada: *criar* e *controlar* o perfil de um bar são decisões diferentes. **Qualquer
+  conta cria** o perfil de um local; ele nasce **não reivindicado**, aparece no catálogo e
+  na busca, mas **não publica evento**. A porta da verificação fica na **publicação**, não
+  no cadastro — porque o dano real não está no perfil e sim no evento: perfil errado é
+  constrangimento corrigível, evento falso faz a pessoa atravessar a cidade para nada. Assim
+  o catálogo enche na velocidade das pessoas, não na velocidade da verificação. **Fase 1
+  verifica por aprovação manual da plataforma**, coerente com a implantação assistida do
+  `vision.md` e escolhida também por sequência: os métodos automáticos dependem de provedor
+  de SMS/voz ainda PENDENTE (BORA-6) e reabririam aquela decisão. Documento/CNPJ foi
+  descartado com motivo registrado — fricção, passivo de LGPD, e boa parte do bar pequeno em
+  Juazeiro e Petrolina é MEI ou informal, então exigir documento excluiria mercado-alvo. A
+  regra fixa ainda: transferência preserva histórico (Princípio X), auditoria registra quem
+  criou, quem reivindicou, quem aprovou **e por qual método** (Princípio VIII), e a política
+  é do domínio enquanto o método é parâmetro. Gerou BORA-49 e BORA-50; **o caminho crítico
+  da spec de cadastro de local caiu de três decisões bloqueantes para duas.**
 - **Camada 3 do `design-system.md` fechada, e cinco decisões saíram de "proposta" para
   ratificadas** (2026-09-02). O Ícaro confirmou **D8** (seletor de moldura no topo — é o que
   faz a D7 passar nos ~3 toques), **D10** (moldura de gestão: Agenda + Perfil, com ação

@@ -167,3 +167,26 @@ cadência aqui.
 - [x] Issues de decisão — BORA-1..BORA-29 (label `decisao-pendente`; uma por linha
       da tabela do backlog; gateway de pagamento — BORA-1 — sem marco por ser Fase 3)
 - [x] Issues de setup — BORA-31 (repositório api/+web/), BORA-30 (Spec 001)
+
+## Sincronização de 2026-09-03 — BORA-22 decidida
+
+Decisão de verificação de propriedade do estabelecimento tomada pelo Ícaro e escrita em
+`docs/domain/locais.md` (`RN-LOCAL-001` atualizada, **`RN-LOCAL-005`** criada) e em
+`docs/domain/eventos.md` (`RN-EVENTO-001` ganhou o portão de publicação).
+
+Passo 7 do `doc-sync` aplicado na íntegra:
+
+| Ação | Issue |
+|---|---|
+| Fechada, rótulo `decisao-pendente` removido, descrição com a decisão e o porquê | **BORA-22** |
+| Linha tirada da tabela "Decisões pendentes" do `backlog.md` | — |
+| Criada para a pendência que a decisão gerou | **BORA-49** — método automático sucessor da aprovação manual (bloqueada pela BORA-6) |
+| Criada para a pendência que a decisão gerou | **BORA-50** — desempate entre duas reivindicações do mesmo local |
+
+As duas linhas novas entraram na tabela do `backlog.md` no lugar da que saiu — decidir
+abriu duas perguntas, e é isso que o passo 7 existe para não deixar cair no chão.
+
+**Efeito no caminho crítico:** a spec de cadastro de local passa de **três** decisões
+bloqueantes para **duas** (BORA-21 categorias e BORA-20 redes/franquias). Nem a BORA-49 nem
+a BORA-50 bloqueiam — a primeira é da Fase 2, a segunda é regra de arbitragem que pode
+entrar depois do cadastro existir.

@@ -21,7 +21,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Método automático que sucede a aprovação manual da reivindicação | cadastro de local | `RN-LOCAL-005` |
 | Desempate entre duas reivindicações do mesmo local | cadastro de local | `RN-LOCAL-005` |
 | Lista inicial de categorias de local | cadastro de local, filtros | `RN-LOCAL-002` |
-| Redes/franquias: um perfil por unidade? | cadastro de local | `RN-LOCAL-004` |
+| Limite de categorias por local (gestor tende a marcar tudo) | cadastro de local, filtros | `RN-LOCAL-002` |
 | Lista inicial de gêneros musicais ("Tiktok" é gênero ou coleção?) | cadastro de artista, filtros | `RN-ART-002` |
 | Co-gestão de perfil de banda | cadastro de artista | `RN-ART-001` |
 | Evento publicável antes da confirmação do artista? Prazo de resposta? | eventos | `RN-EVENTO-002` |
@@ -397,9 +397,12 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **Bloqueiam a spec** (decisões do Ícaro, na tabela acima): BORA-21 lista inicial de
-     categorias de local e BORA-20 redes/franquias (um perfil por unidade?). Sem as duas, o
-     `spec-check` reprova.
+   - **Bloqueia a spec — só sobrou uma:** BORA-21, lista inicial de categorias de local.
+     Parcialmente avançada em 2026-09-03 (choperia e petiscaria caíram para dentro de
+     "bar"; sobreposição confirmada como normal), mas a lista não fechou.
+   - ~~BORA-20 redes/franquias~~ — **confirmada em 2026-09-03** na `RN-LOCAL-004`: um perfil
+     por unidade física, sem entidade "rede" na Fase 1, e vínculo gestor↔local **N:N**
+     (Princípio I). Gerou BORA-51 (limite de categorias por local), que **não bloqueia**.
    - ~~BORA-22 verificação de propriedade~~ — **decidida em 2026-09-03** e escrita na
      `RN-LOCAL-005`: qualquer conta cria o perfil, ele nasce **não reivindicado**, e a porta
      da verificação fica na **publicação de evento**, não no cadastro. Fase 1 verifica por

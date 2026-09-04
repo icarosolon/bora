@@ -190,3 +190,20 @@ abriu duas perguntas, e é isso que o passo 7 existe para não deixar cair no ch
 bloqueantes para **duas** (BORA-21 categorias e BORA-20 redes/franquias). Nem a BORA-49 nem
 a BORA-50 bloqueiam — a primeira é da Fase 2, a segunda é regra de arbitragem que pode
 entrar depois do cadastro existir.
+
+## Sincronização de 2026-09-03 — BORA-20 fechada, BORA-21 pela metade
+
+| Ação | Issue |
+|---|---|
+| Fechada, rótulo removido, descrição com a decisão e o porquê | **BORA-20** (redes/franquias) |
+| Linha tirada da tabela "Decisões pendentes" do `backlog.md` | — |
+| Criada para a pendência que a conversa gerou | **BORA-51** — limite de categorias por local (já se sabe que tem de ser ≥ 2) |
+| **Mantida aberta**, com o andamento registrado na descrição | **BORA-21** — a lista de categorias não fechou |
+
+A BORA-21 é caso de **decisão parcial**: o Ícaro decidiu que choperia e petiscaria são
+"bar" e confirmou que sobreposição é normal, mas a lista não foi fechada. Registrar o
+andamento na issue e no catálogo — em vez de esperar a decisão inteira — é o que impede a
+parte já decidida de se perder entre sessões.
+
+**Efeito no caminho crítico:** a spec de cadastro de local passa de **duas** decisões
+bloqueantes para **uma** (BORA-21). Nem a BORA-51 nem as BORA-49/50 bloqueiam.

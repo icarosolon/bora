@@ -61,6 +61,22 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-LOCAL-004` fechada e `RN-LOCAL-002` avançada pela metade** (2026-09-03). **Redes e
+  franquias: um perfil por unidade física, sem entidade "rede" na Fase 1** (fecha a
+  BORA-20). A regra já respondia quase tudo com a palavra "físico" — era confirmação, não
+  decisão em aberto. Um perfil só com vários endereços quebraria três regras já escritas: o
+  "como chegar" não saberia para qual endereço ir (`RN-DESC-004`), o evento perderia a
+  unidade a que pertence (`RN-EVENTO-001`) e a `RN-LOCAL-003` amarra endereço único à rota.
+  Derivado junto, porque passaria despercebido: o vínculo **gestor↔local é N:N**
+  (Princípio I) — o dono da rede gerencia as unidades com a mesma conta. Registrada a
+  consequência de Fase 2: sem entidade "rede", o plano pago é por perfil, e uma rede de três
+  unidades pagaria três planos (assunto da BORA-4). **Categorias de local (BORA-21) seguem
+  abertas**, mas **choperia e petiscaria caíram para dentro de "bar"** — categoria é botão
+  de filtro, e ninguém escolhe "hoje quero petiscaria, não bar"; filtro que não exclui nada
+  é decoração. Sobreposição confirmada como normal ("tem muito restaurante que é bar e
+  restaurante também"), o que gerou a BORA-51 (limite de categorias por local, que já se
+  sabe ter de ser ≥ 2). **A BORA-21 é agora a última decisão bloqueando a spec de cadastro
+  de local.**
 - **`RN-LOCAL-001` saiu de PENDENTE e nasceu a `RN-LOCAL-005` — verificação de propriedade
   do estabelecimento** (decisão do Ícaro em 2026-09-03, fecha a BORA-22). A pergunta estava
   mal cortada: *criar* e *controlar* o perfil de um bar são decisões diferentes. **Qualquer

@@ -31,7 +31,33 @@ Todo local tem uma ou mais categorias (ex.: bar, restaurante, choperia, petiscar
 lista de categorias é gerida pela plataforma (dado, não hardcode) e alimenta filtros e
 personalização (`RN-DESC-001`, `RN-DESC-002`).
 
-PENDENTE: lista inicial de categorias — confirmar com o Ícaro.
+**PARCIALMENTE decidida** em 2026-09-03 (BORA-21 segue aberta; conversa interrompida).
+
+O que o Ícaro **já decidiu**:
+
+- **Choperia e petiscaria NÃO são categorias próprias — fazem parte de "bar".** Some do
+  exemplo original desta regra. Motivo: categoria é botão de filtro, e ninguém escolhe
+  "hoje quero petiscaria, não bar". Filtro que não exclui nada é decoração.
+- **Sobreposição é normal e esperada:** "tem muito restaurante que é bar e restaurante
+  também". Confirma o "uma ou mais" desta regra — e implica que qualquer limite futuro de
+  categorias por local tem de ser **≥ 2**.
+
+Leitura do assistente, **a confirmar** (a frase "todos esses lugares que você citou" era
+ambígua): as candidatas que sobrevivem seriam **bar, restaurante, casa de shows e
+espetaria/churrascaria**. Não tratar como lista fechada até o Ícaro confirmar.
+
+Critérios acordados para fechar a lista:
+
+- **Só entra lugar onde cabe música ao vivo.** O Bora não é guia de restaurante; sorveteria
+  e café nunca terão rolê.
+- **Errar para menos.** Categoria é dado: acrescentar depois é trivial, mas fundir ou
+  dividir depois que centenas de locais se marcaram é migração e re-etiquetagem.
+- **Categoria compete com gênero musical** (`RN-DESC-001`). Suspeita do assistente, não
+  verificada: para "onde tem rolê hoje", o gênero decide mais que o tipo de casa — se for
+  verdade, a lista de categorias pode ser bem curta e o cuidado maior pertence à BORA-19.
+
+PENDENTE: fechar a lista, e decidir se existe **limite de categorias por local** — quem
+marca é o gestor, e gestor tende a marcar tudo para aparecer em toda busca.
 
 ---
 
@@ -48,8 +74,33 @@ avaliações (`RN-AVAL-001`), e a agenda de eventos do local.
 Cada estabelecimento físico tem exatamente um perfil. Duplicata identificada é unificada
 (histórico preservado — `RN-PLAT-005`), nunca apagada.
 
-PENDENTE: redes/franquias com mais de uma unidade — um perfil por unidade? Confirmar
-quando o caso aparecer.
+**Rede ou franquia = um perfil por unidade física** (confirmado pelo Ícaro em 2026-09-03,
+fecha a BORA-20). **Não existe entidade "rede"** na Fase 1: as unidades são perfis
+independentes, sem nível acima delas.
+
+Por que não um perfil só com vários endereços: quebraria três regras já escritas — o "como
+chegar" não saberia para qual endereço ir (`RN-DESC-004`), o evento perderia a unidade a que
+pertence (`RN-EVENTO-001`) e a `RN-LOCAL-003` amarra endereço único à rota. E, do lado do
+rolezeiro, ver as unidades separadas é o comportamento **correto**: ele quer a que está
+perto dele.
+
+**Um gestor pode gerir vários locais.** O vínculo gestor↔local é **N:N** — decorre do
+Princípio I (uma pessoa, uma conta, papéis vinculados): o dono da rede gerencia as unidades
+com a mesma conta, nunca com contas paralelas. Escrito aqui porque implementar o vínculo
+como um-para-um passaria despercebido até a primeira rede aparecer.
+
+PROPOSTA (assistente, aguardando o Ícaro): **desambiguar unidades pelo bairro, sem campo
+novo.** O endereço completo já é obrigatório (`RN-LOCAL-003`) e o bairro está nele, então as
+listagens exibem "Bar do Zé · Centro" a partir de dado que já existe — sem acrescentar campo
+ao formulário (a régua manda formulário mínimo) e sem depender de o gestor lembrar de
+desambiguar. Vale para todo o catálogo, não só para redes: "onde tem rolê hoje" é pergunta
+geográfica, e o bairro no feed é informação útil sempre. Se duas unidades caírem no mesmo
+bairro — raro —, o gestor desambigua no próprio nome.
+
+**Consequência de Fase 2, registrada para não virar surpresa:** sem entidade "rede", o plano
+pago é **por perfil** — uma rede de três unidades pagaria três planos. Isso é assunto da
+BORA-4 (preço dos planos), não desta regra. Tecnicamente não custa adiar: agrupar perfis
+numa rede depois é acrescentar um vínculo opcional, não remodelar.
 
 ---
 

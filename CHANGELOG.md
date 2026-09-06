@@ -61,6 +61,22 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-LOCAL-002` fechada — categorias de local são três: bar, restaurante e casa de
+  shows, sem limite por local** (2026-09-05; fecha BORA-21 e BORA-51). **Com isso nenhuma
+  decisão bloqueia mais a spec de cadastro/perfil de local** — eram três (BORA-22, BORA-20,
+  BORA-21) e caíram todas. O critério da lista foi **tipo de noite**, não tipo de comida ou
+  de bebida: choperia e petiscaria são "bar", espetaria e churrascaria são "restaurante", e
+  sorveteria e café não entram porque só é categoria o lugar onde **cabe música ao vivo**.
+  Lista curta de propósito — categoria é dado, então acrescentar depois é trivial, enquanto
+  fundir ou dividir depois que centenas de locais se marcaram é migração e re-etiquetagem.
+  **Uma previsão do assistente foi contrariada e vale o registro:** a BORA-51 (limite de
+  categorias por local) nasceu do receio de que o gestor marcasse tudo e degradasse o
+  filtro; com a lista em três, o risco evaporou — marcar as três já é o teto — e a issue
+  fechou sem virar regra, no mesmo dia em que foi criada. **Duas ressalvas honestas ficam
+  na regra:** a lista foi **estimada, não medida** (a contagem em campo é a BORA-47 e segue
+  por fazer), e há a suspeita não verificada de que, com "bar" perto de 80% do catálogo, o
+  filtro por categoria filtre pouco e o **gênero musical** faça o trabalho pesado — se
+  confirmar, o cuidado maior pertence à BORA-19 e à `RN-DESC-001`, na spec do feed.
 - **`RN-LOCAL-004` fechada e `RN-LOCAL-002` avançada pela metade** (2026-09-03). **Redes e
   franquias: um perfil por unidade física, sem entidade "rede" na Fase 1** (fecha a
   BORA-20). A regra já respondia quase tudo com a palavra "físico" — era confirmação, não

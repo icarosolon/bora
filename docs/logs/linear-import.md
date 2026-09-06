@@ -207,3 +207,21 @@ parte já decidida de se perder entre sessões.
 
 **Efeito no caminho crítico:** a spec de cadastro de local passa de **duas** decisões
 bloqueantes para **uma** (BORA-21). Nem a BORA-51 nem as BORA-49/50 bloqueiam.
+
+## Sincronização de 2026-09-05 — BORA-21 e BORA-51 fechadas
+
+| Ação | Issue |
+|---|---|
+| Fechada, rótulo removido, descrição com a lista e o critério | **BORA-21** (categorias de local) |
+| Fechada, rótulo removido — **deixou de existir** quando a lista encolheu para três | **BORA-51** (limite de categorias) |
+| Duas linhas tiradas da tabela "Decisões pendentes" do `backlog.md` | — |
+| Nenhuma issue nova | a decisão não gerou pendência |
+
+Primeira vez em que o passo 7 **fecha** uma issue sem criar outra: decidir nem sempre abre
+pergunta nova. A BORA-51 é o caso interessante — foi criada em 2026-09-03 por uma previsão
+do assistente (gestor marcaria tudo e degradaria o filtro) e fechada dois dias depois sem
+virar regra, porque a lista curta eliminou o problema em vez de resolvê-lo.
+
+**Efeito no caminho crítico:** a spec de cadastro/perfil de local passa de **uma** decisão
+bloqueante para **zero**. As três (BORA-22, BORA-20, BORA-21) caíram entre 03 e 05 de
+setembro. A spec está liberada para `/speckit-specify`.

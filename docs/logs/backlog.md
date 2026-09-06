@@ -20,8 +20,6 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Método automático que sucede a aprovação manual da reivindicação | cadastro de local | `RN-LOCAL-005` |
 | Desempate entre duas reivindicações do mesmo local | cadastro de local | `RN-LOCAL-005` |
-| Lista inicial de categorias de local | cadastro de local, filtros | `RN-LOCAL-002` |
-| Limite de categorias por local (gestor tende a marcar tudo) | cadastro de local, filtros | `RN-LOCAL-002` |
 | Lista inicial de gêneros musicais ("Tiktok" é gênero ou coleção?) | cadastro de artista, filtros | `RN-ART-002` |
 | Co-gestão de perfil de banda | cadastro de artista | `RN-ART-001` |
 | Evento publicável antes da confirmação do artista? Prazo de resposta? | eventos | `RN-EVENTO-002` |
@@ -397,12 +395,19 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **Bloqueia a spec — só sobrou uma:** BORA-21, lista inicial de categorias de local.
-     Parcialmente avançada em 2026-09-03 (choperia e petiscaria caíram para dentro de
-     "bar"; sobreposição confirmada como normal), mas a lista não fechou.
-   - ~~BORA-20 redes/franquias~~ — **confirmada em 2026-09-03** na `RN-LOCAL-004`: um perfil
-     por unidade física, sem entidade "rede" na Fase 1, e vínculo gestor↔local **N:N**
-     (Princípio I). Gerou BORA-51 (limite de categorias por local), que **não bloqueia**.
+   - **NENHUMA decisão bloqueia mais a spec.** As três caíram: BORA-22 (2026-09-03),
+     BORA-20 (2026-09-03) e BORA-21 (2026-09-05). A **spec de cadastro/perfil de local está
+     liberada para `/speckit-specify`.**
+   - ~~BORA-22 verificação de propriedade~~ → `RN-LOCAL-005`: qualquer conta cria o perfil,
+     ele nasce **não reivindicado**, e a porta da verificação fica na **publicação de
+     evento**. Fase 1 verifica por **aprovação manual**.
+   - ~~BORA-20 redes/franquias~~ → `RN-LOCAL-004`: um perfil por unidade física, sem
+     entidade "rede" na Fase 1, vínculo gestor↔local **N:N** (Princípio I).
+   - ~~BORA-21 categorias~~ → `RN-LOCAL-002`: **bar, restaurante, casa de shows**, sem
+     limite por local (fecha também a BORA-51). Choperia e petiscaria são bar; espetaria e
+     churrascaria são restaurante. **Estimada, não medida** — a contagem em campo é a
+     BORA-47 e segue por fazer.
+   - **Não bloqueiam:** BORA-49 e BORA-50 (geradas pela BORA-22).
    - ~~BORA-22 verificação de propriedade~~ — **decidida em 2026-09-03** e escrita na
      `RN-LOCAL-005`: qualquer conta cria o perfil, ele nasce **não reivindicado**, e a porta
      da verificação fica na **publicação de evento**, não no cadastro. Fase 1 verifica por

@@ -31,33 +31,45 @@ Todo local tem uma ou mais categorias (ex.: bar, restaurante, choperia, petiscar
 lista de categorias é gerida pela plataforma (dado, não hardcode) e alimenta filtros e
 personalização (`RN-DESC-001`, `RN-DESC-002`).
 
-**PARCIALMENTE decidida** em 2026-09-03 (BORA-21 segue aberta; conversa interrompida).
+**Lista inicial, fechada pelo Ícaro em 2026-09-05** (fecha a BORA-21):
 
-O que o Ícaro **já decidiu**:
+| Categoria |
+|---|
+| **Bar** |
+| **Restaurante** |
+| **Casa de shows** |
 
-- **Choperia e petiscaria NÃO são categorias próprias — fazem parte de "bar".** Some do
-  exemplo original desta regra. Motivo: categoria é botão de filtro, e ninguém escolhe
-  "hoje quero petiscaria, não bar". Filtro que não exclui nada é decoração.
-- **Sobreposição é normal e esperada:** "tem muito restaurante que é bar e restaurante
-  também". Confirma o "uma ou mais" desta regra — e implica que qualquer limite futuro de
-  categorias por local tem de ser **≥ 2**.
+**Sem limite de categorias por local** (fecha a BORA-51): o local marca quantas das três
+fizerem sentido. Com apenas três opções, marcar todas já é o teto e o filtro continua
+separando o restaurante puro do bar puro — um limite seria regra a escrever, testar e
+explicar para um problema que a lista curta já resolve.
 
-Leitura do assistente, **a confirmar** (a frase "todos esses lugares que você citou" era
-ambígua): as candidatas que sobrevivem seriam **bar, restaurante, casa de shows e
-espetaria/churrascaria**. Não tratar como lista fechada até o Ícaro confirmar.
+**O que ficou de fora, e por quê** — o critério foi *tipo de noite*, não tipo de comida ou
+de bebida:
 
-Critérios acordados para fechar a lista:
+- **Choperia e petiscaria** → são **bar**. Ninguém escolhe "hoje quero petiscaria, não
+  bar"; categoria é botão de filtro, e filtro que não exclui nada é decoração.
+- **Espetaria e churrascaria** → são **restaurante**, pela mesma régua.
+- **Sorveteria, café e afins** → não entram: só é categoria o lugar onde **cabe música ao
+  vivo**. O Bora não é guia de restaurante.
 
-- **Só entra lugar onde cabe música ao vivo.** O Bora não é guia de restaurante; sorveteria
-  e café nunca terão rolê.
-- **Errar para menos.** Categoria é dado: acrescentar depois é trivial, mas fundir ou
-  dividir depois que centenas de locais se marcaram é migração e re-etiquetagem.
-- **Categoria compete com gênero musical** (`RN-DESC-001`). Suspeita do assistente, não
-  verificada: para "onde tem rolê hoje", o gênero decide mais que o tipo de casa — se for
-  verdade, a lista de categorias pode ser bem curta e o cuidado maior pertence à BORA-19.
+**Sobreposição é normal e esperada:** "tem muito restaurante que é bar e restaurante
+também" (Ícaro). É o que o "uma ou mais" acima significa na prática.
 
-PENDENTE: fechar a lista, e decidir se existe **limite de categorias por local** — quem
-marca é o gestor, e gestor tende a marcar tudo para aparecer em toda busca.
+**Por que a lista é curta de propósito:** categoria é dado, então **acrescentar depois é
+trivial**, enquanto fundir ou dividir uma categoria depois que centenas de locais já se
+marcaram é migração e re-etiquetagem. Errar para menos é o erro barato.
+
+**Duas ressalvas honestas, registradas para quem reler:**
+
+1. **A lista foi estimada, não medida.** A contagem em campo das casas com música ao vivo
+   em Juazeiro e Petrolina é a BORA-47 e **não foi feita**. Aceitável porque categoria é
+   dado e é barato corrigir — mas não é conhecimento verificado do mercado.
+2. **Opinião do assistente, não verificada:** com "bar" provavelmente perto de 80% do
+   catálogo, o filtro por categoria vai filtrar pouco, e é o **gênero musical** que deve
+   fazer o trabalho pesado da descoberta. Se isso se confirmar, o cuidado maior pertence à
+   BORA-19 (gêneros) e à `RN-DESC-001`, não a esta regra. Revisitar quando a spec do feed
+   chegar.
 
 ---
 

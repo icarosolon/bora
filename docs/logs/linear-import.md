@@ -225,3 +225,26 @@ virar regra, porque a lista curta eliminou o problema em vez de resolvê-lo.
 **Efeito no caminho crítico:** a spec de cadastro/perfil de local passa de **uma** decisão
 bloqueante para **zero**. As três (BORA-22, BORA-20, BORA-21) caíram entre 03 e 05 de
 setembro. A spec está liberada para `/speckit-specify`.
+
+## Sincronização de 2026-09-06 — estados visíveis do perfil
+
+Regra alterada nesta sessão: **`RN-LOCAL-005`** — o "perfil magro" saiu de PROPOSTA para
+regra, e entraram os dois **estados visíveis** (selo "Perfil do estabelecimento" no
+reivindicado; linha explicativa no não reivindicado).
+
+Passo 7 do `doc-sync` conferido:
+
+| Verificação | Resultado |
+|---|---|
+| Issue da regra alterada | **BORA-22** já estava fechada em 2026-09-03; a alteração de hoje refina a regra que ela decidiu, não reabre a decisão |
+| Rótulo `decisao-pendente` pendurado | nenhum |
+| Linha na tabela "Decisões pendentes" | nenhuma a tirar |
+| Issue nova | **nenhuma** — a decisão não abriu pergunta; abriu um *gatilho de revisão* |
+
+**Gatilho de revisão anotado na BORA-49**, em vez de virar issue própria: quando o método
+de verificação endurecer, revisar se o rótulo passa a comportar a palavra "verificado". É
+dependência de uma issue existente, não trabalho novo — criar issue para isso seria
+cerimônia sem informação nova.
+
+Duplicata corrigida no `backlog.md`: a BORA-22 aparecia duas vezes no "Próximo passo",
+escrita por duas sessões diferentes. Ficou a versão mais completa.

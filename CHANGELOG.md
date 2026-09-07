@@ -61,6 +61,21 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-LOCAL-005` ganhou dois estados visíveis, e o "perfil magro" saiu de proposta para
+  regra** (2026-09-06). O perfil **não reivindicado é propositalmente magro** — nome,
+  endereço, categoria e telefone, sem fotos, descrição ou Instagram —, o que encolhe a
+  superfície de vandalismo, tira o estranho do controle editorial e faz da riqueza do perfil
+  um **prêmio da reivindicação**. Mas o magro sozinho é **ambíguo**: página pelada tanto
+  pode ser "ninguém confirmou este bar" quanto "o dono é desleixado". Quem desfaz isso é o
+  rótulo de estado, ideia do Ícaro: **selo com ícone + o texto "Perfil do estabelecimento"**
+  no reivindicado, e a linha *"Este perfil ainda não é gerenciado pelo estabelecimento — as
+  informações podem estar incompletas"* no não reivindicado. **Não é "Verificado" de
+  propósito:** na Fase 1 a verificação é aprovação manual sem documento, e a palavra que
+  WhatsApp e Instagram consagraram promete identidade conferida — rótulo que promete demais
+  **amplifica o estrago** quando alguém passa pela aprovação. Revisitar a palavra quando o
+  método endurecer (BORA-49). Selo sem texto reprovaria na régua ("ícone nunca sozinho",
+  "informação nunca só por cor"). Registrada a observação de que o valor de sinal dos dois
+  rótulos **inverte com o tempo**, conforme reivindicado deixa de ser minoria.
 - **`RN-LOCAL-002` fechada — categorias de local são três: bar, restaurante e casa de
   shows, sem limite por local** (2026-09-05; fecha BORA-21 e BORA-51). **Com isso nenhuma
   decisão bloqueia mais a spec de cadastro/perfil de local** — eram três (BORA-22, BORA-20,

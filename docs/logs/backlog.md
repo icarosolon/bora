@@ -408,11 +408,34 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      churrascaria são restaurante. **Estimada, não medida** — a contagem em campo é a
      BORA-47 e segue por fazer.
    - **Não bloqueiam:** BORA-49 e BORA-50 (geradas pela BORA-22).
-   - ~~BORA-22 verificação de propriedade~~ — **decidida em 2026-09-03** e escrita na
-     `RN-LOCAL-005`: qualquer conta cria o perfil, ele nasce **não reivindicado**, e a porta
-     da verificação fica na **publicação de evento**, não no cadastro. Fase 1 verifica por
-     **aprovação manual**. Gerou BORA-49 (método automático sucessor) e BORA-50 (desempate
-     entre reivindicações) — **nenhuma das duas bloqueia a spec de cadastro de local**.
+
+   **Recorte acordado com o Ícaro em 2026-09-06, para o `/speckit-specify` usar:**
+
+   A **D6** do `design-system.md` mandou kit, shell, receitas de tela e o retrofit das telas
+   da 001 para dentro desta spec. Somado à API de local, isso é spec grande — e escopo
+   grande é onde a validação visual do Princípio XI vira carimbo. **O `tasks-template.md`
+   resolve isso estruturalmente**, e não por disciplina: ele tem uma **Phase 2 —
+   Foundational (Blocking Prerequisites)**, com o aviso literal *"No user story work can
+   begin until this phase is complete"*.
+
+   Registrado de propósito: o assistente ia propor a fundação **como P1**, e o
+   `spec-template.md` não permite — ele exige que cada história, sozinha, entregue um MVP
+   viável com valor, e fundação não dá valor a usuário nenhum. A fase Foundational faz o
+   trabalho melhor do que a ideia original.
+
+   - **Phase 2 (Foundational, bloqueia todas as histórias):** o portão (camada 4) **primeiro**,
+     como a D6 mandou; kit de UI com a régua embutida no componente (o `Button` de 32px vira
+     44px); as duas lacunas do `design-system` — **tipografia** e **papéis semânticos de
+     cor**; shell de consumo; **retrofit das telas da 001**; modelo e migrations de local.
+   - **P1 — "Cadastro meu bar e vejo a página dele no ar."** Valor demonstrável numa frase: o
+     bar passa a existir na internet com link compartilhável. Força a existir o Formulário
+     (que já existe — D17) e o **Detalhe**, que é a receita mais rica, além da fronteira
+     servidor/cliente do ADR-0003.
+   - **P2** — reivindicação com aprovação manual · **P3** — lista e busca · **P4** — perfil
+     rico (o prêmio da reivindicação).
+   - **A P1 não precisa do shell de gestão completo.** A D10 diz Agenda + Perfil, mas
+     *Agenda* só faz sentido quando houver eventos, que é outra spec. Na 002 o shell de
+     gestão nasce só com o Perfil.
    - **Bloqueia a tela, não a spec:** identidade visual PENDENTE em `brand.md` (BORA-25) — o
      redesenho (logo flat, dark-first, tokens semânticos) e o Figma aposentado. O
      `design-system.md` do item 2 é o caminho para destravar isto.

@@ -17,11 +17,15 @@ real: perfil errado é constrangimento corrigível, **evento falso faz a pessoa 
 cidade para nada** — então a porta da verificação fica na **publicação**, não no cadastro.
 Assim o catálogo enche na velocidade das pessoas, e não na velocidade da verificação.
 
-PROPOSTA (assistente, aguardando o Ícaro): o perfil **não reivindicado é propositalmente
-magro** — nome, endereço, categoria e telefone, e nada além. Sem fotos, descrição ou
-Instagram. Encolhe a superfície de vandalismo, evita que um estranho tenha controle
+**O perfil não reivindicado é propositalmente magro** (ratificado pelo Ícaro em
+2026-09-06): nome, endereço, categoria e telefone, e nada além — **sem fotos, descrição ou
+Instagram**. Encolhe a superfície de vandalismo, evita que um estranho tenha controle
 editorial sobre o bar de outro, e faz da riqueza do perfil (`RN-LOCAL-003`) um **prêmio da
 reivindicação**, não o estado inicial.
+
+Nota: o perfil magro sozinho é **ambíguo** — página pelada tanto pode significar "ninguém
+confirmou este bar" quanto "o dono é desleixado". Quem desfaz a ambiguidade é o rótulo de
+estado da `RN-LOCAL-005`.
 
 ---
 
@@ -156,8 +160,36 @@ quem aprovou, quando, e **por qual método a reivindicação foi aprovada** — 
 porque o método vai mudar, e disputa entre um dono e quem cadastrou antes dele é cenário
 certo, não hipotético.
 
+**Os dois estados são visíveis para o rolezeiro** (decidido pelo Ícaro em 2026-09-06):
+
+| Estado | O que a tela mostra |
+|---|---|
+| **Reivindicado** | selo com ícone **+ o texto "Perfil do estabelecimento"** |
+| **Não reivindicado** | linha curta: *"Este perfil ainda não é gerenciado pelo estabelecimento — as informações podem estar incompletas."* |
+
+**Por que "Perfil do estabelecimento" e não "Verificado".** O rótulo tem de dizer o que o
+processo **de fato** verificou. Na Fase 1 a verificação é aprovação manual, **sem
+documento** — "verificado", no sentido que WhatsApp e Instagram consagraram, promete
+identidade conferida contra documento, o que aqui não acontece. Rótulo que promete demais
+**amplifica o estrago** quando alguém passa pela aprovação: a pessoa confia mais justamente
+no caso em que deveria confiar menos. E, na prática, o que o rolezeiro quer saber não é "esta
+identidade foi verificada" — é **"esta informação veio do bar?"**, que é exatamente o que o
+processo entrega. Revisitar a palavra quando o método endurecer (BORA-49).
+
+**Selo sozinho não vale.** O `ux-requirements.md` é vinculante: *"ícone nunca sozinho para
+ação importante"* e *"informação nunca transmitida só por cor"*. O selo carrega rótulo de
+texto — o que, de quebra, é o que o torna honesto.
+
+**Observação registrada (opinião, não medida):** o valor de sinal dos dois rótulos
+**inverte com o tempo**. No começo quase todo perfil é não reivindicado, então o selo é raro
+e informa muito, e o aviso está em toda parte. Quando a maioria estiver reivindicada, é o
+aviso que passa a informar. Os dois existem desde o início; o que deve mudar depois é o peso
+visual de cada um.
+
 PENDENTE: quando a aprovação manual deixar de escalar, qual método automático a substitui e
-qual o gatilho da troca? Depende da BORA-6 (provedor). Ver BORA-49.
+qual o gatilho da troca? Depende da BORA-6 (provedor). Ver BORA-49. **Quando isso mudar,
+revisar também o rótulo acima** — método mais forte pode passar a comportar a palavra
+"verificado".
 
 PENDENTE: duas pessoas reivindicam o mesmo local — qual o critério de desempate, e o que
 acontece com quem perde?

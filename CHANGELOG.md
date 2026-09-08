@@ -61,6 +61,12 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **`RN-LOCAL-004`: unidades se desambiguam pelo bairro, sem campo novo** (2026-09-08). O
+  endereço completo já é obrigatório (`RN-LOCAL-003`) e o bairro está nele, então as
+  listagens exibem "Bar do Zé · Centro" a partir de dado existente — sem acrescentar campo
+  ao formulário (a régua manda formulário mínimo) e sem depender de o gestor lembrar de
+  desambiguar. Vale para todo o catálogo, não só para redes: "onde tem rolê hoje" é
+  pergunta geográfica. Era a última proposta pendente do catálogo de locais.
 - **`RN-LOCAL-005` ganhou dois estados visíveis, e o "perfil magro" saiu de proposta para
   regra** (2026-09-06). O perfil **não reivindicado é propositalmente magro** — nome,
   endereço, categoria e telefone, sem fotos, descrição ou Instagram —, o que encolhe a

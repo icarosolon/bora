@@ -105,13 +105,13 @@ Princípio I (uma pessoa, uma conta, papéis vinculados): o dono da rede gerenci
 com a mesma conta, nunca com contas paralelas. Escrito aqui porque implementar o vínculo
 como um-para-um passaria despercebido até a primeira rede aparecer.
 
-PROPOSTA (assistente, aguardando o Ícaro): **desambiguar unidades pelo bairro, sem campo
-novo.** O endereço completo já é obrigatório (`RN-LOCAL-003`) e o bairro está nele, então as
-listagens exibem "Bar do Zé · Centro" a partir de dado que já existe — sem acrescentar campo
-ao formulário (a régua manda formulário mínimo) e sem depender de o gestor lembrar de
-desambiguar. Vale para todo o catálogo, não só para redes: "onde tem rolê hoje" é pergunta
-geográfica, e o bairro no feed é informação útil sempre. Se duas unidades caírem no mesmo
-bairro — raro —, o gestor desambigua no próprio nome.
+**Unidades se desambiguam pelo bairro, sem campo novo** (ratificado pelo Ícaro em
+2026-09-08). O endereço completo já é obrigatório (`RN-LOCAL-003`) e o bairro está nele,
+então as listagens exibem "Bar do Zé · Centro" a partir de dado que já existe — sem
+acrescentar campo ao formulário (a régua manda formulário mínimo) e sem depender de o gestor
+lembrar de desambiguar. Vale para **todo o catálogo**, não só para redes: "onde tem rolê
+hoje" é pergunta geográfica, e o bairro na listagem é informação útil sempre. Se duas
+unidades caírem no mesmo bairro — raro —, o gestor desambigua no próprio nome.
 
 **Consequência de Fase 2, registrada para não virar surpresa:** sem entidade "rede", o plano
 pago é **por perfil** — uma rede de três unidades pagaria três planos. Isso é assunto da

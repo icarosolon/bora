@@ -90,6 +90,17 @@ avaliações (`RN-AVAL-001`), e a agenda de eventos do local.
 Cada estabelecimento físico tem exatamente um perfil. Duplicata identificada é unificada
 (histórico preservado — `RN-PLAT-005`), nunca apagada.
 
+**Quem identifica duplicata, e quando** (decidido pelo Ícaro em 2026-09-08): **o sistema
+avisa antes de criar**, quando já existe local parecido **no mesmo bairro**, mostrando o que
+encontrou — e quem cadastra decide se é o mesmo lugar. O critério de "parecido" pode ser
+grosseiro e ainda pegar a maioria dos casos. O aviso **não impede** a criação: perfil
+repetido criado mesmo assim continua sendo caso de unificação manual; a prevenção reduz o
+volume, não o elimina.
+
+Por que na criação e não depois: **unificar é caro por causa do Princípio X.** Não se apaga
+o perfil repetido — histórico, avaliações e reivindicações precisam ser preservados e
+costurados. Prevenir custa um aviso; consertar custa uma migração de dados com histórico.
+
 **Rede ou franquia = um perfil por unidade física** (confirmado pelo Ícaro em 2026-09-03,
 fecha a BORA-20). **Não existe entidade "rede"** na Fase 1: as unidades são perfis
 independentes, sem nível acima delas.
@@ -160,6 +171,17 @@ quem aprovou, quando, e **por qual método a reivindicação foi aprovada** — 
 porque o método vai mudar, e disputa entre um dono e quem cadastrou antes dele é cenário
 certo, não hipotético.
 
+**Quem cadastra pode se identificar como gestor no mesmo ato** (decidido pelo Ícaro em
+2026-09-08): o formulário de cadastro oferece **"sou eu que gerencio este bar"**, e marcar
+isso **abre o pedido de reivindicação junto com a criação**. A **aprovação continua manual**
+e continua sendo ato separado — a regra acima não muda; o que some é o segundo pedido
+exigido de quem já se identificou, no momento de maior intenção.
+
+Isso **não** dá controle a quem cria: o perfil ainda nasce não reivindicado e só muda de
+estado com aprovação. Dar controle imediato a quem cadastra foi descartado por contradizer
+esta regra e reabrir a decisão da BORA-22 — a porta da verificação deixaria de ser a
+publicação para quem chegasse primeiro.
+
 **Os dois estados são visíveis para o rolezeiro** (decidido pelo Ícaro em 2026-09-06):
 
 | Estado | O que a tela mostra |
@@ -191,5 +213,20 @@ qual o gatilho da troca? Depende da BORA-6 (provedor). Ver BORA-49. **Quando iss
 revisar também o rótulo acima** — método mais forte pode passar a comportar a palavra
 "verificado".
 
-PENDENTE: duas pessoas reivindicam o mesmo local — qual o critério de desempate, e o que
-acontece com quem perde?
+**Recusa e pedidos concorrentes** (decidido pelo Ícaro em 2026-09-08):
+
+- **Recusar registra o motivo e avisa** o solicitante, com o motivo em linguagem simples e
+  um **caminho para falar com a plataforma**; ele pode pedir de novo depois de resolver.
+  Pedido que some da fila sem resposta é o silêncio que o `ux-requirements.md` proíbe — e,
+  na Fase 1 assistida, a recusa é o único momento em que a plataforma diz "não" a um bar que
+  o Ícaro conhece pessoalmente; ela precisa virar conversa, não porta fechada.
+- **Segundo pedido para local com pedido pendente é aceito.** Os pedidos ficam todos
+  pendentes e são apresentados **juntos** a quem decide. Perder o registro de quem pediu
+  antes destruiria o dado que o Princípio VIII manda guardar justamente para arbitrar
+  disputa.
+- **Aprovar um pedido encerra os demais** daquele local como recusados, com motivo
+  registrado e **aviso a cada solicitante** — decorre dos dois itens acima.
+
+PENDENTE: **critério de desempate** entre dois pedidos plausíveis para o mesmo local, e o
+que acontece com quem perde além do aviso. O comportamento mínimo acima já está definido; o
+que falta é a regra de arbitragem. Ver BORA-50.

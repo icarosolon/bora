@@ -248,3 +248,23 @@ cerimônia sem informação nova.
 
 Duplicata corrigida no `backlog.md`: a BORA-22 aparecia duas vezes no "Próximo passo",
 escrita por duas sessões diferentes. Ficou a versão mais completa.
+
+## Sincronização de 2026-09-08 — spec 002 escrita
+
+Regras refinadas nesta sessão: **`RN-LOCAL-004`** (quem identifica duplicata e quando) e
+**`RN-LOCAL-005`** (criar pode abrir o pedido; recusa com motivo e aviso; pedidos
+concorrentes).
+
+| Ação | Issue |
+|---|---|
+| Criada e fechada, seguindo o padrão da BORA-30 (uma issue por spec escrita) | **BORA-52** — spec 002 |
+| **Escopo reduzido**, não fechada: o comportamento mínimo saiu para a spec; resta só o critério de arbitragem | **BORA-50** |
+| Já fechadas, refinadas sem reabrir | BORA-22, BORA-20, BORA-21 |
+| Rótulo `decisao-pendente` pendurado | nenhum novo |
+
+**Caso novo para o passo 7:** uma decisão pode **encolher** uma issue em vez de fechá-la ou
+de criar outra. A BORA-50 nasceu como "desempate entre duas reivindicações"; a spec 002
+definiu o comportamento mínimo (os dois pedidos ficam na fila, aprovar um encerra o outro
+com aviso) e sobrou só a pergunta de **arbitragem**. Reescrever o corpo da issue — separando
+"já resolvido" de "o que falta" — evita que alguém releia daqui a meses e refaça o que já
+está especificado.

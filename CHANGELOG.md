@@ -8,6 +8,21 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 002 escrita e aprovada no portão — cadastro e perfil de estabelecimento**
+  (2026-09-08, BORA-52). Em `specs/002-cadastro-perfil-local/`. Implementa `RN-LOCAL-001` a
+  `RN-LOCAL-005`. Recorte: a **fundação é fase, não história** — vai na Phase 2 Foundational
+  do `tasks-template`, que bloqueia todas as histórias, porque o `spec-template` exige que
+  cada história entregue sozinha um MVP com valor, e fundação não entrega. P1 "coloco um bar
+  no Bora e vejo a página dele no ar"; P2 reivindicação; P3 lista e busca; P4 perfil rico.
+  **Quatro decisões saíram da escrita:** criar oferece "sou eu que gerencio este bar" e abre
+  o pedido junto; duplicata é avisada na criação; recusa registra motivo, avisa e oferece
+  caminho humano; segundo pedido concorrente é aceito e aprovar um encerra os demais com
+  aviso. **O `/spec-check` reprovou a primeira escrita** com cinco bloqueantes — `RN` sem
+  teste que a exercitasse, princípios I/V/VIII sem teste de bloqueio, só testes de tela
+  quando o Princípio IX exige backend também, recusa inexistente e segundo pedido
+  indefinido. Registrado de propósito: **o portão pegou a spec de quem o executou**; se
+  tivesse passado de primeira, seria portão fraco (lição do E-012). Corrigida, o veredito
+  virou SIM.
 - **O "template" do projeto foi definido, em `docs/product/design-system.md`** (sessões de
   2026-09-01 e 02). A palavra era ambígua e foi desambiguada **antes** de qualquer
   proposta: são **quatro camadas** — kit de UI/tema, shell/moldura, receitas de tela e

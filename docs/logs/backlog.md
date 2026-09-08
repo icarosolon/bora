@@ -395,9 +395,10 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **NENHUMA decisão bloqueia mais a spec.** As três caíram: BORA-22 (2026-09-03),
-     BORA-20 (2026-09-03) e BORA-21 (2026-09-05). A **spec de cadastro/perfil de local está
-     liberada para `/speckit-specify`.**
+   - **A spec 002 está ESCRITA e aprovada no portão** (2026-09-08, BORA-52) —
+     `specs/002-cadastro-perfil-local/`. Próximo passo: `/speckit-plan`.
+   - As três decisões que a bloqueavam caíram antes: BORA-22 (2026-09-03), BORA-20
+     (2026-09-03) e BORA-21 (2026-09-05).
    - ~~BORA-22 verificação de propriedade~~ → `RN-LOCAL-005`: qualquer conta cria o perfil,
      ele nasce **não reivindicado**, e a porta da verificação fica na **publicação de
      evento**. Fase 1 verifica por **aprovação manual**.

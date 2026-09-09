@@ -300,3 +300,19 @@ domínio. O passo 7 se aplica ao quadro mesmo assim.
 A separação que se manteve em todas estas decisões — **estrutura agora, valor com o
 redesenho** — é o que permite a BORA-39 avançar sem a BORA-25. Vale registrar porque foi ela
 que evitou o bloqueio circular entre design-system e identidade visual.
+
+## Sincronização de 2026-09-09 (segunda) — propostas despachadas
+
+Nenhuma `RN` tocada: as quatro são decisões do `design-system.md`.
+
+| Ação | Issue |
+|---|---|
+| Descrição atualizada — as quatro propostas saíram; sobrou medir os rótulos e verificar o `next/font` | **BORA-39** |
+| Sem mudança — a "Ferramenta" e a D18 voltam quando ela for decidida | **BORA-5** (divisão de conta) |
+| Issue nova | **nenhuma** |
+
+**Padrão que vale registrar:** duas das quatro propostas **não sobreviveram à releitura na
+forma em que estavam** — a D13 fechou em três arquétipos e a D17 foi reescrita. Levar
+proposta antiga à mesa sem reler é como pedir ratificação de coisa que o autor já não
+defende. A marcação de origem (Ícaro / proposta / derivada) serviu exatamente para isso:
+tornou visível o que ainda não tinha sido examinado.

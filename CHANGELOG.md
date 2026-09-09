@@ -93,6 +93,21 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **As quatro propostas pendentes do `design-system.md` foram despachadas** (2026-09-09) —
+  **duas delas emendadas antes de ir à mesa**, porque a releitura mostrou que não estavam
+  prontas. **D13 fechou em três arquétipos, não quatro**: "Ferramenta" cobria uma única
+  tela — a calculadora —, cujas regras estão quase todas PENDENTE (BORA-5), e arquétipo com
+  uma instância que ainda não existe é categoria vazia, que quem chega depois preenche
+  errado. Ela entra quando a calculadora tiver regras, e a **D18 foi suspensa junto**, com o
+  raciocínio guardado inteiro: não é decisão revogada, é decisão prematura. **D17 foi
+  reescrita**: eu havia afirmado que "a receita do Formulário já existe", e exagerei — o
+  `Field` é campo de texto, e a spec 002 precisa de seleção múltipla na P1 e de área de
+  texto e envio de foto na P4. O padrão continua obrigatório; o conjunto de componentes
+  cresce por demanda, e a fundação acrescenta **só a seleção de categoria**, para não
+  engordar a fase que bloqueia todas as histórias. **O refluxo da D12 foi ratificado sem o
+  "3 + 2"** — especificar o corte antes de medir os rótulos era passar por decisão o que é
+  consequência de medida. **Com isso, nenhuma decisão do documento continua pendurada como
+  proposta do assistente.**
 - **Camada 1 do `design-system.md` aberta: tipografia e papéis de cor decididos** (D21 e
   D22, 2026-09-09) — eram as duas lacunas que bloqueavam a construção de tela. Mesmo corte
   usado antes: **a estrutura se decide agora, o valor vem com o redesenho** (BORA-25).

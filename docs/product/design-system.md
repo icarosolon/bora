@@ -253,10 +253,15 @@ Portanto:
 1. O refluxo é por `flex-wrap` ou container query — **nunca** por `@media` de largura.
 2. **O portão (camada 4) precisa de uma asserção a mais: rodar também com fonte ampliada**,
    não só com largura reduzida. Sem isso o portão tem um ponto cego conhecido.
-3. **Recomendado (proposta):** refluxo para **duas linhas** (3 + 2), mantendo ícone +
-   rótulo em todos. Custo honesto: a 200% a barra passa a ocupar perto de um terço da
-   altura. Esconder itens atrás de "Mais" reintroduz o problema que a barra existia para
-   resolver; quem está a 200% aceitou ver menos conteúdo, não aceitou perder o rótulo.
+3. **Refluxo para duas linhas** (ratificado pelo Ícaro em 2026-09-09), mantendo **ícone +
+   rótulo em todos os itens**. Custo aceito: a 200% a barra passa a ocupar perto de um terço
+   da altura. Esconder itens atrás de "Mais" reintroduz o problema que a barra existia para
+   resolver; quem está a 200% aceitou ver menos conteúdo, **não** aceitou perder o rótulo.
+
+   **Emenda feita antes da ratificação:** a proposta original dizia "3 + 2". Isso é
+   especificar demais antes de medir — a divisão sai da **medição** dos rótulos na fonte
+   real, que continua pendente. A regra é "duas linhas com rótulo em todos"; o corte é
+   consequência da medida, não escolha.
 
 ---
 
@@ -264,7 +269,7 @@ Portanto:
 
 Aberta em 2026-09-02.
 
-### D13 — Quatro arquétipos, lista fechada (origem: proposta — corrige a D1)
+### D13 — Três arquétipos, lista fechada (origem: Ícaro — corrige a D1, ratificada emendada em 2026-09-09)
 
 A D1 enumerou **cinco** arquétipos, incluindo "painel de gestão". Ao mapear as telas reais
 do `vision.md` contra as molduras da D5, o painel **se dissolve**: a Agenda do gestor é uma
@@ -274,13 +279,27 @@ vezes.
 
 | Arquétipo | Telas que ele cobre |
 |---|---|
-| **Lista** | Hoje (feed), Buscar, Salvos, Agenda do gestor, convites do artista |
+| **Lista** | Hoje (feed), Buscar, Salvos, Agenda do gestor, convites do artista, aprovar reivindicações |
 | **Detalhe** | evento, perfil de local, perfil de artista |
-| **Formulário** | entrar, criar conta, senha, unir contas, publicar evento, editar perfil de local/artista, minha conta |
-| **Ferramenta** | dividir a conta |
+| **Formulário** | entrar, criar conta, senha, unir contas, cadastrar local, pedir reivindicação, publicar evento, editar perfil, minha conta |
 
 A lista é **fechada** de propósito: tela nova ou encaixa num destes, ou dispara uma decisão
-explícita de criar o quinto. Sem isso, "arquétipo" vira etiqueta e não restringe nada.
+explícita de criar o próximo. Sem isso, "arquétipo" vira etiqueta e não restringe nada.
+
+**São três, não quatro** (ratificado pelo Ícaro em 2026-09-09, emendando a proposta
+original). A proposta trazia um quarto — **"Ferramenta"** — que cobria **uma única tela**, a
+calculadora de divisão de conta, cujas regras estão quase todas PENDENTE na `RN-CONTA-001`
+(BORA-5). **Arquétipo com uma instância que ainda não existe é categoria vazia**, e
+categoria vazia costuma ser preenchida errado por quem chega depois.
+
+"Ferramenta" entra **quando a calculadora tiver regras** — e é exatamente para isso que a
+lista fechada serve: a tela nova dispara a decisão no momento em que o problema está na mão,
+não anos antes. A **D18** espera junto.
+
+> A **Lista tem duas variantes** (pública e privada, `D15`), e isso **não** a torna dois
+> arquétipos: elas compartilham quase todo o layout, e a diferença que importa — a pública
+> não carrega estado que dependa de quem olha — já está escrita como **invariante
+> testável**, que é onde ela tem dente.
 
 **O que a receita acrescenta** não são os estados de carregando/vazio/erro/sucesso — o
 `spec-template.md` já os cobra em toda spec. A receita acrescenta o que hoje cada tela
@@ -432,10 +451,33 @@ caracteres e não cabe na fatia de 90px da fileira de quatro; "Chamar" — a exp
 usou ao descrever a ação — colidiria com "Ligar", que está na mesma fileira. "Convidar" tem
 8 caracteres, cabe, e é o que a pessoa está de fato fazendo.
 
-### D17 — A receita do Formulário já existe e passa a ser obrigatória (origem: proposta)
+### D17 — O padrão do Formulário é obrigatório; o conjunto de componentes cresce por demanda (origem: Ícaro — emenda a proposta original)
 
-`BaseForm` + `Field` + `Alert` + `useHydrated` **já são** a receita, e foram validados na
-spec 001. A camada 3 apenas a nomeia e a torna obrigatória — não reinventa nada.
+**Correção da proposta original, feita antes da ratificação.** Eu havia escrito que "a
+receita do Formulário **já existe**". Exagerei: o que existe é `BaseForm` + `Field` +
+`Alert` + `useHydrated`, e o **`Field` é campo de texto**. A spec 002 precisa de **seleção de
+categoria** (múltipla escolha) já na P1, e de **área de texto** e **envio de foto** na P4.
+Dizer que a receita já existe reivindicava cobertura que ela não tem — **o padrão existe; o
+conjunto de componentes, não**.
+
+O que fica ratificado (Ícaro, 2026-09-09):
+
+- **O padrão é obrigatório.** Todo formulário do Bora usa `BaseForm` + `Alert` +
+  `useHydrated`, com a disciplina de hidratação que resolveu E-012, E-013 e E-015 por
+  construção. Isso não se reinventa por tela.
+- **A fundação acrescenta só o que a P1 precisa:** a seleção de categoria (múltipla
+  escolha). **Área de texto e envio de foto chegam na P4**, junto com o perfil rico que os
+  usa.
+
+**Por quê:** a fase Foundational já é a maior coisa da spec 002 e **bloqueia todas as
+histórias** — engordá-la com dois componentes que só a última história usa atrasa tudo.
+Mexer no kit depois é barato **desde que a régua esteja embutida no componente desde agora**,
+que é justamente o que a fundação conserta.
+
+**Risco aceito, e vale dizer:** componente que nasce dentro de uma história tende a nascer
+sob pressa — foi assim que o `min-h-11` copiado na mão apareceu. A mitigação é o **portão**,
+que passa a existir antes de qualquer história (D4/D6) e reprova alvo abaixo de 44px venha
+ele de onde vier.
 
 Regras próprias: enviar fica abaixo dos campos, na metade inferior; volta obrigatória com
 rótulo de texto; no desktop vira **cartão centralizado**, e **não** duas colunas de campos
@@ -445,7 +487,12 @@ rótulo de texto; no desktop vira **cartão centralizado**, e **não** duas colu
 etapas — a régua manda "um assunto por etapa" e ele tem data, hora, local, atração, valor e
 links. Se é uma tela longa ou três curtas é assunto da spec 002, não da receita.
 
-### D18 — A Ferramenta recebe política da API como parâmetro (origem: proposta)
+### D18 — A Ferramenta recebe política da API como parâmetro (origem: proposta — SUSPENSA com a D13)
+
+> **Suspensa em 2026-09-09**, junto com o arquétipo "Ferramenta" (D13). O raciocínio abaixo
+> continua válido e não se perde: ele volta quando a calculadora tiver regras
+> (`RN-CONTA-001`, BORA-5). Não é decisão revogada — é decisão **prematura**, guardada
+> inteira para o momento em que houver o que decidir.
 
 A calculadora é a única tela **anônima, de cliente e sem chamada de rede para operar**.
 Isso colide com a Constituição, que proíbe regra de negócio no `web/` — e o princípio está
@@ -604,10 +651,15 @@ provisória tiver **o mesmo perfil de contraste** da marca real. Prototipar com 
 - **`RN-DESC-003` está decidida (D19) mas ainda não escrita no catálogo.** A regra só vale
   depois de entrar em `docs/domain/descoberta.md` pela skill `domain-rule`. Enquanto não
   entrar, o catálogo e este documento discordam.
-- **Ainda como proposta do assistente, não ratificadas:** D13 (os quatro arquétipos), D17
-  (o Formulário existente vira obrigatório), D18 (a Ferramenta recebe política da API como
-  parâmetro) e o refluxo em duas linhas recomendado na D12. Não foram levadas ao Ícaro em
-  2026-09-02 — D8, D10, D11 e D19 foram, e essas ele ratificou.
+- ~~**Propostas não ratificadas**~~ — **as quatro foram despachadas em 2026-09-09.** D13
+  ratificada **emendada** (três arquétipos, não quatro); D17 ratificada **emendada** (o
+  padrão é obrigatório, o conjunto de componentes cresce por demanda); o refluxo da D12
+  ratificado, com o corte "3 + 2" removido por ser especificação antes da medição; **D18
+  suspensa** junto com o arquétipo "Ferramenta", guardada inteira para quando a calculadora
+  tiver regras.
+
+**Com isso, toda decisão deste documento tem origem "Ícaro" ou "derivada".** Não resta
+proposta pendurada.
 - **Hierarquia visual do Detalhe** — a régua exige "uma ação principal", mas o perfil do
   local acumula sete controles (D19). A receita precisa declarar níveis, não só o topo.
 - **Estado "ainda não sei" do ♥** — precisa ser desenhado (rótulo, aparência) e não pode

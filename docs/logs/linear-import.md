@@ -268,3 +268,20 @@ definiu o comportamento mínimo (os dois pedidos ficam na fila, aprovar um encer
 com aviso) e sobrou só a pergunta de **arbitragem**. Reescrever o corpo da issue — separando
 "já resolvido" de "o que falta" — evita que alguém releia daqui a meses e refaça o que já
 está especificado.
+
+## Sincronização de 2026-09-09 — revisão da spec 002
+
+Regra refinada: **`RN-LOCAL-005`** ganhou a **evidência do pedido** (nome, função, melhor
+horário, a quem perguntar; verificação pelo telefone do perfil).
+
+| Ação | Issue |
+|---|---|
+| Descrição atualizada com a revisão e a nova ordem das histórias | **BORA-52** |
+| Sem mudança — o limite do telefone errado reforça a dependência já registrada | **BORA-49** |
+| Issue nova | **nenhuma** — o limite conhecido foi anotado dentro da BORA-49, que já é dona do assunto |
+
+**O que esta rodada ensinou sobre o portão**, e vale mais que a sincronização em si: o
+`/spec-check` tinha dado **SIM**, e a releitura crítica ainda achou cinco problemas. Portão
+verifica **presença** de seção e **cobertura** de regra; não verifica se o recorte faz
+sentido nem se a fatia entrega o que promete. Os dois são necessários, e nenhum substitui o
+outro — como o E-012 já tinha ensinado sobre rede de proteção.

@@ -213,6 +213,20 @@ qual o gatilho da troca? Depende da BORA-6 (provedor). Ver BORA-49. **Quando iss
 revisar também o rótulo acima** — método mais forte pode passar a comportar a palavra
 "verificado".
 
+**O pedido carrega evidência** (decidido pelo Ícaro em 2026-09-09). Aprovação manual é
+**julgamento**, e julgamento precisa de matéria: o pedido traz **nome de quem pede**,
+**função no estabelecimento**, **melhor horário para contato** e **a quem perguntar**. A
+verificação é ligar para o **telefone que já consta no perfil público** — nunca para um
+número informado pelo próprio solicitante, que provaria apenas que ele tem telefone.
+
+Estes campos e não outros porque o sucessor automático (BORA-49) é **código no telefone do
+local**: a evidência de hoje é **o mesmo sinal, feito à mão**, e sobrevive à troca de método
+em vez de virar dado órfão.
+
+**Limite declarado:** se o telefone do perfil estiver errado ou ninguém atender, o caminho
+não conclui. Na Fase 1 não trava — a aprovação é manual e cabe confirmar por fora, com o
+registro dizendo que foi assim. Quando automatizar, vira bloqueio e precisa de saída própria.
+
 **Recusa e pedidos concorrentes** (decidido pelo Ícaro em 2026-09-08):
 
 - **Recusar registra o motivo e avisa** o solicitante, com o motivo em linguagem simples e

@@ -8,6 +8,23 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Spec 002 revisada com o Ícaro — cinco problemas que o portão não pega** (2026-09-09).
+  O `/spec-check` já tinha dado SIM; a releitura crítica achou o que ele **não verifica**:
+  presença de seção e cobertura, sim; se o recorte faz sentido e se a fatia entrega o que
+  promete, não. **(1)** O pedido de reivindicação não carregava nada para julgar — com
+  aprovação manual, a tela mostraria "a conta X quer o Bar do Zé" e você aprovaria no
+  escuro; agora carrega nome, função, melhor horário e a quem perguntar, e a verificação é
+  ligar para o telefone **que já está no perfil**, nunca para um informado pelo solicitante.
+  Estes campos e não outros porque o sucessor automático (BORA-49) é código no telefone do
+  local — a evidência de hoje é o mesmo sinal feito à mão, e sobrevive à automação.
+  **(2)** A P1 criava pedidos que ninguém podia aprovar até a P2; a caixinha "sou eu que
+  gerencio" saiu da P1. **(3) A ordem estava invertida** — sem lista o catálogo não é
+  navegável, e a reivindicação não entrega nada ao rolezeiro: **lista virou P2**,
+  reivindicação virou P3. Erro de julgamento do assistente, apontado pelo Ícaro. **(4)** A
+  fileira de ações do Detalhe prometia salvar e seguir, que são de outra spec — removidos
+  (botão morto é pior que botão ausente), e **"Convidar"** explicitado como ação de P1, que
+  abre o compartilhamento do próprio aparelho e é o que realiza o valor da fatia. **(5)**
+  SC-005 e SC-006 eram vontade, não medida — agora têm número.
 - **Spec 002 escrita e aprovada no portão — cadastro e perfil de estabelecimento**
   (2026-09-08, BORA-52). Em `specs/002-cadastro-perfil-local/`. Implementa `RN-LOCAL-001` a
   `RN-LOCAL-005`. Recorte: a **fundação é fase, não história** — vai na Phase 2 Foundational

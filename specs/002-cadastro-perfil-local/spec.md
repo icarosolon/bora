@@ -4,7 +4,10 @@
 
 **Created**: 2026-09-08
 
-**Status**: Draft — aguardando `/spec-check` e aprovação do Ícaro.
+**Status**: Draft — portão `/spec-check`: **SIM** (2026-09-08, depois de cinco bloqueantes
+corrigidos). **Revisada com o Ícaro em 2026-09-09**, que encontrou cinco problemas na
+leitura; os cinco estão resolvidos e a ordem das histórias mudou. Aguardando aprovação
+final do Ícaro antes do `/speckit-plan`.
 
 **Input**: Cadastro e perfil de estabelecimento (local). Segunda spec do Bora; destrava o
 catálogo. Recorte acordado com o Ícaro em 2026-09-06 (`docs/logs/backlog.md` → "Próximo
@@ -59,24 +62,70 @@ Entrega valor sozinha: o bar está publicado e compartilhável.
    (`D20` — nunca `history.back()`).
 6. **Given** o formulário preenchido com telefone inválido, **When** a pessoa envia,
    **Then** o erro aparece **no campo**, em português do dia a dia, dizendo o que fazer.
-7. **Given** o formulário de cadastro, **When** a pessoa marca **"sou eu que gerencio este
-   bar"**, **Then** o perfil é criado **e** o pedido de reivindicação é aberto junto, com
-   confirmação de que será analisado — a aprovação continua manual e continua na P2.
-8. **Given** que já existe um local com nome parecido no mesmo bairro, **When** a pessoa
+7. **Given** que já existe um local com nome parecido no mesmo bairro, **When** a pessoa
    tenta cadastrar, **Then** o sistema **avisa antes de criar** e mostra o que encontrou,
    deixando a pessoa decidir se é o mesmo lugar ou não.
+8. **Given** a página pública de um bar, **When** a pessoa toca em **"Convidar"**, **Then**
+   abre o compartilhamento **do próprio aparelho** — o mesmo gesto do Instagram e do
+   WhatsApp — com o link da página, para mandar a alguém.
+
+> **A opção "sou eu que gerencio este bar" NÃO está nesta história.** Ela vive na P3, junto
+> com a aprovação. Entregar a caixinha antes do caminho de aprovação faria o sistema
+> acumular pedidos pendentes **sem ninguém que possa analisá-los**, e prometer "será
+> analisado" a cada dono que a marcasse — dívida visível para o usuário criada pela própria
+> fatia. Decisão do Ícaro em 2026-09-09.
 
 ---
 
-### User Story 2 - Reivindico o perfil do meu estabelecimento (Priority: P2)
+### User Story 2 - Encontro bares na lista e filtro por categoria (Priority: P2)
+
+O rolezeiro abre a lista de locais da cidade e filtra por categoria. Cada item mostra o
+nome e o **bairro** (`RN-LOCAL-004`), para distinguir unidades e para responder à pergunta
+geográfica que o produto faz.
+
+**Why this priority**: **sem esta história o catálogo não é navegável.** Depois da P1, o
+único jeito de chegar a um bar é já ter o link — e um produto cuja pergunta é *"onde tem
+rolê hoje?"* sem lista nenhuma não responde à própria pergunta. É também a primeira história
+que entrega valor ao **rolezeiro**, que é o público maior e o ativo que sustenta o modelo
+de negócio (Princípio II).
+
+> **Esta história era P3 e foi promovida** (Ícaro, 2026-09-09). A justificativa original —
+> "uma lista de perfis não reivindicados vale menos que uma lista com presenças
+> confirmadas" — não se sustentou na releitura: a reivindicação não entrega **nada** ao
+> rolezeiro, e nada monetiza na Fase 1, então adiar a navegação para depois dela seria
+> lançar sem o principal.
+
+**Independent Test**: com alguns locais cadastrados em categorias diferentes, abrir a
+lista, aplicar cada filtro e verificar que o conjunto muda; conferir que nenhum item traz
+informação que dependa de quem está olhando.
+
+**Acceptance Scenarios**:
+
+1. **Given** locais cadastrados, **When** o rolezeiro abre a lista, **Then** vê nome e
+   bairro de cada um, em **uma coluna** no celular.
+2. **Given** a lista aberta, **When** filtra por uma categoria, **Then** vê apenas os
+   locais daquela categoria; o filtro tem rótulo de texto, nunca só ícone ou só cor.
+3. **Given** a lista pública, **When** é renderizada, **Then** **nenhum** item exibe estado
+   que dependa do usuário — sem coração de "salvo", sem "seguindo" (`D14`, `D15`).
+4. **Given** nenhum local na categoria escolhida, **When** o filtro é aplicado, **Then** a
+   tela **ensina** o que fazer, em vez de ficar em branco.
+
+---
+
+### User Story 3 - Reivindico o perfil do meu estabelecimento (Priority: P3)
 
 O gestor do bar pede a reivindicação do perfil. O pedido entra numa fila; a plataforma
 aprova **à mão** (`RN-LOCAL-005`, Fase 1). Aprovado, o perfil passa a **reivindicado**,
 ganha o selo **"Perfil do estabelecimento"** e o gestor passa a poder editá-lo.
 
 **Why this priority**: é o que separa "catálogo de terceiros" de "presença oficial", e é o
-portão que a `RN-EVENTO-001` vai usar depois para permitir publicar evento. Não é P1 porque
-o catálogo já tem valor sem ela — e porque, sem perfis criados, não há o que reivindicar.
+portão que a `RN-EVENTO-001` vai usar depois para permitir publicar evento. Vem **depois da
+lista** (Ícaro, 2026-09-09) porque não entrega nada ao rolezeiro, e nada monetiza na Fase 1
+— o catálogo navegável vale mais cedo do que a presença confirmada.
+
+**Traz junto a caixinha "sou eu que gerencio este bar"** no formulário de cadastro
+(FR-019), que saiu da P1 nesta mesma revisão: caixinha sem caminho de aprovação acumularia
+pedidos que ninguém pode analisar.
 
 **Independent Test**: com um perfil não reivindicado já existente, pedir a reivindicação
 por uma conta, aprovar pelo caminho de administração, e verificar que o selo aparece na
@@ -85,8 +134,15 @@ página pública e que a conta aprovada passa a editar o perfil.
 **Acceptance Scenarios**:
 
 1. **Given** um perfil não reivindicado, **When** uma conta autenticada pede a
-   reivindicação, **Then** o pedido fica **pendente** e a pessoa vê confirmação explícita
-   de que o pedido foi registrado e será analisado.
+   reivindicação **informando nome, função, melhor horário e a quem perguntar**, **Then** o
+   pedido fica **pendente** e a pessoa vê confirmação explícita de que foi registrado e
+   será analisado.
+1b. **Given** o formulário de pedido, **When** falta qualquer um dos campos de evidência,
+   **Then** o envio é recusado com erro **no campo** — sem evidência, a aprovação manual
+   viraria palpite (FR-026).
+1c. **Given** um pedido pendente, **When** você abre a tela de aprovar, **Then** vê a
+   evidência ao lado do **telefone que consta no perfil público**, que é o número para o
+   qual ligar.
 2. **Given** um pedido pendente, **When** a plataforma aprova, **Then** o perfil passa a
    **reivindicado**, exibe o selo com ícone **e o texto "Perfil do estabelecimento"**, e a
    conta passa a ter papel de gestor vinculado àquele local.
@@ -108,32 +164,6 @@ página pública e que a conta aprovada passa a editar o perfil.
    demais são **encerrados como recusados**, com o motivo "o perfil foi reivindicado por
    outra pessoa", e cada solicitante é **avisado** — encerrar em silêncio é proibido pela
    régua.
-
----
-
-### User Story 3 - Encontro bares na lista e filtro por categoria (Priority: P3)
-
-O rolezeiro abre a lista de locais da cidade e filtra por categoria. Cada item mostra o
-nome e o **bairro** (`RN-LOCAL-004`), para distinguir unidades e para responder à pergunta
-geográfica que o produto faz.
-
-**Why this priority**: transforma perfis soltos em catálogo navegável. Depois da P2 porque
-uma lista de perfis não reivindicados vale menos que uma lista com presenças confirmadas.
-
-**Independent Test**: com alguns locais cadastrados em categorias diferentes, abrir a
-lista, aplicar cada filtro e verificar que o conjunto muda; conferir que nenhum item traz
-informação que dependa de quem está olhando.
-
-**Acceptance Scenarios**:
-
-1. **Given** locais cadastrados, **When** o rolezeiro abre a lista, **Then** vê nome e
-   bairro de cada um, em **uma coluna** no celular.
-2. **Given** a lista aberta, **When** filtra por uma categoria, **Then** vê apenas os
-   locais daquela categoria; o filtro tem rótulo de texto, nunca só ícone ou só cor.
-3. **Given** a lista pública, **When** é renderizada, **Then** **nenhum** item exibe estado
-   que dependa do usuário — sem coração de "salvo", sem "seguindo" (`D14`, `D15`).
-4. **Given** nenhum local na categoria escolhida, **When** o filtro é aplicado, **Then** a
-   tela **ensina** o que fazer, em vez de ficar em branco.
 
 ---
 
@@ -175,6 +205,12 @@ esses campos não são sequer oferecidos.
 - **Pedido recusado e refeito em looping.** A recusa permite novo pedido (FR-021), e nada
   hoje limita a frequência. Aceito na Fase 1, em que a fila é pequena e a aprovação é
   manual; vira problema quando o volume crescer, junto com a BORA-49.
+- **O telefone do perfil está errado, desatualizado ou ninguém atende.** Limite conhecido e
+  declarado: a verificação da FR-026 depende de ligar para o número que está no perfil, e
+  se ele não presta, esse caminho não conclui. Na Fase 1 isso **não trava nada** — a
+  aprovação é manual e você pode confirmar por fora, com o registro dizendo que foi assim.
+  Quando o método automatizar (BORA-49), vira bloqueio de verdade e precisará de saída
+  própria. **Registrado como limite, não resolvido.**
 - **O bar troca de dono.** Re-reivindicação de perfil já reivindicado também é BORA-50.
 - **Perfil não reivindicado tenta publicar evento.** Bloqueado (`RN-EVENTO-001`). O evento
   em si é outra spec; aqui só o bloqueio precisa existir e ser testado.
@@ -214,6 +250,14 @@ esses campos não são sequer oferecidos.
 
 - **FR-007**: O sistema MUST permitir que uma conta autenticada **peça** a reivindicação de
   um perfil, e MUST confirmar visivelmente que o pedido foi registrado.
+- **FR-026**: O pedido MUST carregar a **evidência mínima** para a aprovação manual ser
+  julgamento e não palpite: **nome de quem pede**, **função no estabelecimento**, **melhor
+  horário para contato** e **a quem perguntar** ao ligar. A verificação é feita ligando para
+  o **telefone que já consta no perfil público** — nunca para um número informado pelo
+  próprio solicitante, que provaria apenas que ele tem telefone.
+  *Por que estes campos e não outros:* o sucessor automático já decidido (BORA-49) é
+  **código no telefone do local**. A evidência de agora é **o mesmo sinal, feito à mão** —
+  então o campo sobrevive à troca de método, em vez de virar dado órfão.
 - **FR-008**: A aprovação na Fase 1 MUST ser **manual, pela plataforma** (`RN-LOCAL-005`).
   A **política** vive no domínio e o **método** é parâmetro — trocar o método MUST NOT
   exigir mudança de regra.
@@ -245,10 +289,20 @@ esses campos não são sequer oferecidos.
   saber mente.
 - **FR-018**: Envio duplicado do formulário — toque duplo em rede lenta — MUST NOT criar
   dois perfis.
-- **FR-019**: O formulário de cadastro MUST oferecer a opção **"sou eu que gerencio este
-  bar"**; marcada, ela MUST abrir o **pedido** de reivindicação junto com a criação
-  (`RN-LOCAL-005`). A **aprovação** permanece manual e permanece fora da P1 — a regra não
-  muda, apenas deixa de exigir um segundo pedido de quem já se identificou.
+- **FR-019** *(entra na **P3**, com a aprovação)*: O formulário de cadastro MUST oferecer a
+  opção **"sou eu que gerencio este bar"**; marcada, ela MUST abrir o **pedido** de
+  reivindicação junto com a criação (`RN-LOCAL-005`). A regra não muda — apenas deixa de
+  exigir um segundo pedido de quem já se identificou. **Não entra na P1**: caixinha sem
+  caminho de aprovação acumularia pedidos que ninguém pode analisar, prometendo "será
+  analisado" a quem a marcasse.
+- **FR-024**: A página pública MUST oferecer a ação **"Convidar"**, que abre o
+  **compartilhamento do próprio aparelho** com o link da página. É o que realiza o valor da
+  P1 — sem ela, "link compartilhável" depende de a pessoa saber copiar o endereço da barra
+  do navegador, o que o público do Princípio XII não sabe.
+- **FR-025**: A fileira de ações do Detalhe MUST conter **apenas ações que funcionam na
+  fatia entregue**. Salvar e seguir (`RN-DESC-003`) são de outra spec e MUST NOT aparecer
+  aqui — botão morto contraria a régua ("toda ação responde na hora... nunca silêncio") e é
+  pior que botão ausente.
 - **FR-020**: Antes de criar, o sistema MUST avisar quando já existir local **parecido no
   mesmo bairro**, exibindo o que encontrou, e MUST deixar a decisão com quem cadastra
   (`RN-LOCAL-004`). Prevenir é barato; unificar depois é caro, porque o Princípio X proíbe
@@ -275,7 +329,8 @@ esses campos não são sequer oferecidos.
   casa de shows. É **dado**, não código (`RN-LOCAL-002`).
 - **Vínculo de gestão**: liga uma conta a um local com papel de gestor. **N:N**.
 - **Pedido de reivindicação**: quem pediu, para qual local, quando, situação (pendente,
-  aprovado, recusado), quem decidiu e **por qual método**.
+  aprovado, recusado), quem decidiu, **por qual método**, o **motivo** quando recusado, e a
+  **evidência** informada — nome, função, melhor horário e a quem perguntar (FR-026).
 - **Registro de auditoria**: já existe no projeto (Princípio VIII); esta feature passa a
   alimentá-lo com criação, pedido e aprovação.
 
@@ -315,8 +370,9 @@ esses campos não são sequer oferecidos.
 
 - **Criar**: sucesso; falta de cada campo obrigatório; categoria inexistente; sem
   autenticação; **duplicata detectada** (FR-020); envio repetido não cria dois (FR-018).
-- **Pedir reivindicação**: sucesso; em perfil **já reivindicado**; com a opção "sou eu que
-  gerencio" marcada no cadastro (FR-019).
+- **Pedir reivindicação**: sucesso; **sem cada um dos campos de evidência** (FR-026); em
+  perfil **já reivindicado**; com a opção "sou eu que gerencio" marcada no cadastro
+  (FR-019).
 - **Aprovar / recusar**: aprovação transfere e audita; **recusa registra motivo e dispara o
   aviso** (FR-021); **segundo pedido pendente é aceito** e os dois aparecem juntos
   (FR-022); aprovar um **encerra os demais como recusados, com aviso** (FR-023); tentativa
@@ -342,23 +398,34 @@ redecididas aqui.
   Campos: nome, endereço, categoria(s), telefone. Nada além — o perfil é magro por regra.
 - **Perfil público do local** (P1) — ação principal: **Como chegar** (`D16`). Receita
   **Detalhe**, renderizada **no servidor** (catálogo público, ADR-0003). Hierarquia de três
-  níveis (`D20`): a ação principal embaixo; a fileira de ações diretas (ligar, salvar,
-  seguir, convidar); e o conteúdo que se rola. **No Detalhe a barra de navegação some** e
-  dá lugar à ação principal; o **"voltar" é link para destino nomeado**, nunca gesto do
-  navegador.
-- **Pedir reivindicação** (P2) — ação principal: **pedir a reivindicação**. Receita
-  Formulário, curta.
-- **Aprovar reivindicações** (P2) — ação principal: **aprovar**. Recusar é ação secundária e
+  níveis (`D20`). **No Detalhe a barra de navegação some** e dá lugar à ação principal; o
+  **"voltar" é link para destino nomeado**, nunca gesto do navegador.
+
+  **A fileira de ações diretas, e o que existe em qual fatia** — a `D16` listou quatro
+  secundárias, mas duas delas pertencem a outra spec, e a spec anterior não dizia isso:
+
+  | Ação | Entra em | Observação |
+  |---|---|---|
+  | **Ligar** | **P1** | telefone é campo do perfil magro; clique-para-ligar (`RN-LOCAL-003`) |
+  | **Convidar** | **P1** | abre o **compartilhamento do próprio aparelho**, como Instagram e WhatsApp, com o link da página. É o que dá sentido à P1, cujo valor é o link compartilhável. Rótulo "Convidar" e não "Compartilhar" porque 12 caracteres não cabem nos 90px da fileira (`D20`) |
+  | **Salvar** | **outra spec** | `RN-DESC-003`, descoberta. **Não aparece** aqui — botão morto é pior que botão ausente |
+  | **Seguir** | **outra spec** | idem |
+
+- **Lista de locais** (P2) — ação principal: **não tem botão — o item é o alvo**, com altura
+  ≥ 44px e a linha inteira clicável. Receita **Lista pública**. Filtro por categoria com
+  rótulo de texto.
+- **Pedir reivindicação** (P3) — ação principal: **pedir a reivindicação**. Receita
+  Formulário, curta: **nome, função no estabelecimento, melhor horário para contato e a
+  quem perguntar** (FR-026). Quatro campos, nada além — a régua manda formulário mínimo, e
+  cada campo aqui existe para você poder decidir ao telefone.
+- **Aprovar reivindicações** (P3) — ação principal: **aprovar**. Recusar é ação secundária e
   **exige motivo** (FR-021). Receita **Lista privada**, do operador da plataforma. Quando um
   local tem mais de um pedido, os pedidos aparecem **agrupados por local**, lado a lado, para
   a decisão ser tomada com os dois à vista (FR-022).
-- **Aviso de resultado da reivindicação** (P2) — não é tela: é a mensagem que chega ao
+- **Aviso de resultado da reivindicação** (P3) — não é tela: é a mensagem que chega ao
   solicitante quando o pedido é aprovado ou recusado, com o motivo em linguagem simples e o
   caminho para falar com a plataforma. Entra aqui porque **o caminho até a resposta é parte
   da feature** — a lição do E-019.
-- **Lista de locais** (P3) — ação principal: **não tem botão — o item é o alvo**, com altura
-  ≥ 44px e a linha inteira clicável. Receita **Lista pública**. Filtro por categoria com
-  rótulo de texto.
 - **Editar perfil do local** (P4) — ação principal: **salvar**. Receita Formulário; só para
   perfil reivindicado.
 
@@ -453,10 +520,14 @@ redecididas aqui.
   cortado ou violação de acessibilidade detectada automaticamente.
 - **SC-004**: Quem abre a página de um bar por link compartilhado, sem histórico, **sempre**
   encontra um caminho visível para o resto do produto — 0% de becos sem saída.
-- **SC-005**: Numa conferência informal com pessoas de fora, a maioria explica **sem ajuda**
-  a diferença entre um perfil gerenciado pelo estabelecimento e um que ainda não é.
-- **SC-006**: A página pública do bar é utilizável em **rede lenta e aparelho modesto** — o
-  conteúdo essencial (nome, endereço, telefone, como chegar) aparece antes das imagens.
+- **SC-005**: Mostrando a página a **5 pessoas de fora do projeto**, por até 30 segundos
+  cada, **pelo menos 4** explicam corretamente, sem ajuda, a diferença entre um perfil
+  gerenciado pelo estabelecimento e um que ainda não é.
+- **SC-006**: Em **rede 3G**, o conteúdo essencial da página pública — nome, endereço,
+  telefone e a ação "Como chegar" — fica **visível e utilizável em até 3 segundos**, e as
+  imagens carregam depois **sem deslocar** o que já estava na tela.
+- **SC-008**: Quem recebe o link de um bar por mensagem **abre e entende a página sem ter
+  conta** — 100% do conteúdo essencial acessível sem sessão.
 - **SC-007**: 100% das criações, pedidos e aprovações têm registro de auditoria recuperável
   com quem, quando e por qual método.
 
@@ -496,6 +567,28 @@ maioria.
 **O argumento que decidiu:** por causa do Princípio X, **unificar é caro** — não se apaga o
 perfil repetido; histórico, avaliações e reivindicações precisam ser preservados e
 costurados. Prevenir custa um aviso; consertar custa uma migração de dados com histórico.
+
+### Q3 — O que o pedido carrega para você julgar? → **Telefone do perfil, horário e quem procurar** *(2026-09-09)*
+
+Encontrado relendo a spec: a `FR-007` mandava "pedir" e confirmar o registro, mas **nunca
+dizia o que o pedido continha**. Com aprovação manual — que é julgamento — a tela de aprovar
+mostraria "a conta X quer o Bar do Zé" e nada mais. Você aprovaria no escuro, ou investigaria
+por fora, o que anularia a única vantagem da aprovação manual, que era ser barata.
+
+**Decidido:** o pedido traz **nome**, **função no estabelecimento**, **melhor horário para
+contato** e **a quem perguntar** (FR-026). A verificação é ligar para o telefone **que já
+está no perfil público** — nunca um número informado pelo solicitante, que provaria apenas
+que ele tem telefone.
+
+**O argumento que decidiu:** o sucessor automático já escolhido (BORA-49) é **código no
+telefone do local**. A evidência de agora é **o mesmo sinal, feito à mão** — então o campo
+sobrevive à troca de método em vez de virar dado órfão. Foto do interior e texto livre foram
+descartados por isso: dariam trabalho hoje e morreriam na automação.
+
+**Limite declarado:** se o telefone do perfil estiver errado ou ninguém atender, este
+caminho não conclui. Na Fase 1 não trava — a aprovação é manual e cabe confirmar por fora,
+com o registro dizendo que foi assim. Quando automatizar, vira bloqueio e precisará de saída
+própria (BORA-49).
 
 ---
 

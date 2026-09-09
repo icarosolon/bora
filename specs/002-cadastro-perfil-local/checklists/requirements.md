@@ -91,3 +91,21 @@ declarado, não fato.
 
 **Veredito após as correções: SIM** — pronta para `/speckit-plan`, sujeita à sua aprovação
 (quem aprova é o Ícaro, não o portão).
+
+### Revisão do Ícaro — 2026-09-09
+
+O portão aprovou, e a **releitura crítica achou cinco problemas que ele não pega**. Vale o
+registro: portão verifica presença de seção e de cobertura; **não** verifica se o recorte
+faz sentido nem se a fatia entrega o que promete.
+
+| # | Problema | Resolução |
+|---|---|---|
+| 1 | O pedido de reivindicação **não carregava nada para julgar** — aprovação manual sem matéria vira palpite | FR-026: nome, função, horário e a quem perguntar; verificação ligando para o telefone **do perfil**, não para um informado pelo solicitante |
+| 2 | A P1 criava pedidos que **ninguém podia aprovar** até a P2 | A caixinha "sou eu que gerencio" saiu da P1 e foi para a história da reivindicação |
+| 3 | **Ordem invertida**: sem lista, o catálogo não é navegável, e a reivindicação não entrega nada ao rolezeiro | Lista promovida a **P2**; reivindicação passou a **P3** |
+| 4 | A fileira de ações do Detalhe prometia **salvar e seguir**, que são de outra spec | Tabela por fatia; salvar e seguir removidos daqui (botão morto é pior que ausente), e **"Convidar"** explicitado como ação de P1 |
+| 5 | SC-005 e SC-006 eram **vontade, não medida** | SC-005 virou "5 pessoas, 30 segundos, pelo menos 4 acertam"; SC-006 ganhou 3G e 3 segundos; SC-008 acrescentado |
+
+Os problemas 1, 2, 4 e 5 eram defeito de escrita do assistente. O 3 foi **erro de
+julgamento dele** — a justificativa original de prioridade ("uma lista de perfis não
+reivindicados vale menos") não sobreviveu à releitura, e quem apontou foi o Ícaro.

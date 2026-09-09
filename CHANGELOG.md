@@ -8,6 +8,26 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Plano técnico da spec 002** (`/speckit-plan`, 2026-09-09): `plan.md`, `research.md`,
+  `data-model.md`, `contracts/locais-api.md` e `quickstart.md` em
+  `specs/002-cadastro-perfil-local/`. **Nenhuma dependência nova** — verificado abrindo
+  `composer.json` e `package.json`; o peso novo no front vem só da família tipográfica e das
+  imagens da P4, e o Geist Mono saindo devolve parte. Quatro tabelas novas (`venues`,
+  `venue_categories`, `venue_managers`, `venue_claims`), e o único acréscimo estrutural é
+  `web/src/components/shell/`, porque o shell deixa de ser implícito — foi exatamente isso
+  que causou o **E-016**. Decisões de desenho que valem registro: o **estado de reivindicação
+  é derivado do histórico**, não um campo que possa divergir dele (Princípios VIII e X); as
+  rotas públicas **não aceitam nem leem `Authorization`**, o que torna o Princípio II
+  verificável e fecha o ADR-0003 por construção; o `slug` do local é **imutável**, porque
+  link já compartilhado não pode morrer; e o endereço é guardado **estruturado com
+  coordenadas vazias**, para a BORA-8 não exigir migração de tabela depois.
+- **A pendência do `next/font` foi RESOLVIDA** (D21), lendo o pacote instalado em vez de
+  confiar na memória: em `next@16.3.3`, `display` tem padrão `swap` e `adjustFontFallback`
+  tem padrão `true`, com métricas de reserva vindas de tabela embarcada — o texto aparece no
+  primeiro quadro e a troca **não desloca o layout**. **Previsão contrariada, registrada:**
+  ia-se anotar que a garantia dependeria de a fonte vir do Google Fonts; **não depende** — o
+  `next/font/local` calcula as métricas a partir do próprio arquivo da fonte, então a escolha
+  da família no redesenho (BORA-25) não fica limitada por isto.
 - **Spec 002 revisada com o Ícaro — cinco problemas que o portão não pega** (2026-09-09).
   O `/spec-check` já tinha dado SIM; a releitura crítica achou o que ele **não verifica**:
   presença de seção e cobertura, sim; se o recorte faz sentido e se a fatia entrega o que

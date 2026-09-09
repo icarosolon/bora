@@ -541,9 +541,22 @@ ganho de peso de graça.
 **Custo aceito:** estimados **15–30 KB por peso** (`woff2`, subconjunto latino), logo 30–60 KB
 no total. **Estimativa, não medição** — medir quando a família for escolhida.
 
-**FALTA VERIFICAR:** o `next/font` se propõe a reduzir o pulo de layout na troca da fonte
-calculando métricas de reserva. **Não foi conferido na versão em uso (Next 16).** Não
-transformar isso em promessa de spec antes de abrir o código ou a documentação da versão.
+**VERIFICADO em 2026-09-09**, lendo o pacote instalado (`next@16.3.3`), não de memória:
+`display` tem padrão **`'swap'`** e `adjustFontFallback` tem padrão **`true`**
+(`.../@next/font/dist/google/validate-google-font-function-call.js`); com ele ligado, o
+loader gera uma família de reserva **com métricas ajustadas**, a partir da tabela embarcada
+`next/dist/server/capsize-font-metrics.json`. O texto aparece no primeiro quadro e a troca
+**não desloca o layout**.
+
+Ressalva: o ajuste elimina o **deslocamento**, não a **troca visível de desenho** — a letra
+ainda muda à vista. É o comportamento correto: o conteúdo fica legível desde o início, que é
+o que a régua pede em 3G.
+
+**Previsão contrariada, registrada:** ia-se anotar que a garantia dependeria de a família vir
+do Google Fonts, e que uma fonte licenciada pelo redesenho a perderia. **Está errado.** O
+`next/font/local` calcula as métricas de reserva a partir do **próprio arquivo da fonte**
+(`getFallbackMetricsFromFontFile`), e só desliga se `adjustFontFallback: false` for passado
+de propósito. **A escolha da família no redesenho (BORA-25) não fica limitada por isto.**
 
 ### D22 — Papéis semânticos de cor (origem: Ícaro)
 
@@ -642,9 +655,9 @@ provisória tiver **o mesmo perfil de contraste** da marca real. Prototipar com 
   360px e sob os dois cenários de ampliação. Os números usados na D12 são **estimativa**
   (~0,5em de avanço médio por caractere), não medição. Resolve-se renderizando os rótulos
   candidatos e conferindo.
-- ~~**Tipografia**~~ — **estrutura fechada na D21** (uma família, dois pesos, `next/font`).
-  Falta o **nome da família**, que vem com o redesenho (BORA-25). **Falta verificar** o
-  comportamento do `next/font` na versão em uso quanto ao pulo de layout.
+- ~~**Tipografia**~~ — **estrutura fechada na D21** (uma família, dois pesos, `next/font`), e
+  o comportamento do `next/font` **verificado em 2026-09-09** no pacote instalado. Falta só o
+  **nome da família**, que vem com o redesenho (BORA-25).
 - ~~**Lista de papéis semânticos de cor**~~ — **fechada na D22**. Faltam os **valores**, que
   vêm com o redesenho (BORA-25).
 - **Escala tipográfica e de espaçamento** — derivável da régua, quase sem escolha.

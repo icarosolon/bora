@@ -408,8 +408,21 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **A spec 002 está ESCRITA e aprovada no portão** (2026-09-08, BORA-52) —
-     `specs/002-cadastro-perfil-local/`. Próximo passo: `/speckit-plan`.
+   - **A spec 002 está ESCRITA, APROVADA e PLANEJADA** — `specs/002-cadastro-perfil-local/`
+     (BORA-52). Portão `/spec-check`: SIM em 2026-09-08, depois de cinco bloqueantes
+     corrigidos. Revisada com o Ícaro em 2026-09-09 (cinco problemas que o portão não pega;
+     a ordem das histórias mudou) e **aprovada por ele** na mesma data. `/speckit-plan`
+     rodado em 2026-09-09: existem `plan.md`, `research.md`, `data-model.md`,
+     `contracts/locais-api.md` e `quickstart.md`.
+     **Próximo passo: `/speckit-tasks`** — e nada além disso está pendente para rodá-lo.
+   - **Ordem das histórias** (revisada): **P1** cadastro + página pública · **P2** lista e
+     busca · **P3** reivindicação com aprovação manual · **P4** perfil rico. A **fundação é
+     fase bloqueante** (Phase 2 Foundational), não história.
+   - **Única verificação ainda em aberto na fundação:** medir o orçamento de caracteres dos
+     rótulos da barra, na fonte real, a 360px, sob zoom do navegador **e** sob fonte do
+     sistema ampliada. Já está alocada como tarefa; os números atuais são estimativa. A
+     outra verificação (comportamento do `next/font`) foi **resolvida** em 2026-09-09 lendo
+     o pacote instalado.
    - As três decisões que a bloqueavam caíram antes: BORA-22 (2026-09-03), BORA-20
      (2026-09-03) e BORA-21 (2026-09-05).
    - ~~BORA-22 verificação de propriedade~~ → `RN-LOCAL-005`: qualquer conta cria o perfil,

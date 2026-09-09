@@ -93,6 +93,25 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Camada 1 do `design-system.md` aberta: tipografia e papéis de cor decididos** (D21 e
+  D22, 2026-09-09) — eram as duas lacunas que bloqueavam a construção de tela. Mesmo corte
+  usado antes: **a estrutura se decide agora, o valor vem com o redesenho** (BORA-25).
+  **D21 — uma família web, dois pesos**, hospedada pelo `next/font`; o nome da família vem
+  com a marca. Dois pesos não são preferência: o `brand.md` mediu que o laranja só passa em
+  AA como texto grande ou **negrito**, então sem negrito a paleta é inutilizável em texto.
+  **Fato verificado:** o projeto carrega **Geist Mono** e `font-mono` só existe no scaffold
+  do Next que será apagado — uma família inteira baixada para uma página que não é do
+  produto; sai na fundação. **Falta verificar** como o `next/font` do Next 16 se comporta
+  quanto ao pulo de layout — não virou promessa. **D22 — papéis semânticos de cor**,
+  partindo do que o `globals.css` já tem em vez do zero: entram `sucesso`, `perigo` e
+  `aviso`, que faltavam e o `brand.md` cobrava; **saem** `sidebar-*` (o Bora tem trilho
+  lateral, não sidebar) e `chart-1..5` (não há gráfico). Três níveis de superfície, porque a
+  D3 escolheu escuro e no escuro a hierarquia se faz por superfície, não por sombra.
+  `perigo` serve erro e ação destrutiva, e `info` não existe — duas simplificações para
+  reduzir pares de contraste, já que a D3 dobrou esse trabalho. **A escala categórica de cor
+  ficou de fora**: é de gênero musical, que é do artista e cuja lista é a BORA-19, ainda
+  aberta — definir cor para lista inexistente seria inventar.
+- **Spec 002 aprovada pelo Ícaro** (2026-09-09). Pronta para `/speckit-plan`.
 - **`RN-LOCAL-004`: unidades se desambiguam pelo bairro, sem campo novo** (2026-09-08). O
   endereço completo já é obrigatório (`RN-LOCAL-003`) e o bairro está nele, então as
   listagens exibem "Bar do Zé · Centro" a partir de dado existente — sem acrescentar campo

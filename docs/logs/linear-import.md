@@ -285,3 +285,18 @@ horário, a quem perguntar; verificação pelo telefone do perfil).
 verifica **presença** de seção e **cobertura** de regra; não verifica se o recorte faz
 sentido nem se a fatia entrega o que promete. Os dois são necessários, e nenhum substitui o
 outro — como o E-012 já tinha ensinado sobre rede de proteção.
+
+## Sincronização de 2026-09-09 — tipografia e papéis de cor
+
+Nenhuma `RN` foi tocada: D21 e D22 são decisões do `design-system.md`, não regras de
+domínio. O passo 7 se aplica ao quadro mesmo assim.
+
+| Ação | Issue |
+|---|---|
+| Descrição atualizada — as duas maiores lacunas fecharam; sobrou medir os rótulos, ratificar quatro propostas e verificar o `next/font` | **BORA-39** |
+| Sem mudança, mas agora é a dependência **nomeada** do que falta: nome da família e valores das cores | **BORA-25** |
+| Issue nova | **nenhuma** |
+
+A separação que se manteve em todas estas decisões — **estrutura agora, valor com o
+redesenho** — é o que permite a BORA-39 avançar sem a BORA-25. Vale registrar porque foi ela
+que evitou o bloqueio circular entre design-system e identidade visual.

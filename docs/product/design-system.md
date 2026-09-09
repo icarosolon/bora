@@ -466,6 +466,83 @@ despercebido.
 
 ---
 
+## Camada 1 — Kit de UI e tema
+
+Aberta em 2026-09-09. Fecha as duas lacunas que bloqueavam a construção de tela.
+
+### D21 — Estrutura tipográfica: uma família web, dois pesos (origem: Ícaro)
+
+**O corte é o mesmo das cores:** a **estrutura** se decide agora; o **nome da família** é
+marca, e a marca está PENDENTE (BORA-25). Estrutura é quantas famílias, quantos pesos, e o
+que a pessoa vê enquanto a fonte não chegou — tudo isso vale para qualquer família que o
+redesenho escolher.
+
+- **Uma família** para tudo (nada de par título/corpo), **dois pesos**: regular e negrito.
+- Hospedada localmente pelo `next/font`, como já é feito — sem requisição a terceiro.
+- **O nome da família vem com o redesenho.** Até lá vale um substituto de métrica
+  equivalente.
+
+**Dois pesos não são preferência, são piso funcional.** O `brand.md` mediu que o laranja da
+marca (`#F23E02`, 3,9:1 sobre branco) **só passa em AA como texto grande ou negrito**. Sem
+negrito, a paleta da marca é inutilizável em texto.
+
+**Fato verificado (2026-09-09):** `web/src/app/layout.tsx` carrega **Geist Mono** e
+`font-mono` só aparece em `web/src/app/page.tsx` — o scaffold do Next, que vai ser apagado.
+É **uma família inteira baixada para uma página que não é do produto**. Sai na fundação;
+ganho de peso de graça.
+
+**Custo aceito:** estimados **15–30 KB por peso** (`woff2`, subconjunto latino), logo 30–60 KB
+no total. **Estimativa, não medição** — medir quando a família for escolhida.
+
+**FALTA VERIFICAR:** o `next/font` se propõe a reduzir o pulo de layout na troca da fonte
+calculando métricas de reserva. **Não foi conferido na versão em uso (Next 16).** Não
+transformar isso em promessa de spec antes de abrir o código ou a documentação da versão.
+
+### D22 — Papéis semânticos de cor (origem: Ícaro)
+
+Não se parte do zero: o `globals.css` **já tem** uma lista de papéis (a do shadcn). O
+trabalho é **cortar o morto e acrescentar o que falta**.
+
+| Grupo | Papéis |
+|---|---|
+| **Superfície e texto** | `fundo`, `superfície`, `superfície-elevada`, `texto`, `texto-secundário`, `borda`, `borda-de-campo`, `foco` |
+| **Ação** | `primária`, `sobre-primária`, `secundária`, `sobre-secundária` |
+| **Estado** | `sucesso`, `perigo`, `aviso` — cada um com seu par de texto |
+
+> Os nomes acima descrevem o **papel**; os identificadores no código são em inglês
+> (`naming-conventions.md`).
+
+**Três níveis de superfície decorrem da D3**, não são gosto: no escuro a hierarquia se faz
+por superfície e borda, não por sombra — dois níveis não bastam para separar página, cartão
+e bloco elevado.
+
+**O que sai:** `sidebar-*` (oito papéis; o Bora não tem sidebar — tem **trilho lateral**, que
+usa os mesmos papéis de fundo) e `chart-1..5` (não há gráfico no produto; se a Fase 2 trouxer
+analytics, entram lá).
+
+**Duas simplificações, ambas para reduzir pares de contraste a validar — e a D3 já dobrou
+esse trabalho ao adotar claro e escuro:**
+
+- **`perigo` serve erro E ação destrutiva**, um papel só. É o que o shadcn já faz.
+- **`info` não existe como papel.** O `Alert` de hoje já usa `muted` para informação e
+  funciona.
+
+**Mudança de estrutura, não de valor:** hoje o escuro é por **classe** (`.dark`) e **nada
+aplica essa classe**. Pela D3, os papéis passam a ser redefinidos sob
+`prefers-color-scheme` — tarefa da fundação.
+
+**A escala categórica de cores fica de fora** (Ícaro, 2026-09-09). Ela é de **gênero
+musical**, que é do artista (`RN-ART-002`) e não entra na spec 002 — e a lista de gêneros é
+a **BORA-19**, ainda em aberto: definir cor para uma lista que não existe seria inventar. As
+três categorias de local não precisam de cor, porque a régua exige rótulo de texto de
+qualquer jeito. Quando entrar, a forma correta é **um conjunto pequeno de slots atribuídos
+por dado**, nunca um token por gênero — a `RN-ART-002` diz que a lista é dado, e token
+engessaria em CSS o que precisa mudar sem tocar em código.
+
+**O que continua dependendo do redesenho (BORA-25):** os **valores** dos papéis. A troca não
+deve exigir mexer em tela, porque **nenhuma tela escreve cor literal** — regra que hoje já
+está sendo quebrada em `page.tsx` e `alert.tsx`, e que a fundação conserta.
+
 ## Fatos verificados que motivaram estas decisões
 
 Todos conferidos no repositório em 2026-09-01:
@@ -518,9 +595,11 @@ provisória tiver **o mesmo perfil de contraste** da marca real. Prototipar com 
   360px e sob os dois cenários de ampliação. Os números usados na D12 são **estimativa**
   (~0,5em de avanço médio por caractere), não medição. Resolve-se renderizando os rótulos
   candidatos e conferindo.
-- **Tipografia** — Geist (boilerplate) vs. Poppins (sugestão do `brand.md`). Ninguém
-  decidiu.
-- **Lista de papéis semânticos de cor** — o assistente propõe, o Ícaro ratifica.
+- ~~**Tipografia**~~ — **estrutura fechada na D21** (uma família, dois pesos, `next/font`).
+  Falta o **nome da família**, que vem com o redesenho (BORA-25). **Falta verificar** o
+  comportamento do `next/font` na versão em uso quanto ao pulo de layout.
+- ~~**Lista de papéis semânticos de cor**~~ — **fechada na D22**. Faltam os **valores**, que
+  vêm com o redesenho (BORA-25).
 - **Escala tipográfica e de espaçamento** — derivável da régua, quase sem escolha.
 - **`RN-DESC-003` está decidida (D19) mas ainda não escrita no catálogo.** A regra só vale
   depois de entrar em `docs/domain/descoberta.md` pela skill `domain-rule`. Enquanto não

@@ -4,10 +4,10 @@
 
 **Created**: 2026-09-08
 
-**Status**: Draft — portão `/spec-check`: **SIM** (2026-09-08, depois de cinco bloqueantes
-corrigidos). **Revisada com o Ícaro em 2026-09-09**, que encontrou cinco problemas na
-leitura; os cinco estão resolvidos e a ordem das histórias mudou. Aguardando aprovação
-final do Ícaro antes do `/speckit-plan`.
+**Status**: **APROVADA pelo Ícaro em 2026-09-09.** Portão `/spec-check`: **SIM** (2026-09-08,
+depois de cinco bloqueantes corrigidos). Revisada com o Ícaro em 2026-09-09, que encontrou
+cinco problemas que o portão não pega; os cinco estão resolvidos e a ordem das histórias
+mudou. Pronta para `/speckit-plan`.
 
 **Input**: Cadastro e perfil de estabelecimento (local). Segunda spec do Bora; destrava o
 catálogo. Recorte acordado com o Ícaro em 2026-09-06 (`docs/logs/backlog.md` → "Próximo

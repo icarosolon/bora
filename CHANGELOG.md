@@ -8,6 +8,24 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Instruções do Project do Claude Cowork** (2026-09-09): `docs/agents/cowork-project.md`,
+  produzido por inspeção somente-leitura do repositório. Define o Cowork como camada de
+  análise, planejamento, especificação e revisão que **nunca altera nada**: lista, comando a
+  comando, o que é consulta pura e o que toca disco, banco, rede ou Git nesta stack (ex.:
+  `vendor/bin/phpunit` apaga a `bora_test`; `next dev` reescreve `web/AGENTS.md`;
+  `create-new-feature.ps1` grava `.specify/feature.json`); traz o ritual de abertura, a
+  ordem de leitura, a tabela de roteamento das 15 skills com o que cada uma grava, as zonas
+  proibidas e o padrão de nome de sessão `<branch> · <tipo> · <tarefa>`. O que já está em
+  `CLAUDE.md` e no `development-workflow.md` **não foi repetido** — vale por referência. O
+  campo "instruções" do produto recebe só o resumo da seção 0 e aponta para o arquivo, para
+  o repositório continuar sendo a fonte da verdade. **Achado registrado no backlog:** a
+  skill `speckit-taskstoissues` (bundle do Spec Kit) cria issues no **GitHub**, e o
+  rastreio do Bora é no Linear. **Previsão contrariada, dita em voz alta:** a inspeção
+  afirmou que "seis commits recentes" assinavam `Claude Fable 5` contra o `Claude Opus 5`
+  da skill `doc-sync`; o `git log` por data mostrou que eram os commits **mais antigos**
+  (28 e 29/08) — a skill foi corrigida em 02/09 e tudo desde então assina `Opus 5`. O
+  conflito real é outro e está no backlog: o nome do modelo fixado na skill diverge do
+  modelo que assina quando outro modelo roda a sessão.
 - **Plano técnico da spec 002** (`/speckit-plan`, 2026-09-09): `plan.md`, `research.md`,
   `data-model.md`, `contracts/locais-api.md` e `quickstart.md` em
   `specs/002-cadastro-perfil-local/`. **Nenhuma dependência nova** — verificado abrindo

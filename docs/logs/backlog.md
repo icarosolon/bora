@@ -150,6 +150,19 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
   **time próprio `Bora`/BORA**, com marcos M0–M5 e uma issue `decisao-pendente` por item da
   tabela acima (BORA-1..BORA-29) + setup (BORA-30, BORA-31).
   Ver `docs/logs/linear-import.md`.
+- **Claude Cowork**: instruções do Project em `docs/agents/cowork-project.md`
+  (2026-09-09); o campo do produto recebe só o resumo da seção 0 e aponta para o arquivo.
+  Duas pendências de método que a inspeção levantou, **decisão do Ícaro**:
+  - **Trailer `Co-Authored-By` fixado na skill `doc-sync`** (`Claude Opus 5`, decidido em
+    2026-09-02). Quando outro modelo conduz a sessão, o ambiente instrui a assinar com o
+    nome dele — foi o caso em 2026-09-09 (`Claude Fable 5.1`), e o commit desta entrada
+    seguiu o ambiente, não a skill. Opções: (a) a skill deixa de fixar o nome e passa a
+    dizer "o modelo que assinou a sessão"; (b) a skill fixa e o assistente sempre a
+    obedece, mesmo contra o ambiente. Até decidir, o histórico terá as duas assinaturas.
+  - **Skill `speckit-taskstoissues`** (`.claude/skills/speckit-taskstoissues/SKILL.md`)
+    veio no bundle do Spec Kit e cria issues no **GitHub**; o rastreio do Bora é no
+    Linear. Nunca foi usada. Opções: remover a skill, ou mantê-la e proibir o uso no
+    `CLAUDE.md`. Hoje só o `cowork-project.md` diz "não usar".
 
 ## Decisões tomadas
 

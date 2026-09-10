@@ -18,10 +18,10 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
 
 ## Método — Spec Kit é a espinha dorsal (igual ao Nexa)
 - Fonte única da spec: Spec Kit → `specs/NNN-feature/{spec,plan,tasks}.md`.
-- Fluxo: constituição → `/speckit-specify` → `/spec-check` → `/speckit-plan` → `/speckit-tasks` → implementar → `/doc-sync`.
+- Fluxo: `/session-open` → constituição → `/speckit-specify` → `/spec-check` → `/speckit-plan` → `/speckit-tasks` → implementar → `/doc-sync`.
   O `/doc-sync` atualiza a doc e **commita**; o `git push` é sempre manual do Ícaro.
 - Constituição ratificada e **vinculante**: `.specify/memory/constitution.md` (muda só por emenda).
-- Skills complementares: `spec-check` (portão), `domain-rule`, `adr-new`, `screen-help`, `doc-sync`.
+- Skills complementares: `session-open` (ritual de início), `spec-check` (portão), `domain-rule`, `adr-new`, `screen-help`, `doc-sync`.
 - Rastreio de trabalho no **Linear**: **time próprio "Bora"** (key `BORA` — as issues saem
   como `BORA-nn`), projeto "Bora". Estrutura em `docs/logs/linear-import.md`.
 - Método completo: @docs/development-workflow.md

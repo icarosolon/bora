@@ -164,6 +164,24 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
     Linear. Nunca foi usada. Opções: remover a skill, ou mantê-la e proibir o uso no
     `CLAUDE.md`. Hoje só o `cowork-project.md` diz "não usar".
 
+- **Ritual de abertura `session-open`** (2026-09-09):
+  `.claude/skills/session-open/SKILL.md`, somente leitura e manual, registrado no
+  `development-workflow.md` (§2 e §3) e no `CLAUDE.md`. Fecha o par com o `/doc-sync`.
+- **PENDENTE — renormalizar ou não os arquivos já versionados** (decisão do Ícaro). O
+  `.gitattributes` (`* text=auto eol=lf`) entrou em 2026-09-09; o repositório não tinha
+  nenhum, e a normalização dependia do `core.autocrlf` de cada máquina.
+  **O que foi medido:** o stage dos quatro caminhos desta sessão deu diff de 4 linhas — o
+  arquivo novo não sofreu reescrita.
+  **O que NÃO foi medido:** se os arquivos antigos estão gravados com CRLF. A sondagem usou
+  `git show :caminho`, que pode converter na saída; `git cat-file blob` (que não converte)
+  não chegou a rodar. Enquanto isso não for medido, **não se sabe** se um `git add` futuro
+  vai mostrar arquivo inteiro reescrito.
+  **Como medir, em um comando:**
+  `git ls-tree -r HEAD --name-only | while read f; do git cat-file blob "HEAD:$f" | grep -qU $'\r' && echo "$f"; done`
+  **Opções, se der CRLF:** (a) um commit dedicado de renormalização
+  (`git add --renormalize .`), que suja o `blame` de uma vez só e resolve; (b) deixar
+  acontecer aos poucos, e cada arquivo tocado aparecer reescrito no seu commit.
+
 ## Decisões tomadas
 
 - **A entrada para "Definir senha" foi corrigida dentro da spec 001** (decisão do Ícaro,

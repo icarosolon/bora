@@ -19,6 +19,7 @@ trabalhar; no Linear, porém, cada produto tem seu próprio time).
 | Skill | Papel | Invocação |
 |---|---|---|
 | `spec-check` | Portão de completude, adaptado ao template do Spec Kit | **auto** + manual |
+| `session-open` | Ritual de início de sessão (estado do repo + continuidade) | manual |
 | `domain-rule` | Catálogo de regras transversais `RN-<CTX>-NNN` | manual |
 | `adr-new` | ADRs em `docs/adr/` | manual |
 | `screen-help` | Ajuda de tela (fonte única app + docs) | manual |
@@ -27,7 +28,8 @@ trabalhar; no Linear, porém, cada produto tem seu próprio time).
 ## 3. Ciclo de trabalho
 
 ```
-constituição / emenda
+/session-open (onde paramos?)
+      → constituição / emenda
       → /speckit-specify (escreve a spec — inclui a tela e seus critérios de UX)
       → /spec-check      (portão: pronta para implementar? sim/não)
       → /speckit-plan    (plano técnico — API e frontend)

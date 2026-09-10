@@ -3,6 +3,30 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-020 — Here-string do PowerShell no Bash virou `@` no assunto do commit (2026-09-09)
+
+- **Sintoma:** o commit do `/doc-sync` saiu com o assunto `@ docs: ritual de abertura
+  session-open e .gitattributes`. O `git log --format=%B | cat -A` mostrou a mensagem
+  começando por uma linha só com `@` e terminando por outra igual: o assunto real virou a
+  **segunda** linha, e o Git passou a tratar o corpo inteiro como continuação.
+- **Causa:** a mensagem foi passada com `git commit -m @'...'@`, sintaxe de **here-string do
+  PowerShell**, dentro da ferramenta **Bash**. O Bash não conhece essa forma: ele leu `@`
+  como primeiro caractere literal do argumento e `'@` como o fim da string mais um `@`
+  solto. A própria descrição da ferramenta avisa: here-string do PowerShell não funciona
+  ali, use heredoc. As duas sintaxes convivem nesta máquina — o ambiente oferece **Bash e
+  PowerShell**, cada um com a sua — e a de multi-linha é justamente onde elas divergem.
+- **Resolução:** `git commit --amend -F -` com heredoc (`<<'MARKER'`), que preserva o texto
+  literalmente e não interpreta `$` nem crase. Commit local e não empurrado, então o
+  `--amend` não reescreveu história compartilhada.
+- **Status:** resolvido.
+- **Lição:** **a família do E-017 tem mais um membro.** Lá foi o `sed` do Git Bash comendo
+  barra invertida vinda por argumento; aqui foi a here-string do PowerShell dentro do Bash.
+  O padrão é o mesmo: a mensagem multi-linha é o ponto em que shell errado falha **em
+  silêncio**, produzindo saída plausível em vez de erro. Vale a regra: texto de várias
+  linhas vai por **heredoc no Bash**, e o resultado se confere com `cat -A`, que mostra o
+  que os olhos não mostram. Conferir com `git log --oneline` não teria bastado — o `@` é
+  discreto e a linha parece certa.
+
 ## E-019 — Tela implementada e inalcançável: "Definir senha" sem caminho até ela (2026-09-01)
 
 - **Sintoma:** o Ícaro tentou entrar com e-mail e senha numa conta nascida do Google e

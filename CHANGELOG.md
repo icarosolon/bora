@@ -8,6 +8,26 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Skill `session-open` e `.gitattributes`** (2026-09-09): ritual de início de sessão em
+  `.claude/skills/session-open/SKILL.md`, par do `/doc-sync` — aquele fecha, este abre.
+  Responde "onde paramos?" lendo **o trecho, não o arquivo**: os três diários do projeto
+  somam ~139 KB (`CHANGELOG.md`, `error-log.md`, `backlog.md`) e não cabem em leitura
+  inteira a cada abertura. É **somente leitura** e **manual** (`disable-model-invocation:
+  true`), como o `doc-sync`. Registrada na tabela do `development-workflow.md` §2, no bloco
+  do ciclo §3 e nas duas linhas de método do `CLAUDE.md`. Junto veio o **`.gitattributes`**
+  (`* text=auto eol=lf`), que o repositório **não tinha**: até aqui a normalização de quebra
+  de linha dependia do `core.autocrlf` de cada máquina — nesta, medido `true`.
+  **Medido:** com o `.gitattributes` no lugar, o stage explícito dos quatro caminhos
+  produziu diff de **4 linhas**, não reescrita de arquivo.
+  **Não medido, e por isso PENDENTE (ver backlog, Infra do método):** o que acontece com os
+  arquivos já versionados quando forem tocados. A sondagem usou `git show :caminho`, que
+  **pode aplicar conversão na saída** e portanto não prova o que está gravado; a verificação
+  com `git cat-file` foi interrompida antes de rodar.
+  **Previsão contrariada, dita em voz alta:** ao ver o aviso `LF will be replaced by CRLF`,
+  o assistente afirmou ao Ícaro que aquilo "não afeta o conteúdo" **sem ter aberto nada** —
+  exatamente o que o guardrail de origem **E-002** proíbe. A frase honesta naquele momento
+  era "não verifiquei". A sondagem seguinte sugeriu o oposto (290 de 294 arquivos), e essa
+  sugestão também não está provada. Fica valendo: nenhuma das duas afirmações foi verificada.
 - **Instruções do Project do Claude Cowork** (2026-09-09): `docs/agents/cowork-project.md`,
   produzido por inspeção somente-leitura do repositório. Define o Cowork como camada de
   análise, planejamento, especificação e revisão que **nunca altera nada**: lista, comando a

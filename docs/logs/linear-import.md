@@ -316,3 +316,26 @@ forma em que estavam** — a D13 fechou em três arquétipos e a D17 foi reescri
 proposta antiga à mesa sem reler é como pedir ratificação de coisa que o autor já não
 defende. A marcação de origem (Ícaro / proposta / derivada) serviu exatamente para isso:
 tornou visível o que ainda não tinha sido examinado.
+
+## Sincronização de 2026-09-09 (terceira) — ritual de abertura
+
+Nenhuma `RN` tocada: a sessão criou a skill `session-open` e o `.gitattributes`, mudança de
+**método e infra**, não de domínio.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo — 32 issues `decisao-pendente`, todas em Backlog, nenhuma correspondendo a decisão tomada nesta sessão nem em paralelo | **nenhuma alteração** |
+| Issue nova | **nenhuma** — ver abaixo |
+
+**Por que a pendência nova não virou issue.** O `.gitattributes` abriu uma pergunta sem
+dono: renormalizar ou não os arquivos já versionados. Ela foi registrada no `backlog.md`,
+em *Infra do método*, ao lado das outras duas pendências de método (trailer
+`Co-Authored-By` fixado na skill, e a `speckit-taskstoissues` que cria issue no GitHub) —
+**nenhuma das duas tem issue no Linear**. Seguiu-se o precedente em vez de inaugurar
+exceção. Se o Ícaro preferir que pendência de método também apareça no quadro, as três
+entram juntas, e aí a regra passa a valer para as próximas.
+
+**O que esta conferência não fez:** auditar as 32 issues uma a uma contra os sete catálogos
+de `docs/domain/`. Foi verificado que nada **desta** sessão deveria fechar issue. A auditoria
+completa continua sendo trabalho próprio — é ela que pegaria um caso como o do
+`RN-DESC-003`, decidido em sessão paralela.

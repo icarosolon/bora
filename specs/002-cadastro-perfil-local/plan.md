@@ -169,9 +169,11 @@ existir porque o shell deixa de ser implícito — foi o que causou o **E-016**,
 Refeita em 2026-09-09, contra os artefatos gerados. **Nenhum princípio passou a ser violado
 pelo desenho**, e três pontos ficaram *mais* garantidos do que estavam antes:
 
-- **Princípio II** — as quatro rotas públicas do contrato **não aceitam nem leem**
+- **Princípio II** — as **três** rotas públicas do contrato **não aceitam nem leem**
   `Authorization`. Isso passou de intenção a propriedade verificável, e de quebra fecha o
   ADR-0003: o componente de servidor do Next as consome sem jamais tocar em token.
+  `GET /locais/semelhantes` **exige sessão** e não entra nessa conta (Ícaro, 2026-09-09) —
+  ela é chamada de dentro do formulário de cadastro, que é área autenticada.
 - **Princípio VIII e X** — o estado de reivindicação virou **derivado do histórico**
   (`research.md` R6), não um campo que possa divergir dele. Um estado que não consegue
   contradizer o próprio histórico é mais fácil de manter correto do que dois sincronizados.

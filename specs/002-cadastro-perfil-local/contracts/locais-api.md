@@ -27,9 +27,17 @@ API Resource, datas em ISO 8601.
 | `POST` | `/api/v1/reivindicacoes/{id}/aprovar` | **sim** (operação) | P3 |
 | `POST` | `/api/v1/reivindicacoes/{id}/recusar` | **sim** (operação) | P3 |
 
-> As quatro rotas públicas respondem **sem token** — é o Princípio II, e existe teste que
-> prova o bloqueio. Nenhuma delas aceita nem lê `Authorization`, o que também garante o
-> ADR-0003: o componente de servidor do Next as consome sem jamais tocar em token.
+> **São três as rotas públicas** — `GET /api/v1/locais`, `GET /api/v1/locais/{slug}` e
+> `GET /api/v1/categorias-de-local`. Elas respondem **sem token**: é o Princípio II, e existe
+> teste que prova o bloqueio. Nenhuma delas aceita nem lê `Authorization`, o que também
+> garante o ADR-0003 — o componente de servidor do Next as consome sem jamais tocar em token.
+>
+> **`GET /api/v1/locais/semelhantes` fica de fora e exige sessão**, como a tabela acima já
+> diz (decisão do Ícaro, 2026-09-09). Ela só é chamada de dentro do formulário de cadastro,
+> que é área autenticada — não faz parte do catálogo que o Princípio II manda abrir. A
+> fronteira só é testável nos dois sentidos: o teste prova que as três públicas respondem
+> **sem** token **e** que `semelhantes` **recusa** a requisição sem sessão. Provar o lado de
+> fora sem provar o lado de dentro deixaria a fronteira sem guarda.
 
 ---
 

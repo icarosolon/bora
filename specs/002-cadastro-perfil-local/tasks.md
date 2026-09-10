@@ -138,7 +138,7 @@ a linha de perfil não gerenciado.
 
 - [ ] T038 [P] [US1] Teste de criação — sucesso, falta de cada campo obrigatório, categoria inexistente, sem autenticação — em `api/tests/Feature/Venue/CreateVenueTest.php`
 - [ ] T039 [P] [US1] Teste do perfil público magro: campos ricos vêm como `null` e **não vazam**, nem na resposta de API, em `api/tests/Feature/Venue/PublicVenueProfileTest.php` (FR-002, FR-015)
-- [ ] T040 [P] [US1] Teste do bloqueio do **Princípio II**: as quatro rotas públicas respondem **sem token e sem cobrança**, em `api/tests/Feature/Venue/PublicAccessTest.php`
+- [ ] T040 [P] [US1] Teste do bloqueio do **Princípio II** em `api/tests/Feature/Venue/PublicAccessTest.php`, nos dois sentidos: as **três** rotas públicas — `GET /api/v1/locais`, `GET /api/v1/locais/{slug}` e `GET /api/v1/categorias-de-local` — respondem **sem token e sem cobrança**; e, complementar, `GET /api/v1/locais/semelhantes` **recusa** a requisição sem sessão. Provar o lado de fora sem provar o lado de dentro deixa a fronteira sem guarda
 - [ ] T041 [P] [US1] Teste do aviso de duplicata por nome normalizado + mesmo bairro, que **avisa e não bloqueia**, em `api/tests/Feature/Venue/SimilarVenuesTest.php` (FR-020, `RN-LOCAL-004`)
 - [ ] T042 [P] [US1] Teste de toque duplo em rede lenta não criando dois perfis, em `api/tests/Feature/Venue/CreateVenueDoubleSubmissionTest.php` (FR-018)
 - [ ] T043 [P] [US1] Teste do bloqueio do **Princípio VIII**: a criação gera registro recuperável com quem e quando, em `api/tests/Feature/Venue/VenueAuditLogTest.php` (FR-010)
@@ -244,7 +244,7 @@ aprovar pelo caminho de operação, e ver o selo na página pública e a conta p
 - [ ] T097 [P] [US3] Teste do bloqueio de `RN-EVENTO-001`: local **não reivindicado** tem a publicação de evento recusada, em `api/tests/Feature/Venue/UnclaimedVenueCannotPublishTest.php` (FR-013 — o evento é outra spec; o bloqueio, não)
 - [ ] T098 [P] [US3] Teste de que a caixinha "sou eu que gerencio este bar" marcada no cadastro abre o **pedido** junto com a criação, em `api/tests/Feature/Venue/CreateVenueWithClaimTest.php` (FR-019)
 - [ ] T099 [P] [US3] Teste de componente do formulário de pedido (erro no campo por evidência faltando, `axe` limpo) em `web/tests/unit/venue-claim-form.test.tsx`
-- [ ] T100 [P] [US3] Teste e2e do percurso P3 em `web/tests/e2e/us3-venue-claim.spec.ts`: pedir, ver dois pedidos lado a lado, aprovar, ver o selo na página pública, recusar com motivo. Em **360 e 1280**, mais **390–430** na página pública por causa do selo, com `axe` sem violação e passagem com **fonte do sistema ampliada**
+- [ ] T100 [P] [US3] Teste e2e do percurso P3 em `web/tests/e2e/us3-venue-claim.spec.ts`: pedir, ver dois pedidos lado a lado, aprovar, ver o selo na página pública, recusar com motivo. Asserir também o **ponto de entrada do T150 nos dois sentidos**: o item de operação **aparece** para conta com permissão e **não aparece** para conta sem — é bloqueio do Princípio V no front, e teste de componente não pega a janela de hidratação (E-012). Em **360 e 1280**, mais **390–430** na página pública por causa do selo, com `axe` sem violação e passagem com **fonte do sistema ampliada**
 
 ### Implementação da User Story 3 — API
 
@@ -336,6 +336,16 @@ sequer oferecidos**.
 
 ---
 
+## Acrescentadas depois da primeira escrita
+
+**Numeração propositalmente fora de ordem.** Estas tarefas entraram depois de a lista já ser
+citada por ID na seção de dependências, então **não se renumera** — cada uma declara a que
+fase pertence e onde entra na execução.
+
+- [ ] T150 [US3] Ponto de entrada para a tela de aprovar reivindicações: item na moldura de gestão (D8), visível **apenas** para conta com permissão de operação, apontando para `/admin/reivindicacoes`, em `web/src/components/shell/ManagementShell.tsx`. **Sem moldura nova.** Pertence à **Phase 5 (US3)**: executar junto do T118 e antes do T122. Motivo de existir: a spec declara que "o caminho até a tela é parte da tela", e o T118 criava uma tela alcançável **só por URL** — foi assim que nasceu o E-019
+
+---
+
 ## Dependências e ordem de execução
 
 ### Dependências de fase
@@ -363,7 +373,8 @@ O portão vem antes do kit porque portão escrito depois do kit nasce moldado a 
 - **US2 (P2)**: depende da Phase 2; reusa o `VenueResource` e o cliente de API da US1, mas é
   testável sozinha
 - **US3 (P3)**: depende da Phase 2 e do `Venue` existindo (US1) — reivindica-se um perfil que
-  precisa existir
+  precisa existir. **Inclui o T150**, que está no fim do arquivo por numeração, não por
+  ordem: ele é o ponto de entrada da tela do T118 e roda junto dele, antes do portão do T122
 - **US4 (P4)**: depende da US3 — campo rico só existe em perfil reivindicado (FR-015)
 
 > **Restrição do Princípio XI, acima de qualquer paralelismo:** a próxima história **não

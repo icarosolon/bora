@@ -427,7 +427,27 @@ redecididas aqui.
   caminho para falar com a plataforma. Entra aqui porque **o caminho até a resposta é parte
   da feature** — a lição do E-019.
 - **Editar perfil do local** (P4) — ação principal: **salvar**. Receita Formulário; só para
-  perfil reivindicado.
+  perfil reivindicado. Caminho: `Conta` → **Meus locais** → escolher o local → editar.
+- **Conta** (P1) — ação principal: **Sair**. Receita **Detalhe** curta: identificação da
+  conta (nome e e-mail) e nada além nesta fatia. Caminho: é o **destino do item `Conta`** da
+  barra de navegação (`D9`) — 1 toque da home; visitante sem sessão que toque em `Conta` vai
+  para `/entrar` e volta para `/conta`. **Acrescentada em 2026-09-09**, depois de a lista de
+  tarefas mostrar o buraco: a spec 001 entregou os **fluxos** de conta (entrar, criar,
+  definir senha, unir, verificar e-mail) e **nenhuma página de conta**, então o item da barra
+  não tinha destino. É também por ela que se chega a **Cadastrar local** — cadastrar exige
+  conta (FR-001), e é isso que fecha o "no máximo 2 toques da home" declarado acima.
+- **Meus locais** (P4) — ação principal: **não tem botão — o item é o alvo**, como a Lista.
+  Índice dos locais que a conta gerencia, dentro da moldura de gestão. Caminho: `Conta` →
+  **Meus locais** (2 toques da home). Existe porque o vínculo é **N:N** (FR-012,
+  `RN-LOCAL-004`): uma conta gerencia vários locais, e sem índice a tela de editar perfil não
+  teria por onde ser alcançada.
+
+**Itens da barra sem destino nesta fatia, por decisão** (Ícaro, 2026-09-09): a `D9` fixa os
+cinco itens e a **FR-025 proíbe botão morto** — "botão morto é pior que botão ausente" —
+então nenhum dos dois pode simplesmente sair. `Salvos` (`RN-DESC-003`) e `Dividir`
+(`RN-CONTA-001`, BORA-5) são de outras specs e ficam com **estado honesto**: item visível,
+com rótulo, respondendo ao toque, **nunca em silêncio**. `Buscar` fica assim só até a **P2**,
+quando passa a apontar para a lista de locais.
 
 > **Lição da spec 001 aplicada aqui de propósito** (E-019): listar a tela não basta — **o
 > caminho até ela é parte da tela**. Cada tela acima declara por onde se chega.

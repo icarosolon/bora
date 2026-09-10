@@ -59,7 +59,8 @@ fase, não história" da `spec.md`, e são estas seis, nesta ordem:
 1. **Portão de conformidade de tela**, rodado contra as telas já entregues da spec 001 (T005–T009)
 2. **Kit de UI com o alvo de 44px embutido no componente**, não corrigido por chamada (T010–T015)
 3. **Tipografia e papéis semânticos de cor** (T010–T011, dentro do bloco do kit)
-4. **Shell de consumo** em `web/src/components/shell/` (T016–T023)
+4. **Shell de consumo** em `web/src/components/shell/` (T016–T023), **mais o T150 e o T151**,
+   que dão destino honesto aos itens da barra e estão no fim do arquivo só por numeração
 5. **Retrofit das telas de conta da spec 001** (T024–T025)
 6. **Modelo e migrations de local** (T026–T037)
 
@@ -92,8 +93,8 @@ independente do front inteiro.
 - [ ] T019 [P] **Medir** o orçamento de caracteres dos rótulos da barra (R2). **Critério de pronto declarado pelo próprio R2**: renderizar `Hoje`, `Buscar`, `Salvos`, `Dividir` e `Conta` num navegador de verdade, na família escolhida ou num substituto de métrica equivalente, a 360px, sob **zoom de 200%** e sob **fonte do sistema ampliada** — que são mecanismos diferentes — e usar o resultado para definir **onde a barra quebra em duas linhas**. Substituir em `docs/product/design-system.md` os números da D12, que hoje são **estimativa (~0,5em de avanço médio por caractere) e não medição**, pelos valores medidos, dizendo que foram medidos e como
 - [ ] T020 Mover o `AccountHeader` do layout raiz para dentro do shell, em `web/src/app/layout.tsx` e `web/src/components/shell/ConsumptionShell.tsx` — o shell solto no layout raiz foi a causa do E-016
 - [ ] T021 Substituir o boilerplate do `create-next-app` em `web/src/app/page.tsx` por uma home mínima dentro do shell, sem cor literal (a home "Hoje" de verdade é outra spec)
-- [ ] T022 Criar o shell de gestão com **apenas Perfil**, mais o seletor de moldura persistente no topo (D8), em `web/src/components/shell/ManagementShell.tsx` — **sem Agenda**: agenda depende de eventos, que são de outra spec, e item de menu que não leva a lugar nenhum é dívida visível ao usuário (D10)
-- [ ] T023 [P] Teste e2e do shell em `web/tests/e2e/shell.spec.ts`: cinco itens com rótulo a 360, trilho a 1280, duas linhas sob fonte ampliada, nenhum item dependente de quem olha, e a moldura de gestão **sem** item de Agenda
+- [ ] T022 Criar o shell de gestão com **apenas Perfil**, mais o seletor de moldura persistente no topo (D8), em `web/src/components/shell/ManagementShell.tsx` — **sem Agenda**: agenda depende de eventos, que são de outra spec, e item de menu que não leva a lugar nenhum é dívida visível ao usuário (D10). O item de **operação** do T154 entra depois, na US3, e não contradiz isto — ele é do operador da plataforma, não do gestor, e só aparece para quem tem a permissão
+- [ ] T023 [P] Teste e2e do shell em `web/tests/e2e/shell.spec.ts`: cinco itens com rótulo a 360, trilho a 1280, duas linhas sob fonte ampliada, nenhum item dependente de quem olha, e a moldura de gestão **sem** item de Agenda. Asserir também os destinos: o item `Conta` leva a `/conta` (T150); os itens **sem destino nesta fatia** respondem com o estado do T151 e **nunca em silêncio**; e visitante **sem sessão** que toque em `Conta` cai em `/entrar`
 
 ### Retrofit das telas da spec 001
 
@@ -148,7 +149,7 @@ a linha de perfil não gerenciado.
 - [ ] T047 [P] [US1] Teste unitário do gerador de `slug`, incluindo desambiguação pelo bairro na colisão, em `api/tests/Unit/Domain/Venue/VenueSlugTest.php` (R3)
 - [ ] T048 [P] [US1] Teste unitário do normalizador de nome — minúscula, sem acento, sem pontuação, sem termo genérico inicial — em `api/tests/Unit/Domain/Venue/NameNormalizerTest.php` (R4)
 - [ ] T049 [P] [US1] Teste de componente do formulário de cadastro (erro no campo, botão desabilitado durante o envio, `axe` limpo) em `web/tests/unit/venue-form.test.tsx`
-- [ ] T050 [P] [US1] Teste e2e do percurso P1 em `web/tests/e2e/us1-venue.spec.ts`: cadastrar, cair na página pública, abrir sem sessão, conferir "Como chegar", "Ligar" e "Convidar", e a **chegada fria** com volta nomeada funcionando (D20, SC-004). Rodar em **360, 1280 e 390–430** — a faixa extra é obrigatória no perfil público, que é a tela mais densa da feature — com `axe` sem violação e uma passagem a mais com **fonte do sistema ampliada**
+- [ ] T050 [P] [US1] Teste e2e do percurso P1 em `web/tests/e2e/us1-venue.spec.ts`. O percurso **começa na home e chega ao formulário pela interface** — home, `Conta`, "Cadastrar local" (T152) — **sem navegar por URL direta**, que é o que mascarou o E-019. Depois: cadastrar, cair na página pública, abrir sem sessão, conferir "Como chegar", "Ligar" e "Convidar", e a **chegada fria** com volta nomeada funcionando (D20, SC-004). Rodar em **360, 1280 e 390–430** — a faixa extra é obrigatória no perfil público, que é a tela mais densa da feature — com `axe` sem violação e uma passagem a mais com **fonte do sistema ampliada**
 
 ### Implementação da User Story 1 — API
 
@@ -244,7 +245,7 @@ aprovar pelo caminho de operação, e ver o selo na página pública e a conta p
 - [ ] T097 [P] [US3] Teste do bloqueio de `RN-EVENTO-001`: local **não reivindicado** tem a publicação de evento recusada, em `api/tests/Feature/Venue/UnclaimedVenueCannotPublishTest.php` (FR-013 — o evento é outra spec; o bloqueio, não)
 - [ ] T098 [P] [US3] Teste de que a caixinha "sou eu que gerencio este bar" marcada no cadastro abre o **pedido** junto com a criação, em `api/tests/Feature/Venue/CreateVenueWithClaimTest.php` (FR-019)
 - [ ] T099 [P] [US3] Teste de componente do formulário de pedido (erro no campo por evidência faltando, `axe` limpo) em `web/tests/unit/venue-claim-form.test.tsx`
-- [ ] T100 [P] [US3] Teste e2e do percurso P3 em `web/tests/e2e/us3-venue-claim.spec.ts`: pedir, ver dois pedidos lado a lado, aprovar, ver o selo na página pública, recusar com motivo. Asserir também o **ponto de entrada do T150 nos dois sentidos**: o item de operação **aparece** para conta com permissão e **não aparece** para conta sem — é bloqueio do Princípio V no front, e teste de componente não pega a janela de hidratação (E-012). Em **360 e 1280**, mais **390–430** na página pública por causa do selo, com `axe` sem violação e passagem com **fonte do sistema ampliada**
+- [ ] T100 [P] [US3] Teste e2e do percurso P3 em `web/tests/e2e/us3-venue-claim.spec.ts`: pedir, ver dois pedidos lado a lado, aprovar, ver o selo na página pública, recusar com motivo. Asserir também o **ponto de entrada do T154 nos dois sentidos**: o item de operação **aparece** para conta com permissão e **não aparece** para conta sem — é bloqueio do Princípio V no front, e teste de componente não pega a janela de hidratação (E-012). Em **360 e 1280**, mais **390–430** na página pública por causa do selo, com `axe` sem violação e passagem com **fonte do sistema ampliada**
 
 ### Implementação da User Story 3 — API
 
@@ -299,7 +300,7 @@ sequer oferecidos**.
 - [ ] T126 [P] [US4] Teste de upload recusado por tipo e por tamanho, com a recusa explicando o limite, em `api/tests/Feature/Venue/VenueUploadTest.php` (FR-016)
 - [ ] T127 [P] [US4] Teste de `RN-LOCAL-003`: perfil reivindicado expõe foto, descrição, telefone clique-para-ligar, endereço e Instagram, em `api/tests/Feature/Venue/PublicVenueProfileTest.php`
 - [ ] T128 [P] [US4] Teste de componente do formulário de edição e dos dois componentes novos, em `web/tests/unit/venue-edit-form.test.tsx`
-- [ ] T129 [P] [US4] Teste e2e do percurso P4 em `web/tests/e2e/us4-venue-profile.spec.ts`, incluindo as imagens carregando **sem deslocar** o conteúdo (SC-006). Em **360, 1280 e 390–430** — o perfil público fica ainda mais denso com os campos ricos — com `axe` sem violação e passagem com **fonte do sistema ampliada**
+- [ ] T129 [P] [US4] Teste e2e do percurso P4 em `web/tests/e2e/us4-venue-profile.spec.ts`. Chegar à página de editar **pela interface** — `Conta`, "Meus locais" (T156), escolher o local no índice (T155), editar — sem URL direta. Incluir as imagens carregando **sem deslocar** o conteúdo (SC-006). Em **360, 1280 e 390–430** — o perfil público fica ainda mais denso com os campos ricos — com `axe` sem violação e passagem com **fonte do sistema ampliada**
 
 ### Implementação da User Story 4
 
@@ -339,10 +340,20 @@ sequer oferecidos**.
 ## Acrescentadas depois da primeira escrita
 
 **Numeração propositalmente fora de ordem.** Estas tarefas entraram depois de a lista já ser
-citada por ID na seção de dependências, então **não se renumera** — cada uma declara a que
-fase pertence e onde entra na execução.
+citada por ID na seção de dependências e em commits, então **não se renumera de T001 a
+T149** — cada uma abaixo declara a que fase pertence e onde entra na execução.
 
-- [ ] T150 [US3] Ponto de entrada para a tela de aprovar reivindicações: item na moldura de gestão (D8), visível **apenas** para conta com permissão de operação, apontando para `/admin/reivindicacoes`, em `web/src/components/shell/ManagementShell.tsx`. **Sem moldura nova.** Pertence à **Phase 5 (US3)**: executar junto do T118 e antes do T122. Motivo de existir: a spec declara que "o caminho até a tela é parte da tela", e o T118 criava uma tela alcançável **só por URL** — foi assim que nasceu o E-019
+**O que todas têm em comum:** são **pontos de entrada**. A lista original entregava telas
+alcançáveis só por URL, e a `spec.md` é explícita — *"listar a tela não basta: o caminho até
+ela é parte da tela"*. Foi ignorar isso que produziu o **E-019**.
+
+- [ ] T150 Página da conta autenticada em `web/src/app/conta/page.tsx`, dentro do shell de consumo: identificação da conta (nome e e-mail), **"Sair"**, e nada além nesta fatia. É o destino do item `Conta` da barra do T016. Visitante sem sessão que toque em `Conta` vai para `/entrar` com retorno para `/conta`. **Pertence à Phase 2**, bloco da camada 2: executar junto do T016–T023, **antes do T024**. Motivo de existir: a spec 001 entregou os **fluxos** de conta (entrar, criar, definir senha, unir, verificar e-mail) e **nenhuma página de conta** — o item da barra não tinha destino nenhum
+- [ ] T151 Estado honesto para os itens da barra que ainda não têm destino nesta fatia — `Buscar`, `Salvos` e `Dividir` — em `web/src/components/shell/ConsumptionShell.tsx`: item visível, com rótulo, **sem silêncio ao toque**. A FR-025 proíbe botão morto ("pior que botão ausente") e a D9 fixa os cinco itens, então nenhum dos dois pode sair. **Pertence à Phase 2**, junto do T016
+- [ ] T152 [US1] Acrescentar o ponto de entrada **"Cadastrar local"** à página da conta, apontando para `/locais/novo`, em `web/src/app/conta/page.tsx`. Cadastrar exige conta (FR-001), então o caminho vive na área autenticada e cumpre o "no máximo 2 toques da home" que a spec declara (home → `Conta` → Cadastrar local). **Pertence à Phase 3 (US1)**, antes do T073
+- [ ] T153 [US2] Apontar o item `Buscar` da barra para `/locais` e **remover o estado provisório do T151 para esse item**, em `web/src/components/shell/ConsumptionShell.tsx`. **Pertence à Phase 4 (US2)**, depois do T084 e antes do T086
+- [ ] T154 [US3] Ponto de entrada para a tela de aprovar reivindicações: item na moldura de gestão (D8), visível **apenas** para conta com permissão de operação, apontando para `/admin/reivindicacoes`, em `web/src/components/shell/ManagementShell.tsx`. **Sem moldura nova.** **Pertence à Phase 5 (US3)**: junto do T118, antes do T122. Motivo de existir: o T118 criava uma tela alcançável **só por URL** — foi assim que nasceu o E-019
+- [ ] T155 [US4] Índice dos locais que a conta gerencia, dentro da moldura de gestão, em `web/src/app/meus-locais/page.tsx` — é por aqui que se escolhe qual perfil editar. O vínculo é **N:N** (FR-012, `RN-LOCAL-004`): uma conta gerencia vários locais, e sem índice a página de editar do T137 não tem como ser alcançada. **Pertence à Phase 6 (US4)**, antes do T137
+- [ ] T156 [US4] Acrescentar à página da conta o item **"Meus locais"**, visível apenas para conta com ao menos um vínculo de gestão, apontando para `/meus-locais`, em `web/src/app/conta/page.tsx`. É a entrada para a moldura de gestão. **Pertence à Phase 6 (US4)**, junto do T155
 
 ---
 
@@ -369,13 +380,21 @@ O portão vem antes do kit porque portão escrito depois do kit nasce moldado a 
 
 ### Dependências entre histórias
 
-- **US1 (P1)**: pode começar assim que a Phase 2 terminar. Sem dependência de outra história
+- **US1 (P1)**: pode começar assim que a Phase 2 terminar. Sem dependência de outra história.
+  **Inclui o T152**, ponto de entrada "Cadastrar local" na página da conta, antes do T073
 - **US2 (P2)**: depende da Phase 2; reusa o `VenueResource` e o cliente de API da US1, mas é
-  testável sozinha
+  testável sozinha. **Inclui o T153**, que dá destino ao item `Buscar` e retira dele o estado
+  provisório do T151 — depois do T084, antes do T086
 - **US3 (P3)**: depende da Phase 2 e do `Venue` existindo (US1) — reivindica-se um perfil que
-  precisa existir. **Inclui o T150**, que está no fim do arquivo por numeração, não por
-  ordem: ele é o ponto de entrada da tela do T118 e roda junto dele, antes do portão do T122
-- **US4 (P4)**: depende da US3 — campo rico só existe em perfil reivindicado (FR-015)
+  precisa existir. **Inclui o T154**, ponto de entrada da tela do T118, junto dele e antes do
+  portão do T122
+- **US4 (P4)**: depende da US3 — campo rico só existe em perfil reivindicado (FR-015).
+  **Inclui o T155 e o T156**: o índice de "Meus locais" e o item que leva até ele, ambos
+  antes do T137, porque sem eles a página de editar não tem como ser alcançada
+
+> **Os T150 a T156 estão no fim do arquivo por numeração, não por ordem de execução.** Cada
+> um declara a fase a que pertence, e é essa declaração que vale. **T150 e T151 são da
+> Phase 2** e portanto **bloqueiam todas as histórias**, como o resto daquela fase.
 
 > **Restrição do Princípio XI, acima de qualquer paralelismo:** a próxima história **não
 > abre** antes da validação visual da atual (T074, T087, T123, T140). Na prática as histórias

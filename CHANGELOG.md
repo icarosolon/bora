@@ -50,8 +50,9 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   `data-model.md`, `contracts/locais-api.md` e `quickstart.md` em
   `specs/002-cadastro-perfil-local/`. **Nenhuma dependência nova** — verificado abrindo
   `composer.json` e `package.json`; o peso novo no front vem só da família tipográfica e das
-  imagens da P4, e o Geist Mono saindo devolve parte. Quatro tabelas novas (`venues`,
-  `venue_categories`, `venue_managers`, `venue_claims`), e o único acréscimo estrutural é
+  imagens da P4, e o Geist Mono saindo devolve parte. Cinco tabelas novas (`venues`,
+  `venue_categories`, `venue_venue_category`, `venue_managers`, `venue_claims`), e o único
+  acréscimo estrutural é
   `web/src/components/shell/`, porque o shell deixa de ser implícito — foi exatamente isso
   que causou o **E-016**. Decisões de desenho que valem registro: o **estado de reivindicação
   é derivado do histórico**, não um campo que possa divergir dele (Princípios VIII e X); as

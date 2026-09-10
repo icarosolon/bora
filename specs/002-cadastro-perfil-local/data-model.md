@@ -16,7 +16,9 @@ accounts (users) ──N:N── venues ──N:N── venue_categories
       └────── venue_claims ┘
 ```
 
-Quatro tabelas novas. Nenhuma tabela existente é recriada; `users` ganha apenas as relações.
+**Cinco tabelas novas**: `venues`, `venue_categories`, `venue_venue_category`,
+`venue_managers` e `venue_claims` — uma seção deste documento para cada uma. Nenhuma tabela
+existente é recriada; `users` ganha apenas as relações.
 
 ---
 

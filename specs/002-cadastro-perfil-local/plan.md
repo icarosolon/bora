@@ -137,7 +137,7 @@ api/
 │   ├── Jobs/                       # aviso de resultado da reivindicação
 │   ├── Ports/ + Adapters/          # reusados — porta de e-mail da spec 001
 │   └── Rules/
-├── database/migrations/            # 4 migrations novas
+├── database/migrations/            # 5 migrations novas
 └── tests/{Feature,Unit}/Venue/     # NOVO
 
 web/

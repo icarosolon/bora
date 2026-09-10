@@ -4,10 +4,12 @@
 
 **Created**: 2026-09-08
 
-**Status**: **APROVADA pelo Ícaro em 2026-09-09.** Portão `/spec-check`: **SIM** (2026-09-08,
-depois de cinco bloqueantes corrigidos). Revisada com o Ícaro em 2026-09-09, que encontrou
-cinco problemas que o portão não pega; os cinco estão resolvidos e a ordem das histórias
-mudou. Pronta para `/speckit-plan`.
+**Status**: **APROVADA pelo Ícaro em 2026-09-09 · PLANEJADA · COM TAREFAS GERADAS.** Portão
+`/spec-check`: **SIM** (2026-09-08, depois de cinco bloqueantes corrigidos). Revisada com o
+Ícaro em 2026-09-09, que encontrou cinco problemas que o portão não pega; os cinco estão
+resolvidos e a ordem das histórias mudou. `/speckit-plan` em 2026-09-09; `/speckit-tasks` em
+2026-09-09 → **`tasks.md` com 156 tarefas**. **Pronta para implementação, começando pela
+Phase 1 (T001).** Nenhuma linha de código escrita até aqui.
 
 **Input**: Cadastro e perfil de estabelecimento (local). Segunda spec do Bora; destrava o
 catálogo. Recorte acordado com o Ícaro em 2026-09-06 (`docs/logs/backlog.md` → "Próximo

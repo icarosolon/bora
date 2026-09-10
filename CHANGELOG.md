@@ -8,6 +8,33 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Lista de tarefas da spec 002** (`/speckit-tasks`, 2026-09-09):
+  `specs/002-cadastro-perfil-local/tasks.md`, **156 tarefas** em sete fases. Phase 1 Setup;
+  **Phase 2 Foundational bloqueante** com a composição e a ordem fixadas pela spec — portão
+  de conformidade rodado contra as telas da spec 001, kit com o alvo de 44px **embutido no
+  componente**, tipografia e papéis de cor, shell de consumo, retrofit da spec 001, e o
+  modelo de local; depois as quatro histórias, P1 cadastro e página pública, P2 lista, P3
+  reivindicação, P4 perfil rico; e Polish. **Testes não são opcionais aqui** (Princípio IX):
+  há tarefa por `RN` referenciada e tarefa que **prova o bloqueio** de cada princípio
+  NON-NEGOTIABLE tocado, com telas em **360 e 1280**, mais **390–430** no perfil público por
+  ser a tela mais densa, `axe` sem violação e uma passagem a mais com **fonte do sistema
+  ampliada** — que não dispara `media query` e passaria despercebida.
+  **A validação visual é por história** (T074, T087, T123, T140), e a próxima história não
+  abre antes dela — é a mitigação escrita na D6 para o risco de a spec 002 acumular fundação
+  mais quatro histórias.
+- **Pontos de entrada das telas da spec 002** (2026-09-09): T150 a T156, acrescentados
+  depois que a primeira escrita da lista mostrou telas alcançáveis **só por URL**. O buraco
+  maior: a spec 001 entregou os **fluxos** de conta e **nenhuma página de conta**, então o
+  item `Conta` da barra de navegação não tinha destino — T150 cria `/conta`. T151 dá estado
+  honesto a `Buscar`, `Salvos` e `Dividir`, porque a `D9` fixa os cinco itens e a **FR-025
+  proíbe botão morto**. T152 põe "Cadastrar local" na conta, T153 aponta `Buscar` para a
+  lista, T154 põe "Aprovar reivindicações" na conta, T155 e T156 criam o índice de "Meus
+  locais" e a entrada para ele. Os quatro testes e2e passam a **chegar às telas pela
+  interface**, não por URL direta — navegar por URL é o que mascarou o **E-019**.
+  **Decisão do Ícaro (2026-09-09):** a entrada de aprovar reivindicações fica na **página da
+  conta**, não na moldura de gestão, porque **operador e gestor são papéis diferentes** — a
+  moldura de gestão pertence a quem tem vínculo com um local, e um operador da plataforma
+  pode não ter vínculo nenhum.
 - **Skill `session-open` e `.gitattributes`** (2026-09-09): ritual de início de sessão em
   `.claude/skills/session-open/SKILL.md`, par do `/doc-sync` — aquele fecha, este abre.
   Responde "onde paramos?" lendo **o trecho, não o arquivo**: os três diários do projeto
@@ -125,6 +152,25 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   a API não informa `signs_in_with`.
 
 ### Fixed
+- **Duas contagens erradas nos artefatos da spec 002** (2026-09-09), as duas achadas ao
+  enumerar as tarefas — enumerar é o que obriga a conferir, e nenhum dos dois erros tinha
+  sido pego pelo `/speckit-plan` nem pelo `/spec-check` (**E-021**).
+  **Tabelas: eram cinco, estavam escritas como quatro.** O `data-model.md` abria com "Quatro
+  tabelas novas" e logo abaixo definia **cinco** seções de tabela; o `plan.md` e a entrada
+  "Plano técnico da spec 002" deste CHANGELOG herdaram a contagem, e a lista do CHANGELOG
+  ainda **omitia** `venue_venue_category`. Decisão do Ícaro: **são cinco**, e as cinco
+  migrations ficam — o pivô é tabela de verdade, tem chave única no par, e o precedente
+  autoral do projeto é **um arquivo por tabela** (o único multi-tabela é a migration
+  publicada pelo `spatie/laravel-permission`, que é de terceiro).
+  **Rotas públicas: eram três, estavam escritas como quatro.** O `contracts/locais-api.md`
+  dizia "as quatro rotas públicas respondem sem token" enquanto a tabela do próprio arquivo
+  marcava "Sessão: não" em três — `GET /locais`, `GET /locais/{slug}` e
+  `GET /categorias-de-local`. Decisão do Ícaro: **são três**;
+  `GET /locais/semelhantes` **exige sessão**, porque só é chamada de dentro do formulário de
+  cadastro, que é área autenticada. O `plan.md` repetia a mesma frase e foi corrigido junto.
+  O teste do Princípio II (T040) passou a asserir a fronteira **nos dois sentidos**: as três
+  respondem sem token **e** `semelhantes` recusa a requisição sem sessão. Provar só o lado de
+  fora deixaria o de dentro sem guarda.
 - **`signs_in_with` entrou no contrato da API** (`specs/001-contas-autenticacao/contracts/auth-api.md`).
   A API devolve esse campo desde a US2, em toda resposta que carrega a conta, mas o contrato
   nunca o documentou — e agora a tela **decide** com ele (sem `"password"` na lista, oferece

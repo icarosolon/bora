@@ -339,3 +339,37 @@ entram juntas, e aí a regra passa a valer para as próximas.
 de `docs/domain/`. Foi verificado que nada **desta** sessão deveria fechar issue. A auditoria
 completa continua sendo trabalho próprio — é ela que pegaria um caso como o do
 `RN-DESC-003`, decidido em sessão paralela.
+
+## Sincronização de 2026-09-09 (quarta) — tarefas da spec 002
+
+**Nenhuma `RN` tocada.** A sessão rodou o `/speckit-tasks` e corrigiu artefatos da spec 002;
+as três decisões tomadas — cinco tabelas, três rotas públicas, e onde vive a entrada de
+aprovar reivindicações — são de **contagem e de tela**, não de regra de domínio. Nenhum
+catálogo de `docs/domain/` mudou.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo — **32 issues `decisao-pendente`, todas em Backlog**, nenhuma correspondendo a decisão desta sessão nem de sessão paralela | **nenhuma alteração** |
+| Issue fechada | **nenhuma** |
+| Issue nova | **nenhuma criada nesta sessão** — ver abaixo |
+
+**Verificado, não presumido:** as 32 issues foram listadas pelo conector do Linear (time
+`Bora`, rótulo `decisao-pendente`) e conferidas uma a uma contra o que esta sessão decidiu.
+São as mesmas 32 da sincronização anterior. As três da spec 002 que aparecem no quadro —
+BORA-49 (método automático de verificação), BORA-50 (desempate entre reivindicações) e
+BORA-8 (provedor de mapas) — continuam **fora do escopo por decisão**, exatamente como a
+`research.md` registra; nada nesta sessão as resolveu.
+
+**Duas pendências novas ficaram sem issue, e isso é escolha a confirmar.** A geração das
+tarefas abriu duas perguntas que estão registradas no `backlog.md`, em *Abertas pela spec
+002*: **como uma conta ganha a permissão de operação** (bloqueia a US3 — o `RolesSeeder`
+cria só `rolezeiro`) e **o `cover_path` que existe no modelo e em nenhum outro lugar**. Não
+viraram issue porque **o Ícaro ainda não decidiu**, e o padrão do quadro é issue de decisão
+nascer com o enunciado da escolha, não da descoberta. **A primeira é séria:** bloqueia uma
+história inteira, e não é pendência de método como as três de *Infra do método* — se o
+critério do quadro é "o que bloqueia spec vira issue", ela deveria virar. Fica proposta,
+não executada.
+
+**O que esta conferência não fez:** auditar as 32 issues contra os sete catálogos de
+`docs/domain/`. Foi verificado que nada **desta** sessão deveria fechar issue. A auditoria
+completa segue por fazer — é ela que pegaria um caso como o do `RN-DESC-003`.

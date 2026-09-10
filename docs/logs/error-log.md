@@ -3,6 +3,70 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-022 — O E-019 voltou, um nível acima: a spec declarava o caminho, e nenhuma tarefa o construía (2026-09-09)
+
+- **Sintoma:** a primeira escrita do `tasks.md` da spec 002 produziu sete telas, e **cinco
+  delas só podiam ser abertas digitando a URL**. A lista tinha tarefa para construir a tela
+  de aprovar reivindicações e nenhuma para chegar até ela; tinha tarefa para a página de
+  editar perfil e nenhuma para o índice de "Meus locais" que a antecede; e o item `Conta` da
+  barra de navegação, que a `D9` fixa, **não tinha destino nenhum** — a spec 001 entregou os
+  **fluxos** de conta (entrar, criar, definir senha, unir, verificar e-mail) e nunca uma
+  página de conta.
+- **Causa:** o guardrail do E-019 foi aplicado onde ele foi escrito — na spec, cuja seção
+  "Telas entregues nesta feature" declara o caminho de cada tela — e **não** no artefato
+  seguinte. Declarar o caminho na spec e não gerar tarefa que o construa deixa o caminho
+  existindo só na prosa. O `/spec-check` cobra a seção de telas; **nada cobra a lista de
+  tarefas contra ela**.
+- **Por que nenhum teste teria pegado:** os e2e da primeira escrita navegavam **por URL
+  direta** para chegar às telas. Navegar por URL é exatamente o que mascara este defeito —
+  o teste passa com a tela inalcançável, que é o que aconteceu na spec 001.
+- **Resolução:** sete tarefas de ponto de entrada (T150–T156), cada uma declarando a fase a
+  que pertence, sem renumerar de T001 a T149 porque esses IDs já estavam citados na seção de
+  dependências e em commits. Os quatro e2e (T023, T050, T100, T129) passaram a exigir chegada
+  **pela interface**. A `spec.md` ganhou as telas **Conta** (P1) e **Meus locais** (P4) na
+  seção de telas, cada uma com o caminho declarado, mais o registro de que `Salvos` e
+  `Dividir` ficam sem destino nesta fatia **por decisão**, com estado honesto (`FR-025`:
+  botão morto é pior que botão ausente).
+- **Status:** resolvido **antes de qualquer código**, que é a única diferença boa entre este
+  e o E-019 — lá o defeito chegou ao Ícaro usando o produto.
+- **Lição:** o guardrail estava certo e no lugar errado. *"O caminho até a tela é parte da
+  tela"* precisa ser cobrado **na lista de tarefas**, não só na spec — e o teste que o prova
+  é o e2e que **começa na home e navega pela interface**, nunca o que salta para a URL.
+  **Opinião, não fato:** o candidato natural a virar asserção do portão é "toda rota de tela
+  do `web/` é alcançável a partir da home por cliques"; não foi escrita nem medida.
+
+## E-021 — Contagem em prosa divergindo da tabela do próprio arquivo, propagada por três documentos (2026-09-09)
+
+- **Sintoma:** dois erros da mesma família nos artefatos da spec 002. O `data-model.md` abria
+  com "**Quatro** tabelas novas" e definia, no mesmo arquivo, **cinco** seções de tabela
+  (`venues`, `venue_categories`, `venue_venue_category`, `venue_managers`, `venue_claims`).
+  O `contracts/locais-api.md` afirmava que "as **quatro** rotas públicas respondem sem token"
+  enquanto a tabela logo acima marcava "Sessão: não" em **três**.
+- **Causa:** a frase-resumo foi escrita à mão, junto com a primeira versão da tabela, e
+  **nunca foi re-derivada** quando a tabela cresceu ou mudou. Uma vez errada, propagou para
+  todo documento derivado: a contagem de tabelas apareceu igual no `plan.md`
+  (`# 4 migrations novas`) e na entrada do `CHANGELOG.md`, que ainda **omitia o pivô** da
+  lista entre parênteses; a contagem de rotas apareceu igual na reavaliação pós-Phase 1 do
+  `plan.md`.
+- **Por que passou pelos portões:** o `/spec-check` verifica a **presença** de seções
+  obrigatórias, não a **coerência interna** entre a prosa e as tabelas do mesmo arquivo. O
+  `/speckit-plan` leu os artefatos e reproduziu a contagem que encontrou escrita, em vez de
+  contar as linhas. Nenhum dos dois é falho no que promete; simplesmente ninguém contava.
+- **O que finalmente pegou:** o `/speckit-tasks`, porque **enumerar obriga a contar**. Ao
+  gerar uma tarefa de migration por tabela, a divergência apareceu sozinha; a das rotas
+  apareceu ao escrever o teste do Princípio II, que precisa nomear cada rota pública.
+- **Resolução:** as duas contagens corrigidas em todos os arquivos afetados, com a decisão
+  do Ícaro registrada em cada lugar (2026-09-09): **cinco tabelas**, as cinco migrations
+  ficam; **três rotas públicas**, e `GET /locais/semelhantes` exige sessão porque só é
+  chamada de dentro do formulário de cadastro. O T040 passou a asserir a fronteira nos dois
+  sentidos.
+- **Status:** resolvido.
+- **Lição:** **número em prosa é cópia, e cópia envelhece.** Onde o arquivo já tem a tabela,
+  a frase deve remeter a ela ("as tabelas abaixo", "as rotas marcadas *Sessão: não*") em vez
+  de repetir o total — ou o total tem de ser reconferido a cada edição da tabela. Vale também
+  para o `/doc-sync`: conferir **campo a campo e linha a linha**, não só a existência da
+  seção, foi o que o passo 6 desta skill já mandava desde o E-019.
+
 ## E-020 — Here-string do PowerShell no Bash virou `@` no assunto do commit (2026-09-09)
 
 - **Sintoma:** o commit do `/doc-sync` saiu com o assunto `@ docs: ritual de abertura

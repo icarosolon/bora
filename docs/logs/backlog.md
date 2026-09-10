@@ -426,13 +426,20 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
    em duas linhas recomendado na **D12**.
 3. **Inventário do que falta para a próxima spec (cadastro/perfil de local).** Levantado,
    não implícito:
-   - **A spec 002 está ESCRITA, APROVADA e PLANEJADA** — `specs/002-cadastro-perfil-local/`
-     (BORA-52). Portão `/spec-check`: SIM em 2026-09-08, depois de cinco bloqueantes
-     corrigidos. Revisada com o Ícaro em 2026-09-09 (cinco problemas que o portão não pega;
-     a ordem das histórias mudou) e **aprovada por ele** na mesma data. `/speckit-plan`
-     rodado em 2026-09-09: existem `plan.md`, `research.md`, `data-model.md`,
-     `contracts/locais-api.md` e `quickstart.md`.
-     **Próximo passo: `/speckit-tasks`** — e nada além disso está pendente para rodá-lo.
+   - **A spec 002 está ESCRITA, APROVADA, PLANEJADA e COM TAREFAS GERADAS** —
+     `specs/002-cadastro-perfil-local/` (BORA-52). Portão `/spec-check`: SIM em 2026-09-08,
+     depois de cinco bloqueantes corrigidos. Revisada com o Ícaro em 2026-09-09 (cinco
+     problemas que o portão não pega; a ordem das histórias mudou) e **aprovada por ele** na
+     mesma data. `/speckit-plan` rodado em 2026-09-09: existem `plan.md`, `research.md`,
+     `data-model.md`, `contracts/locais-api.md` e `quickstart.md`. `/speckit-tasks` rodado em
+     2026-09-09: **`tasks.md` com 156 tarefas** em sete fases.
+     **Próximo passo: implementar, começando pela T001** (Phase 1 — Setup). Nenhuma linha de
+     código foi escrita ainda. A **Phase 2 Foundational bloqueia todas as histórias**, e
+     dentro dela o **portão de conformidade de tela é a primeira coisa** (D4/D6): rodá-lo
+     contra as telas já validadas da spec 001 é o teste do próprio portão — se não acusar
+     nada, ele é fraco, e isso precisa aparecer no dia um (E-012).
+     **Duas pendências que a geração das tarefas abriu** — ver "Abertas pela spec 002",
+     abaixo.
    - **Ordem das histórias** (revisada): **P1** cadastro + página pública · **P2** lista e
      busca · **P3** reivindicação com aprovação manual · **P4** perfil rico. A **fundação é
      fase bloqueante** (Phase 2 Foundational), não história.
@@ -453,6 +460,27 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      churrascaria são restaurante. **Estimada, não medida** — a contagem em campo é a
      BORA-47 e segue por fazer.
    - **Não bloqueiam:** BORA-49 e BORA-50 (geradas pela BORA-22).
+
+   **Abertas pela spec 002 na geração das tarefas (2026-09-09) — as duas precisam do
+   Ícaro, e nenhuma tem issue no Linear ainda:**
+
+   1. **Como uma conta ganha a permissão de operação?** As tarefas T100, T118 e T154 falam
+      em "conta com permissão de operação" para aprovar e recusar reivindicações, e a
+      `spec.md` assume "um caminho de operação da plataforma, usado pelo Ícaro". **Verificado
+      abrindo o arquivo:** `api/database/seeders/RolesSeeder.php` cria **só** `rolezeiro`, e
+      o próprio comentário dele diz que gestor e artista chegam com as suas features. **Não
+      existe papel de operação em lugar nenhum**, e nenhuma tarefa o cria. Três saídas
+      plausíveis, e a escolha é do Ícaro: semear um papel `operacao` junto das outras
+      migrations da fundação; conceder à mão no banco na Fase 1, com o registro dizendo que
+      foi assim; ou tratar como assunto de outra spec e a spec 002 assumir o papel já
+      existindo. **Bloqueia a US3** — sem isso a tela de aprovar não tem quem a abra.
+   2. **`cover_path` existe no modelo e em nenhum outro lugar.** O `data-model.md` prevê
+      `logo_path` **e** `cover_path` como campos ricos da P4, mas o
+      `contracts/locais-api.md` devolve só `logo_url`, a `spec.md` fala em "fotos/logo" sem
+      nunca citar capa, e nenhuma tarefa a exibe ou a envia. Ou a capa entra no contrato, na
+      spec e nas tarefas da P4, ou sai do modelo. **Achado pelo passo 6 do `/doc-sync`**,
+      que manda comparar **campos**, não só rotas — é o mesmo perfil do `signs_in_with` do
+      **E-019**. Não bloqueia até a P4.
 
    **Recorte acordado com o Ícaro em 2026-09-06, para o `/speckit-specify` usar:**
 

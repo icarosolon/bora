@@ -435,7 +435,12 @@ redecididas aqui.
   tarefas mostrar o buraco: a spec 001 entregou os **fluxos** de conta (entrar, criar,
   definir senha, unir, verificar e-mail) e **nenhuma página de conta**, então o item da barra
   não tinha destino. É também por ela que se chega a **Cadastrar local** — cadastrar exige
-  conta (FR-001), e é isso que fecha o "no máximo 2 toques da home" declarado acima.
+  conta (FR-001), e é isso que fecha o "no máximo 2 toques da home" declarado acima. Ela
+  hospeda ainda a entrada de **Aprovar reivindicações**, visível **apenas** para conta com
+  permissão de operação. Essa entrada **não vive na moldura de gestão** (Ícaro, 2026-09-09):
+  **operador e gestor são papéis diferentes** — a moldura de gestão pertence a quem tem
+  vínculo com um local, e um operador da plataforma pode não ter vínculo nenhum. Pendurá-la
+  lá deixaria o item numa sala sem porta.
 - **Meus locais** (P4) — ação principal: **não tem botão — o item é o alvo**, como a Lista.
   Índice dos locais que a conta gerencia, dentro da moldura de gestão. Caminho: `Conta` →
   **Meus locais** (2 toques da home). Existe porque o vínculo é **N:N** (FR-012,

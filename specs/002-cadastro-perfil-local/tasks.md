@@ -355,7 +355,7 @@ ela é parte da tela"*. Foi ignorar isso que produziu o **E-019**.
 - [ ] T155 [US4] Índice dos locais que a conta gerencia, dentro da moldura de gestão, em `web/src/app/meus-locais/page.tsx` — é por aqui que se escolhe qual perfil editar. O vínculo é **N:N** (FR-012, `RN-LOCAL-004`): uma conta gerencia vários locais, e sem índice a página de editar do T137 não tem como ser alcançada. **Pertence à Phase 6 (US4)**, antes do T137
 - [ ] T156 [US4] Acrescentar à página da conta o item **"Meus locais"**, visível apenas para conta com ao menos um vínculo de gestão, apontando para `/meus-locais`, em `web/src/app/conta/page.tsx`. É a entrada para a moldura de gestão. **Pertence à Phase 6 (US4)**, junto do T155
 
-### Papel de operação (decisão do Ícaro, 2026-09-10)
+### Papel de operação — `RN-PLAT-007` (decisão do Ícaro, 2026-09-10)
 
 **Por que semeado e por que comando, e não concessão à mão no banco:** a **T037** roda
 `php artisan migrate:fresh --seed`, que **apaga a concessão** — e isso se repete a cada
@@ -364,7 +364,7 @@ fluxo da feature.
 
 - [ ] T157 [P] Acrescentar a chave `account.operation_role` em `api/config/bora.php`, ao lado de `account.initial_role`, com o valor `operator` — **em inglês**, porque papel de operação **não é vocabulário do produto** (o comentário do próprio arquivo explica por que `rolezeiro` é a exceção) e chave de config é identificador, que a nomenclatura manda em inglês. Semear o papel em `api/database/seeders/RolesSeeder.php` com `Role::findOrCreate(...)`, que já é idempotente por desenho. **Pertence à Phase 2**, bloco de dados: junto do T035, antes do T037
 - [ ] T158 Comando artisan que concede o papel de operação a uma conta pelo e-mail, em `api/app/Console/Commands/GrantOperatorRole.php` (assinatura `bora:grant-operator {email}`). Idempotente; recusa e-mail inexistente com mensagem em português do dia a dia; registra a concessão na auditoria (**Princípio VIII** — a quem, quando, por onde). **Não tem tela e não precisa ter**: conceder papel de operação é ato de plataforma do Ícaro, não funcionalidade de usuário, então o Princípio XI não se aplica — a tela de gestão de papéis é assunto da spec de operação, quando houver. **Pertence à Phase 2**, bloco de dados, depois do T157. **Exige `->withCommands()` em `api/bootstrap/app.php`**: sem isso o comando não é descoberto — verificado no fonte do framework, `withRouting(commands: ...)` registra o **arquivo** `routes/console.php` e nunca o **diretório** `app/Console/Commands`
-- [ ] T159 [P] Teste do comando em `api/tests/Feature/Console/GrantOperatorRoleTest.php`: concede o papel; rodar duas vezes não duplica nem falha; e-mail inexistente é recusado com mensagem clara e **sem efeito colateral**; a concessão gera **registro de auditoria recuperável** e sem nada sensível. **Pertence à Phase 2**, junto do T158
+- [ ] T159 [P] Teste do comando em `api/tests/Feature/Console/GrantOperatorRoleTest.php`: concede o papel; rodar duas vezes não duplica nem falha; e-mail inexistente é recusado com mensagem clara e **sem efeito colateral**; a concessão gera **registro de auditoria recuperável** e sem nada sensível. É o teste da **`RN-PLAT-007`** — inclusive que o nome do papel vem de **configuração**, não de literal em código (Princípio VII). **Pertence à Phase 2**, junto do T158
 
 ---
 

@@ -8,6 +8,17 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **`RN-PLAT-007` — papel de operação da plataforma** (2026-09-10), em
+  `docs/domain/plataforma.md`. O papel **não se acumula por cadastro e não é
+  autoatribuível**: é concedido por ato explícito da plataforma, e a concessão é escrita
+  auditável. O nome do papel é **dado semeado**, vindo de `bora.account.operation_role`, e o
+  **método de concessão é parâmetro, não regra** — trocar o comando por uma tela de gestão
+  de papéis, numa spec de operação, não pode exigir mudar a regra (Princípio VII).
+  A regra fecha um buraco que era mais velho que a spec 002: a `RN-LOCAL-005` manda aprovar
+  reivindicação à mão e a `RN-PLAT-004` cita "operador da plataforma" nas ações de moderação,
+  e **nenhuma das duas dizia quem podia ser esse operador**. As três ganharam ponteiro
+  recíproco, e a `RN-PLAT-001` passou a dizer explicitamente que governa os papéis **de
+  produto**, não este.
 - **Papel de operação da plataforma e o comando que o concede** (spec 002, **FR-027**,
   2026-09-10): chave `account.operation_role` em `api/config/bora.php` com o valor
   `operator`, semeada pelo `RolesSeeder`, e o comando

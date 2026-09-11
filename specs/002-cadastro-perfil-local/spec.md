@@ -328,9 +328,10 @@ esses campos não são sequer oferecidos.
   tela — conceder papel de operação é ato de plataforma, não funcionalidade de usuário, e o
   Princípio XI cobra tela para feature de produto. A concessão MUST gerar registro de
   auditoria (Princípio VIII). *Requisito, e não premissa, porque tem teste que o exercita —
-  ver "Cenários de Teste".* *(Decisão do Ícaro, 2026-09-10. A regra de domínio que governa
-  papel concedido ainda **não foi escrita** no catálogo: depende de `/domain-rule`, que só o
-  Ícaro invoca.)*
+  ver "Cenários de Teste".* Governado por **`RN-PLAT-007`**, escrita em 2026-09-10: o papel
+  de operação é de outra natureza que os papéis de produto da `RN-PLAT-001`, e o **método de
+  concessão é parâmetro** — trocar o comando por uma tela de gestão de papéis, numa spec de
+  operação, MUST NOT exigir mudar a regra.
 
 ### Key Entities
 
@@ -366,6 +367,7 @@ esses campos não são sequer oferecidos.
 | `RN-LOCAL-005` | Os dois estados aparecem com o texto certo; aprovação **transfere** o perfil e as avaliações continuam ligadas ao mesmo local; o registro guarda **por qual método** foi aprovado |
 | `RN-EVENTO-001` | Local **não reivindicado** tem a publicação de evento **recusada** |
 | `RN-DESC-004` | A ação "Como chegar" produz link para o app de mapas **com o endereço**, sem chamar provedor pago |
+| `RN-PLAT-007` | O papel de operação **não se autoatribui**: só o ato explícito da plataforma o concede, a concessão **gera auditoria** com a quem/quando/por onde, e o nome do papel vem de **configuração**, não de literal em código (T159) |
 
 ### Todo princípio NON-NEGOTIABLE tocado tem teste que prova o bloqueio
 

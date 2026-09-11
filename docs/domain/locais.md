@@ -145,7 +145,9 @@ Decidida pelo Ícaro em 2026-09-03 (fecha a BORA-22). Separa **criar** de **cont
 
 **Método de verificação — Fase 1: aprovação manual da plataforma.** A reivindicação é
 aprovada à mão, coerente com a implantação assistida já assumida em
-`docs/product/vision.md`. Escolhido também por sequência: os métodos automáticos dependem
+`docs/product/vision.md`. **Quem aprova** é conta com o papel de operação da `RN-PLAT-007`,
+que **não se autoatribui**: até essa regra ser escrita, em 2026-09-10, a aprovação manual
+pressupunha um autorizador que o catálogo nunca definia. Escolhido também por sequência: os métodos automáticos dependem
 de provedor de SMS/voz que segue PENDENTE (BORA-6), e adotá-los agora reabriria aquela
 decisão e voltaria a travar a spec de cadastro de local.
 

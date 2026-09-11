@@ -474,11 +474,13 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
       sobrevivia ao próprio fluxo da feature. **Sem tela, de propósito** — conceder papel de
       operação é ato de plataforma, não funcionalidade de usuário, e o Princípio XI cobra
       tela para feature de produto. Virou **FR-027** na spec.
-      **Ponta solta, e ela é do Ícaro:** o catálogo de domínio **ainda não tem** a regra que
-      governa papel concedido. O arquivo `docs/domain/plataforma.md` foi aberto e decidiu a
-      questão — a `RN-PLAT-001` governa papéis **de produto**, que se acumulam por cadastro,
-      e papel que **nunca se autoatribui** é regra de outra natureza, logo **`RN` nova**.
-      Escrevê-la exige `/domain-rule`, que só o Ícaro invoca.
+      **Ponta solta fechada no mesmo dia:** a regra virou **`RN-PLAT-007`** em
+      `docs/domain/plataforma.md`, escrita pelo Ícaro. Confirmou o que o arquivo já indicava
+      — a `RN-PLAT-001` governa papéis **de produto**, que se acumulam por cadastro, e papel
+      que **nunca se autoatribui** é de outra natureza, logo `RN` nova, não emenda. A regra
+      também fecha um buraco mais antigo: a `RN-LOCAL-005` manda aprovar reivindicação à mão
+      e a `RN-PLAT-004` cita "operador da plataforma" em moderação, e **nenhuma das duas
+      dizia quem podia ser esse operador**. As três ganharam ponteiro recíproco.
    2. ~~**`cover_path` existe no modelo e em nenhum outro lugar.**~~ → **retirado do
       modelo** (2026-09-10). **Motivo:** o `data-model.md` guarda `latitude`/`longitude`
       vazios **com destino nomeado** (BORA-8) — esse é o precedente bom. O `cover_path`

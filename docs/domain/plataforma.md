@@ -11,6 +11,10 @@ Uma pessoa tem uma conta. Papéis (rolezeiro, gestor de estabelecimento, artista
 perfis vinculados à mesma conta e podem se acumular. Cadastro em um papel novo com e-mail
 já existente vincula o papel à conta existente — nunca cria conta paralela.
 
+Esta regra governa os papéis **de produto**, que a pessoa ganha se cadastrando. O papel de
+**operação da plataforma** não é um deles e segue a `RN-PLAT-007`: concedido, nunca
+autoatribuível.
+
 Base constitucional: Princípio I.
 
 ---
@@ -45,7 +49,8 @@ Base constitucional: Princípio II.
 
 Toda criação, edição e exclusão de dado de domínio gera registro de auditoria (quem,
 quando, o quê, antes/depois quando aplicável). Ações de moderação registram também o
-operador da plataforma.
+operador da plataforma — quem pode ser operador está na `RN-PLAT-007`, e a **concessão do
+papel** é ela própria escrita auditável.
 
 Base constitucional: Princípio VIII.
 
@@ -71,3 +76,27 @@ assistida, não um limite do sistema.
 PENDENTE: cidade do usuário — detectada por geolocalização, escolhida manualmente, ou
 ambas? Usuário pode acompanhar mais de uma cidade (ex.: mora em Juazeiro, sai em
 Petrolina)?
+
+---
+
+## RN-PLAT-007 — Papel de operação da plataforma
+
+Além dos papéis de produto da `RN-PLAT-001`, existe o papel de **operação da plataforma**,
+de outra natureza: ele **não se acumula por cadastro** e **não é autoatribuível**. Ninguém
+vira operador se inscrevendo — o papel é concedido por **ato explícito da plataforma**, e a
+concessão é escrita: gera registro de auditoria com a quem, quando e por qual caminho
+(`RN-PLAT-004`, Princípio VIII).
+
+O papel existe como **dado semeado**, não como valor fixo em código: o nome vem de
+`bora.account.operation_role` (Princípio VII — política no domínio, parâmetro como dado).
+
+O **método de concessão é parâmetro, não regra.** Na Fase 1 o caminho é o comando
+`bora:grant-operator {email}`; trocar por uma tela de gestão de papéis, numa spec de
+operação, não pode exigir mudar esta regra.
+
+É esta regra que sustenta a aprovação manual de reivindicação (`RN-LOCAL-005`) e a moderação
+citada na `RN-PLAT-004` — ambas pressupõem alguém autorizado a decidir, e até aqui o catálogo
+nunca disse quem.
+
+Base constitucional: Princípios I, V, VII e VIII.
+Spec: `specs/002-cadastro-perfil-local/` (FR-027).

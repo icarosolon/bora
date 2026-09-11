@@ -22,6 +22,15 @@ return [
         // "rolezeiro" e vocabulario do produto (docs/product/vision.md), nao
         // identificador de codigo — por isso continua em portugues.
         'initial_role' => 'rolezeiro',
+
+        // Papel de operacao da plataforma: aprova e recusa reivindicacao de
+        // local (spec 002, FR-008 e FR-027). NUNCA se autoatribui e nao nasce
+        // de cadastro — so o comando `bora:grant-operator` concede.
+        //
+        // Em ingles de proposito: papel de operacao NAO e vocabulario do
+        // produto, ao contrario de "rolezeiro" acima, e chave de config e
+        // identificador (docs/architecture/naming-conventions.md).
+        'operation_role' => 'operator',
     ],
 
     'session' => [

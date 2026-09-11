@@ -8,6 +8,29 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Papel de operação da plataforma e o comando que o concede** (spec 002, **FR-027**,
+  2026-09-10): chave `account.operation_role` em `api/config/bora.php` com o valor
+  `operator`, semeada pelo `RolesSeeder`, e o comando
+  **`php artisan bora:grant-operator {email}`** em `api/app/Console/Commands/`. O papel
+  existe porque a **FR-008** — aprovação manual da reivindicação — precisa de alguém
+  autorizado a aprovar, e **não havia nenhum**: o `RolesSeeder` criava só `rolezeiro`.
+  **Nunca se autoatribui e não nasce de cadastro**, que é o que o separa dos papéis de
+  produto da `RN-PLAT-001`. Idempotente, recusa e-mail inexistente sem efeito colateral, e
+  **audita a concessão** (Princípio VIII) com autor nulo de propósito — o terminal não tem
+  sessão, e o `AuditLog` manda registrar ação sem autor como tal em vez de atribuí-la a
+  alguém errado. Testes em `api/tests/Feature/Console/GrantOperatorRoleTest.php` (T157–T159).
+  **Sem tela, de propósito:** conceder papel de operação é ato de plataforma, não
+  funcionalidade de usuário, então o Princípio XI não se aplica — a tela de gestão de papéis
+  é assunto da spec de operação, quando houver.
+  **Decisão do Ícaro de semear em vez de conceder à mão no banco:** a T037 roda
+  `migrate:fresh --seed`, que apagaria a concessão, e isso se repete a cada recriação do
+  esquema durante o desenvolvimento.
+- **`->withCommands()` em `api/bootstrap/app.php`**: sem isso **nenhum** comando em
+  `app/Console/Commands` é descoberto. Verificado no fonte do framework, não presumido:
+  `withRouting(commands: ...)` recebe o **arquivo** `routes/console.php` e o repassa a
+  `withCommands`, que o classifica como rota de comando; o **diretório** nunca entra em
+  `$commandPaths`, que começa vazio no `Kernel`. O projeto nunca havia tido um comando
+  próprio, então a lacuna não tinha como aparecer antes.
 - **Lista de tarefas da spec 002** (`/speckit-tasks`, 2026-09-09):
   `specs/002-cadastro-perfil-local/tasks.md`, **156 tarefas** em sete fases. Phase 1 Setup;
   **Phase 2 Foundational bloqueante** com a composição e a ordem fixadas pela spec — portão
@@ -150,6 +173,18 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   `AccountHeader` já mantém, sem uma segunda consulta a `/eu`. Cobertura nova: 6 testes de
   componente com `axe` e 3 e2e em 360 e 1280, incluindo o caso negativo e o silêncio quando
   a API não informa `signs_in_with`.
+
+### Removed
+- **`cover_path` saiu do modelo da spec 002** (2026-09-10). A coluna estava prevista no
+  `data-model.md` como campo rico da P4 e **não existia em nenhum outro lugar**: nem no
+  contrato, que devolve só `logo_url`, nem na spec, que fala em "fotos/logo" sem citar capa,
+  nem em tarefa alguma. **Decisão do Ícaro:** tirar. O precedente bom do mesmo arquivo é
+  `latitude`/`longitude`, que ficam vazios **com destino nomeado** (BORA-8); `cover_path`
+  tinha a coluna e não tinha o destino, e coluna anulável sem regra é o que alguém preenche
+  sem saber o que significa duas specs adiante. Volta por migration quando a capa for pedida.
+  A T026 passou a **nomear os três campos ricos** que restam — `description`, `instagram` e
+  `logo_path` — para a migration escrita depois não recriar a coluna por inércia.
+  Achado pelo passo 6 do `/doc-sync`, que manda comparar **campos**, não só rotas.
 
 ### Fixed
 - **Duas contagens erradas nos artefatos da spec 002** (2026-09-09), as duas achadas ao

@@ -17,6 +17,14 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    /*
+     * Sem isto, comando em app/Console/Commands NAO e descoberto. Verificado no
+     * fonte: withRouting(commands: ...) recebe um ARQUIVO (routes/console.php) e
+     * o repassa a withCommands, que o classifica como rota de comando — o
+     * DIRETORIO nunca entra em $commandPaths, que comeca vazio no Kernel.
+     * withCommands() sem argumento usa app/Console/Commands, que e o que falta.
+     */
+    ->withCommands()
     ->withMiddleware(function (Middleware $middleware): void {
         // Janela deslizante da sessão (D7). Ver RefreshTokenExpiration.
         $middleware->alias([

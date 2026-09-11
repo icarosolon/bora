@@ -461,26 +461,34 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      BORA-47 e segue por fazer.
    - **Não bloqueiam:** BORA-49 e BORA-50 (geradas pela BORA-22).
 
-   **Abertas pela spec 002 na geração das tarefas (2026-09-09) — as duas precisam do
-   Ícaro, e nenhuma tem issue no Linear ainda:**
+   **Abertas pela spec 002 na geração das tarefas (2026-09-09) e DECIDIDAS pelo Ícaro em
+   2026-09-10. Nenhuma das duas chegou a virar issue no Linear — foram abertas e fechadas
+   entre duas sessões:**
 
-   1. **Como uma conta ganha a permissão de operação?** As tarefas T100, T118 e T154 falam
-      em "conta com permissão de operação" para aprovar e recusar reivindicações, e a
-      `spec.md` assume "um caminho de operação da plataforma, usado pelo Ícaro". **Verificado
-      abrindo o arquivo:** `api/database/seeders/RolesSeeder.php` cria **só** `rolezeiro`, e
-      o próprio comentário dele diz que gestor e artista chegam com as suas features. **Não
-      existe papel de operação em lugar nenhum**, e nenhuma tarefa o cria. Três saídas
-      plausíveis, e a escolha é do Ícaro: semear um papel `operacao` junto das outras
-      migrations da fundação; conceder à mão no banco na Fase 1, com o registro dizendo que
-      foi assim; ou tratar como assunto de outra spec e a spec 002 assumir o papel já
-      existindo. **Bloqueia a US3** — sem isso a tela de aprovar não tem quem a abra.
-   2. **`cover_path` existe no modelo e em nenhum outro lugar.** O `data-model.md` prevê
-      `logo_path` **e** `cover_path` como campos ricos da P4, mas o
-      `contracts/locais-api.md` devolve só `logo_url`, a `spec.md` fala em "fotos/logo" sem
-      nunca citar capa, e nenhuma tarefa a exibe ou a envia. Ou a capa entra no contrato, na
-      spec e nas tarefas da P4, ou sai do modelo. **Achado pelo passo 6 do `/doc-sync`**,
-      que manda comparar **campos**, não só rotas — é o mesmo perfil do `signs_in_with` do
-      **E-019**. Não bloqueia até a P4.
+   1. ~~**Como uma conta ganha a permissão de operação?**~~ → **papel semeado + comando
+      artisan** (2026-09-10). `account.operation_role` em `api/config/bora.php` com o valor
+      `operator`, semeado pelo `RolesSeeder`; a concessão é o comando
+      `bora:grant-operator {email}`, idempotente e auditado. Tarefas **T157, T158 e T159**.
+      **Motivo de não ser concessão à mão no banco:** a T037 roda `migrate:fresh --seed`,
+      que apaga a concessão, e isso se repete a cada recriação do esquema. A alternativa não
+      sobrevivia ao próprio fluxo da feature. **Sem tela, de propósito** — conceder papel de
+      operação é ato de plataforma, não funcionalidade de usuário, e o Princípio XI cobra
+      tela para feature de produto. Virou **FR-027** na spec.
+      **Ponta solta, e ela é do Ícaro:** o catálogo de domínio **ainda não tem** a regra que
+      governa papel concedido. O arquivo `docs/domain/plataforma.md` foi aberto e decidiu a
+      questão — a `RN-PLAT-001` governa papéis **de produto**, que se acumulam por cadastro,
+      e papel que **nunca se autoatribui** é regra de outra natureza, logo **`RN` nova**.
+      Escrevê-la exige `/domain-rule`, que só o Ícaro invoca.
+   2. ~~**`cover_path` existe no modelo e em nenhum outro lugar.**~~ → **retirado do
+      modelo** (2026-09-10). **Motivo:** o `data-model.md` guarda `latitude`/`longitude`
+      vazios **com destino nomeado** (BORA-8) — esse é o precedente bom. O `cover_path`
+      tinha a coluna e **não tinha o destino**: nem contrato, nem spec, nem tarefa. Coluna
+      anulável sem regra é o que alguém preenche sem saber o que significa duas specs
+      adiante. Volta por migration quando a capa for pedida. **Conferido:** não restou
+      ocorrência em código, contrato, spec ou tarefa — só o registro histórico aqui e no
+      `linear-import.md`. A T026 passou a **nomear os três campos ricos** (`description`,
+      `instagram`, `logo_path`), para a migration escrita depois não recriar a coluna por
+      inércia.
 
    **Recorte acordado com o Ícaro em 2026-09-06, para o `/speckit-specify` usar:**
 

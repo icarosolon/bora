@@ -321,6 +321,16 @@ esses campos não são sequer oferecidos.
 - **FR-023**: Aprovar um pedido MUST encerrar os demais pendentes daquele local como
   recusados, com motivo registrado, **avisando cada solicitante** (decorre de FR-021 e
   FR-022 juntos).
+- **FR-027**: O sistema MUST prover um caminho para **conceder a permissão de operação** a
+  uma conta, e essa permissão MUST NOT ser autoatribuível nem nascer de cadastro. A
+  **FR-008** depende dela: sem alguém autorizado a aprovar, a aprovação manual não tem quem
+  a execute. Na Fase 1 o caminho é o **comando `bora:grant-operator {email}`** (T158), sem
+  tela — conceder papel de operação é ato de plataforma, não funcionalidade de usuário, e o
+  Princípio XI cobra tela para feature de produto. A concessão MUST gerar registro de
+  auditoria (Princípio VIII). *Requisito, e não premissa, porque tem teste que o exercita —
+  ver "Cenários de Teste".* *(Decisão do Ícaro, 2026-09-10. A regra de domínio que governa
+  papel concedido ainda **não foi escrita** no catálogo: depende de `/domain-rule`, que só o
+  Ícaro invoca.)*
 
 ### Key Entities
 
@@ -383,6 +393,10 @@ esses campos não são sequer oferecidos.
   de API.
 - **Editar**: só gestor vinculado; conta de outro local recusada.
 - **Upload**: tipo não permitido; acima do tamanho.
+- **Conceder permissão de operação** (FR-027, T159): o comando concede o papel; rodar duas
+  vezes **não duplica nem falha**; e-mail inexistente é **recusado sem efeito colateral**; a
+  concessão gera **registro de auditoria recuperável** (a quem, quando, por onde) e **sem
+  nada sensível**.
 
 ---
 

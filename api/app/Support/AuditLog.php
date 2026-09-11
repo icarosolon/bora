@@ -40,6 +40,9 @@ final class AuditLog
 
     public const SESSION_ENDED = 'session_ended';
 
+    /** Concessao do papel de operacao da plataforma (spec 002, FR-027). */
+    public const OPERATOR_ROLE_GRANTED = 'operator_role_granted';
+
     /**
      * @param  array<string, mixed>  $properties  contexto NÃO sensível
      */

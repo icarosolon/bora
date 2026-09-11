@@ -38,15 +38,15 @@ existente é recriada; `users` ganha apenas as relações.
 | `latitude` / `longitude` | decimal, **nulo** | vazios na Fase 1. Existem para a BORA-8 não exigir migração de tabela depois (R5) |
 | `description` | text, nulo | **P4** — só para perfil reivindicado |
 | `instagram` | string, nulo | **P4** |
-| `logo_path` / `cover_path` | string, nulo | **P4** |
+| `logo_path` | string, nulo | **P4** — logo. **Não há coluna de capa**: `cover_path` foi retirado em 2026-09-10 por não ter destino no contrato, na spec nem em tarefa. Volta por migration quando a capa for pedida |
 | `active` | boolean | Princípio X: inativa, nunca exclui |
 | `created_by_account_id` | fk | quem criou — não se apaga quando o perfil é transferido |
 | `timestamps` | | |
 
 **Invariantes** (no domínio, não na borda):
 
-- Perfil **não reivindicado** não aceita valor em `description`, `instagram`, `logo_path`
-  nem `cover_path` (FR-002, FR-015). A invariante vive na entidade — a borda só a reporta.
+- Perfil **não reivindicado** não aceita valor em `description`, `instagram` nem
+  `logo_path` (FR-002, FR-015). A invariante vive na entidade — a borda só a reporta.
 - `slug` não muda depois de criado (R3).
 - Ao menos **uma** categoria (FR-003).
 

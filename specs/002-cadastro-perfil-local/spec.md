@@ -8,8 +8,13 @@
 `/spec-check`: **SIM** (2026-09-08, depois de cinco bloqueantes corrigidos). Revisada com o
 Ícaro em 2026-09-09, que encontrou cinco problemas que o portão não pega; os cinco estão
 resolvidos e a ordem das histórias mudou. `/speckit-plan` em 2026-09-09; `/speckit-tasks` em
-2026-09-09 → **`tasks.md` com 156 tarefas**. **Pronta para implementação, começando pela
-Phase 1 (T001).** Nenhuma linha de código escrita até aqui.
+2026-09-09 → **`tasks.md` com 159 tarefas**. **Pronta para implementação, começando pela
+Phase 1 (T001).**
+
+**Já implementado, fora da ordem das fases** (2026-09-10): as **T157, T158 e T159** — papel
+de operação, comando `bora:grant-operator` e teste. Saíram na frente porque a decisão que as
+gerou (`RN-PLAT-007`) veio junto com o código que a exercita. **Os testes ainda não rodaram**
+— o MySQL local estava parado. Todo o resto da spec segue sem uma linha de código.
 
 **Input**: Cadastro e perfil de estabelecimento (local). Segunda spec do Bora; destrava o
 catálogo. Recorte acordado com o Ícaro em 2026-09-06 (`docs/logs/backlog.md` → "Próximo

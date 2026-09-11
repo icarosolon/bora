@@ -373,3 +373,40 @@ não executada.
 **O que esta conferência não fez:** auditar as 32 issues contra os sete catálogos de
 `docs/domain/`. Foi verificado que nada **desta** sessão deveria fechar issue. A auditoria
 completa segue por fazer — é ela que pegaria um caso como o do `RN-DESC-003`.
+
+## Sincronização de 2026-09-11 (quinta) — RN-PLAT-007, papel de operação
+
+**Houve regra nova**, então esta é a primeira sincronização em que o passo 7 do `/doc-sync`
+tem trabalho de verdade desde a `RN-DESC-003`. O quadro foi consultado pelo conector do
+Linear — **não presumido**.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo — **32 issues `decisao-pendente`**, todas em Backlog | **nenhuma alteração** |
+| Issue fechada pela `RN-PLAT-007` | **nenhuma** — ver abaixo |
+| Issue nova, pela pendência que a decisão gerou | **BORA-53** — *Revogar o papel de operação: a `RN-PLAT-007` só define a concessão*, rótulo `decisao-pendente`, projeto Bora, Backlog |
+
+**Por que nenhuma issue fechou.** A `RN-PLAT-007` não tinha issue. A pergunta que ela
+responde — *como uma conta ganha a permissão de operação?* — foi **aberta em 2026-09-09**,
+ao gerar as tarefas, e **decidida em 2026-09-10**, na sessão seguinte. Nasceu e morreu entre
+duas sessões, sem nunca chegar ao quadro. As 32 issues foram conferidas uma a uma contra a
+regra nova; nenhuma trata de papel de operação.
+
+**Isto é o inverso do risco que o passo 7 existe para pegar.** As duas falhas anteriores
+(`RN-PLAT-002` e `RN-DESC-003`) foram decisão tomada e quadro desatualizado. Aqui o quadro
+nunca soube da pergunta. **Opinião, não regra:** decisão que vive menos de um dia
+provavelmente não precisa de issue, mas decisão que **bloqueia história** — e esta bloqueava
+a US3 — talvez devesse nascer no quadro mesmo assim, para ficar visível enquanto está
+aberta. Fica como observação para o Ícaro; não mudei o critério por conta própria.
+
+**A BORA-53 e o que ela cobre.** A `RN-PLAT-007` define a **concessão** do papel e não diz
+nada sobre a **revogação**: não existe `bora:revoke-operator`, e o catálogo não diz se
+revogar apaga o vínculo ou o encerra preservando histórico (Princípio X, `RN-PLAT-005`), se
+a revogação é auditável, nem o que acontece com o registro de **quem aprovou** reivindicação
+(`RN-LOCAL-005`). **Não bloqueia a spec 002**, que concede e não revoga; é pré-requisito da
+futura **spec de operação**, que a própria `RN-PLAT-007` nomeia e que ainda não tem issue.
+A linha entrou também na tabela "Decisões pendentes" do `backlog.md`.
+
+**O que esta conferência não fez:** auditar as 32 issues contra os sete catálogos de
+`docs/domain/`. Foi verificado o que **esta** regra nova toca. A auditoria completa segue
+por fazer.

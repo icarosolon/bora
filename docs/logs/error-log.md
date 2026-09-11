@@ -3,6 +3,55 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## E-024 — Python não existe nesta máquina, e a busca sem filtro estourou o tempo (2026-09-10)
+
+- **Sintoma:** um comando que ia editar o `data-model.md` e conferir o resultado ficou 120s
+  sem terminar e foi para segundo plano. A saída, lida depois, começava com *"Python was not
+  found"*.
+- **Causa:** duas, emendadas no mesmo comando. A primeira: o script de edição foi escrito em
+  **Python**, que não está instalado — o `python` do Windows é só o atalho da Microsoft
+  Store, que imprime o aviso e sai. A segunda: o `grep` seguinte varria o repositório
+  **inteiro**, sem filtro de diretório, incluindo `node_modules` e `vendor`. Como o `&&`
+  falhou no Python mas o `;` seguinte não, a busca rodou assim mesmo.
+- **Resolução:** a edição foi refeita com a ferramenta de edição do próprio agente, e a
+  conferência com busca filtrada, que respondeu em segundos e encontrou as duas ocorrências
+  esperadas. O trabalho saiu no commit `df9d1af`; a tarefa de fundo terminou depois, sem
+  nada a acrescentar.
+- **Status:** resolvido, sem dano — nenhuma edição chegou a ser aplicada pela via que falhou.
+- **Lição:** **é a terceira da mesma família** (E-017, E-020 e esta): supor que o ambiente
+  tem a ferramenta que se ia usar. As duas anteriores foram sintaxe de shell errada; esta
+  foi interpretador ausente. A regra que sai daqui é mais simples que "conferir antes": onde
+  a ferramenta de edição do agente resolve, **não escrever script** — o script só acrescenta
+  uma dependência que pode não existir. E busca em repositório com `node_modules` e `vendor`
+  **sempre** leva filtro.
+
+## E-023 — Nenhum comando artisan próprio era descoberto: faltava `->withCommands()` (2026-09-10)
+
+- **Sintoma:** o primeiro comando próprio do projeto, `bora:grant-operator`, não apareceria
+  no `php artisan list`. Foi previsto **antes** de acontecer, ao conferir se bastava criar o
+  arquivo em `app/Console/Commands`.
+- **Causa:** `api/bootstrap/app.php` chama `withRouting(commands: __DIR__.'/../routes/console.php')`
+  e **nada mais**. Lendo o fonte do framework: `withRouting` só repassa esse valor a
+  `withCommands([$commands])` quando ele é string com caminho real — e ali ele é o **arquivo**
+  `routes/console.php`. Dentro de `withCommands`, o argumento é particionado por tipo, e
+  arquivo cai em `addCommandRoutePaths`, não em `addCommandPaths`. O **diretório**
+  `app/Console/Commands` nunca entra em `$commandPaths`, que nasce `[]` no `Kernel`. Ou
+  seja: a configuração padrão do Laravel 11+ registra o arquivo de rotas de console e **não**
+  o diretório de classes de comando.
+- **Por que nunca apareceu antes:** a spec 001 não criou comando nenhum. O projeto viveu um
+  ano de commits sem exercitar esse caminho, então a lacuna não tinha como se manifestar.
+- **Resolução:** `->withCommands()` sem argumento — que usa `app/Console/Commands` por
+  padrão — acrescentado ao `bootstrap/app.php`, com o porquê no comentário. Confirmado por
+  execução: `php artisan list` passou a mostrar o `bora:grant-operator`.
+- **Status:** resolvido e **verificado rodando**, não só por leitura.
+- **Lição:** valeu a regra do projeto de **abrir o arquivo que executa** antes de afirmar. A
+  suposição natural é que "Laravel descobre comando em `app/Console/Commands` sozinho", e
+  nesta instalação **não descobre**. *Fato verificado: o fonte em `api/vendor/` — `$commandPaths`
+  nasce vazio e nada o preenche com o diretório. Opinião, não medida: a suposição
+  provavelmente vem do esqueleto antigo, cujo `Kernel` da aplicação carregava o diretório
+  sozinho; não abri o Laravel 10 para conferir, e não é preciso — o que decide é o fonte
+  instalado.*
+
 ## E-022 — O E-019 voltou, um nível acima: a spec declarava o caminho, e nenhuma tarefa o construía (2026-09-09)
 
 - **Sintoma:** a primeira escrita do `tasks.md` da spec 002 produziu sete telas, e **cinco

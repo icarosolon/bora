@@ -20,6 +20,7 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 | Cidade do usuário: geolocalização, escolha manual, múltiplas cidades | feed, busca | `RN-PLAT-006` |
 | Método automático que sucede a aprovação manual da reivindicação | cadastro de local | `RN-LOCAL-005` |
 | Desempate entre duas reivindicações do mesmo local | cadastro de local | `RN-LOCAL-005` |
+| **Revogar** o papel de operação: apaga o vínculo ou o encerra preservando histórico? A revogação audita? O registro de quem aprovou reivindicação sobrevive a ela? (BORA-53) | futura **spec de operação** — **não** bloqueia a spec 002, que concede e não revoga | `RN-PLAT-007` |
 | Lista inicial de gêneros musicais ("Tiktok" é gênero ou coleção?) | cadastro de artista, filtros | `RN-ART-002` |
 | Co-gestão de perfil de banda | cadastro de artista | `RN-ART-001` |
 | Evento publicável antes da confirmação do artista? Prazo de resposta? | eventos | `RN-EVENTO-002` |
@@ -432,14 +433,22 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      problemas que o portão não pega; a ordem das histórias mudou) e **aprovada por ele** na
      mesma data. `/speckit-plan` rodado em 2026-09-09: existem `plan.md`, `research.md`,
      `data-model.md`, `contracts/locais-api.md` e `quickstart.md`. `/speckit-tasks` rodado em
-     2026-09-09: **`tasks.md` com 156 tarefas** em sete fases.
-     **Próximo passo: implementar, começando pela T001** (Phase 1 — Setup). Nenhuma linha de
-     código foi escrita ainda. A **Phase 2 Foundational bloqueia todas as histórias**, e
-     dentro dela o **portão de conformidade de tela é a primeira coisa** (D4/D6): rodá-lo
-     contra as telas já validadas da spec 001 é o teste do próprio portão — se não acusar
-     nada, ele é fraco, e isso precisa aparecer no dia um (E-012).
-     **Duas pendências que a geração das tarefas abriu** — ver "Abertas pela spec 002",
-     abaixo.
+     2026-09-09: **`tasks.md` com 159 tarefas** em sete fases (as T157–T159 entraram em
+     2026-09-10, com o papel de operação).
+     **Próximo passo: implementar, começando pela T001** (Phase 1 — Setup). A **Phase 2
+     Foundational bloqueia todas as histórias**, e dentro dela o **portão de conformidade de
+     tela é a primeira coisa** (D4/D6): rodá-lo contra as telas já validadas da spec 001 é o
+     teste do próprio portão — se não acusar nada, ele é fraco, e isso precisa aparecer no
+     dia um (E-012).
+     **Quatro paradas obrigatórias, uma por história** (Princípio XI): validação visual do
+     Ícaro em **T074, T087, T123 e T140**. A história seguinte **não abre** antes da parada
+     da atual, mesmo onde a dependência técnica permitiria paralelo — é a mitigação escrita
+     na D6 para o risco de a spec 002 acumular fundação mais quatro histórias.
+     **O que já tem código, fora da ordem das fases:** T157, T158 e T159 (papel de operação),
+     escritas em 2026-09-10 junto da decisão que as gerou. **Os testes delas nunca rodaram**
+     — o MySQL local estava parado. Rodar antes de seguir.
+     **As duas pendências que a geração das tarefas abriu foram decididas** em 2026-09-10 —
+     ver "Abertas pela spec 002", abaixo.
    - **Ordem das histórias** (revisada): **P1** cadastro + página pública · **P2** lista e
      busca · **P3** reivindicação com aprovação manual · **P4** perfil rico. A **fundação é
      fase bloqueante** (Phase 2 Foundational), não história.

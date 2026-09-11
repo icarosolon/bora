@@ -9,7 +9,11 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### Added
 - **`RN-PLAT-007` — papel de operação da plataforma** (2026-09-10), em
-  `docs/domain/plataforma.md`. O papel **não se acumula por cadastro e não é
+  `docs/domain/plataforma.md`. Abriu a **BORA-53**: a regra define a **concessão** do papel e
+  **não** a revogação — não existe `bora:revoke-operator`, e o catálogo não diz se revogar
+  apaga o vínculo ou o encerra preservando histórico, se a revogação é auditável, nem o que
+  acontece com o registro de quem aprovou reivindicação (`RN-LOCAL-005`). Não bloqueia a
+  spec 002, que concede e não revoga. O papel **não se acumula por cadastro e não é
   autoatribuível**: é concedido por ato explícito da plataforma, e a concessão é escrita
   auditável. O nome do papel é **dado semeado**, vindo de `bora.account.operation_role`, e o
   **método de concessão é parâmetro, não regra** — trocar o comando por uma tela de gestão
@@ -41,7 +45,11 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   `withRouting(commands: ...)` recebe o **arquivo** `routes/console.php` e o repassa a
   `withCommands`, que o classifica como rota de comando; o **diretório** nunca entra em
   `$commandPaths`, que começa vazio no `Kernel`. O projeto nunca havia tido um comando
-  próprio, então a lacuna não tinha como aparecer antes.
+  próprio, então a lacuna não tinha como aparecer antes (**E-023**).
+- **Lista de tarefas da spec 002 passou de 156 para 159** com as **T157–T159** (papel de
+  operação). São as primeiras tarefas da spec com código escrito, **fora da ordem das
+  fases**, porque saíram junto da decisão que as gerou. **Os testes delas ainda não
+  rodaram** — o MySQL local estava parado quando foram escritas.
 - **Lista de tarefas da spec 002** (`/speckit-tasks`, 2026-09-09):
   `specs/002-cadastro-perfil-local/tasks.md`, **156 tarefas** em sete fases. Phase 1 Setup;
   **Phase 2 Foundational bloqueante** com a composição e a ordem fixadas pela spec — portão

@@ -8,6 +8,48 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Portão de conformidade de tela** (spec 002, **T005–T008**, 2026-09-12), em
+  `web/tests/e2e/gate/`. É a **camada 4** do template e vem **antes do kit** por decisão
+  **D4**: contrato escrito depois do kit nasce moldado ao kit e não reprova ninguém (E-012).
+  Afere a régua **vinculante** `docs/product/ux-requirements.md` — o `design-system.md`
+  **não** é fonte de requisito enquanto se declarar "norma ainda não escrita".
+  Nove telas da spec 001 × quatro configurações, cada tela em **um** teste com asserção leve
+  para o portão dizer tudo o que está errado numa passada, e não parar no primeiro achado.
+  Dois projetos novos no `playwright.config.ts` (**T006**): `celular-390` (faixa 390–430) e
+  `fonte-ampliada-360`. Os dois rodam **só o portão**, não as suítes da spec 001 — soltá-las
+  em quatro configurações redefiniria, no mesmo dia, a linha de base que a T003 acabou de
+  registrar para a T025; e nada de cobertura se perde, porque o portão visita todas aquelas
+  telas.
+  **Fonte do sistema ampliada é mecanismo diferente de zoom de navegador** (**T007**, D12):
+  o zoom encolhe o viewport e deixa a fonte em 16px; a fonte do sistema mantém o viewport em
+  360 e leva a fonte a 32px, **sem disparar nenhuma media query de largura**. Não há opção do
+  Playwright para isso — vai por `Page.setFontSizes` do protocolo do DevTools, em
+  `web/tests/e2e/gate/fonte.ts`. **Confirmado por medição**, não inferido da ausência de
+  falha: `raiz=32px` com `largura=360` naquele projeto, contra `raiz=16px` nos outros três.
+  Dependência nova: **`@axe-core/playwright`** — só havia `axe-core` como dependência
+  transitiva do `jest-axe`, que serve ao teste de componente e não ao e2e.
+- **O portão reprovou 32 das 36 combinações das telas já validadas da spec 001** (**T008**),
+  e o relatório item por item está em `docs/logs/error-log.md`. Resumo: alvo de toque abaixo
+  de 44px em 32 combinações (o `a "Bora"` do cabeçalho, 38×28px, nas nove telas; e — pior —
+  `a "Ir para o Bora"` e `a "Voltar para entrar"`, com 17px de altura, sendo a **única saída**
+  das telas em que aparecem); texto de ajuda a 14px em 12 combinações; link distinguido só
+  por cor na tela de início; e **contraste de 4:1 contra os 4,5:1 exigidos** no `Alert` de
+  erro (`#e7000b` sobre `#fde6e7`), medido pelo `axe`. Nada disso foi corrigido aqui:
+  corrigir tela não é tarefa do portão, e pertence ao retrofit **T021–T025**.
+  **As quatro combinações que passaram não são boa notícia:** são todas de
+  `fonte-ampliada-360`, e passaram porque a 32px o texto de 14px vira 28px e o alvo de 28px
+  passa de 44px — o cenário que a D12 mandou criar para achar problema é, nessas duas regras,
+  o **mais permissivo**.
+  **Duas asserções que não acusaram nada foram sondadas antes de se concluir qualquer coisa**
+  (E-002): a de **foco visível** passou legitimamente — o portão percorre 5 a 7 paradas de
+  teclado por tela e cada controle tem anel próprio; já a de **ícone sem rótulo** está
+  **NÃO PROVADA**, porque em toda a spec 001 existe um único controle com ícone, e ele tem
+  texto. Ela só será exercitada de verdade quando o shell trouxer a barra de navegação.
+  **O próprio portão tinha dois furos, encontrados por rodá-lo** — que é para isso que a T008
+  existe: a sobreposição do `next dev` entrava na medição e produzia um achado falso de foco
+  em cada uma das 36 combinações; e a asserção de "informação só por cor" só olhava link cujo
+  pai tivesse texto solto e aceitava peso 500 contra 400 como distinção. Os dois corrigidos;
+  foi a segunda correção que revelou o achado da tela de início.
 - **Phase 1 Setup da spec 002 concluída** (T001–T004, 2026-09-12) e **T157–T159 marcadas**
   depois de os testes finalmente rodarem — o MySQL local estava parado quando foram
   escritas. `GrantOperatorRoleTest` passa nos quatro casos (16 asserções), e a **suíte

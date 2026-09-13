@@ -34,6 +34,145 @@ ouvindo em `localhost:8000`**. O `webServer` do `playwright.config.ts` sobe só 
 sem `php artisan serve` em paralelo, as telas que falam com a API reprovam. Foi subida à mão
 para esta medição.
 
+## T008 — o que o portão acusou nas telas já validadas da spec 001 (2026-09-12)
+
+Também não é erro: é o registro que a **T008** pede. O portão
+(`web/tests/e2e/gate/screen-conformance.spec.ts`) foi rodado contra as **nove telas já
+entregues e já validadas pelo Ícaro** na spec 001, em **quatro configurações** —
+`celular-360`, `computador-1280`, `celular-390` e `fonte-ampliada-360`.
+
+**Resultado: 36 combinações, 32 reprovadas e 4 aprovadas.** As quatro aprovadas são todas
+de `fonte-ampliada-360`, e por um motivo que vale mais que o número — ver "o que a fonte
+ampliada escondeu", abaixo.
+
+A régua aferida é `docs/product/ux-requirements.md`, vinculante. O `design-system.md` **não**
+foi usado como fonte de requisito: ele próprio se declara "norma ainda não escrita".
+
+### O que acusou, item por item
+
+**1. Alvo de toque menor que 44×44px — 32 das 36 combinações.**
+
+| Tela | Elemento | Medida |
+|---|---|---|
+| todas as 9 | `a "Bora"` (o nome no cabeçalho, `AccountHeader`) | **38×28px** |
+| início | `a "Templates"`, `a "Learning"` | 74×20px e 65×20px |
+| entrar | `a "Criar conta"` | 72×17px |
+| criar conta | `a "Entrar"` | 40×17px |
+| esqueci minha senha | `a "Voltar para entrar"` | 112×17px |
+| confirmar e-mail | `a "Ir para o Bora"` | **89×17px** |
+| confirmação da união (link vencido) | `a "Voltar para entrar"` | **112×17px** |
+
+O portão marca separadamente o **link em meio a texto** — aquele que corre dentro de uma
+frase e nunca terá 44px de altura. Vale reparar em quais achados **não** têm essa marca:
+`a "Ir para o Bora"` e `a "Voltar para entrar"` na confirmação da união **não** estão dentro
+de frase. São a **única saída** daquelas duas telas, com 17px de altura. Esses dois são os
+mais sérios da lista inteira.
+
+O `a "Bora"` do cabeçalho aparece nas nove telas e é o caso mais frequente: 38×28px nos três
+projetos de fonte normal, 27 ocorrências.
+
+**2. Texto visível abaixo de 16px — 12 das 36 combinações.**
+
+| Tela | Elemento | Medida |
+|---|---|---|
+| entrar | `span "ou"` (o separador entre Google e o formulário) | **14px** |
+| criar conta | `p "Use um e-mail que você acessa — enviaremos…"` | **14px** |
+| criar conta, criar nova senha, definir senha | `p "Pelo menos 8 caracteres."` | **14px** |
+
+São todos textos de **ajuda de campo** — exatamente o texto que o público do Princípio XII
+mais precisa ler, e o único que ficou abaixo do piso.
+
+**3. Informação transmitida só por cor — 4 das 36 combinações** (tela de início, nos quatro
+projetos). `a "Templates"` e `a "Learning"` separam-se do parágrafo em volta **apenas por um
+tom mais escuro**, com peso 500 contra 400 do entorno. Sem sublinhado, sem borda, sem fundo.
+
+**4. `axe` — 3 das 36 combinações**, na confirmação da união com link vencido, nos três
+projetos de fonte normal:
+
+> `color-contrast` (serious): contraste medido **4:1**, exigido **4,5:1** — `#e7000b` sobre
+> `#fde6e7`, 16px, peso normal.
+
+É o componente `Alert` com `kind="error"` (`web/src/components/ui/alert.tsx`):
+`text-destructive` sobre `bg-destructive/10`. **Fato medido pelo axe**, não estimativa.
+*Opinião do assistente, não medida:* o achado some em `fonte-ampliada-360` porque a 32px o
+texto entra na faixa de "texto grande" do WCAG, cujo limite cai para 3:1 — o par de cores
+continua o mesmo.
+
+### O que a fonte ampliada escondeu — e por que as 4 aprovações não são boa notícia
+
+As quatro combinações aprovadas são `fonte-ampliada-360` em *esqueci minha senha*, *criar
+nova senha*, *unir contas* e *definir senha*. Elas não passaram por serem melhores: passaram
+porque **a fonte ampliada apaga justamente os dois achados mais comuns**. A 32px de raiz, o
+texto de 14px vira 28px e sai do achado de fonte; o `a "Bora"` de 28px de altura passa de
+44px e sai do achado de alvo.
+
+Ou seja: **o cenário que a D12 mandou criar para encontrar problema é, para estas duas
+regras, o cenário mais permissivo.** Quem olhasse só ele concluiria que as telas estão
+melhores do que estão. Fica registrado para ninguém usar `fonte-ampliada-360` como se fosse
+o caso difícil de tudo — ele é o caso difícil de *layout*, e o caso fácil de *tamanho*.
+
+### O que NÃO acusou — e o que isso significa em cada caso
+
+A T008 existe para descobrir portão fraco, então a ausência de achado é tratada como
+suspeita até se provar o contrário. Cada asserção muda foi sondada:
+
+- **Rolagem horizontal — nada, nas 36.** *Asserção forte e o resultado é confiável.* Ela
+  checa duas coisas, o documento (`scrollWidth` contra `clientWidth`) e **cada elemento
+  visível** contra a borda da tela. As suítes da spec 001 já afirmavam isso por outro
+  caminho, e os dois concordam.
+- **Foco visível — nada, nas 36.** *Exercitada de verdade, e o resultado é confiável.*
+  Sondado: o portão percorre **5 a 7 paradas de teclado por tela**, e cada controle tem
+  `outline: auto` ou `box-shadow` próprio. Não passou por não ter olhado.
+- **Fonte base do corpo ≥ 16px — nada, e a asserção é fraca por natureza.** O `body` é 16px
+  e dificilmente deixará de ser; quem faz o trabalho de verdade é a asserção de texto
+  miúdo, que disparou 12 vezes. Fica como rede de segurança barata, não como cobertura.
+- **Ícone sem rótulo de texto — nada, e a asserção NÃO ESTÁ PROVADA.** Isto é fraqueza, e
+  precisa ser dita: sondando o DOM das telas, **existe um único controle com ícone em toda a
+  spec 001** — o `a "Deploy Now"` da home de scaffold, que tem ícone *e* texto. Nas telas de
+  verdade não há nenhum. A asserção nunca teve o que reprovar, então rodá-la não é evidência
+  de que ela funciona. **Só será exercitada de verdade na spec 002**, quando o shell trouxer
+  a barra de navegação com ícone + rótulo — e é lá que ela precisa ser conferida de novo.
+- **A tela ignorou a fonte ampliada — nada, e foi CONFIRMADO por medição**, não inferido da
+  ausência de falha: sonda direta devolveu `raiz=32px` com `largura=360` em
+  `fonte-ampliada-360`, contra `raiz=16px` nos outros três. O mecanismo do `Page.setFontSizes`
+  funciona, e o cenário da D12 é de fato diferente de estreitar a janela.
+
+### Dois furos no próprio portão, encontrados por rodá-lo (o objetivo da T008)
+
+A primeira escrita do portão tinha dois defeitos que só apareceram porque ele foi rodado
+contra tela real. Ambos **corrigidos** antes deste registro:
+
+1. **A sobreposição do `next dev` (`<nextjs-portal>`) entrava na medição** e produzia um
+   achado falso de "foco sem indicação visível" em **cada uma das 36 combinações** — 32
+   achados de foco, todos ruído, que afogariam os reais. Ela não existe no site construído.
+   Filtrada em `medir()`, na varredura de teclado e no `axe`.
+2. **A asserção de "informação só por cor" era furada duas vezes:** entrava apenas quando o
+   pai do link tinha texto solto (então link filho direto de um contêiner nunca era olhado)
+   e aceitava peso 500 contra 400 como distinção, que a olho nu não separa nada. Refeita:
+   compara a cor do link com a do entorno e, **só quando elas diferem**, exige sublinhado,
+   borda, fundo próprio ou salto de peso de pelo menos 200. Foi essa correção que revelou o
+   achado nº 3 acima — antes dela, o portão dizia que a tela de início estava limpa.
+
+*Isto é E-012 acontecendo de novo, em escala menor: rede de proteção não verificada dá
+falsa confiança.* **Proposta de registrar como `E-025` no próximo `/doc-sync`** — não
+numerado aqui para não atropelar a skill que cuida da numeração.
+
+### O que o portão não cobre, e continua sendo olho humano
+
+Está escrito no cabeçalho do próprio arquivo, e se repete aqui para quem ler só o log:
+*"cada tela se explica sozinha"*, *"a ação principal é óbvia e fica na metade inferior"*,
+*"linguagem simples"* e *"o estado vazio ensina"* não têm asserção possível — dependem de
+saber o que a tela quer dizer. Continuam sendo a validação visual do Ícaro (Princípio XI).
+O portão também mede a tela **no estado em que ela carrega**: carregando, erro de rede e
+formulário preenchido não passam por ele.
+
+### Encaminhamento
+
+Nenhum destes achados foi corrigido aqui — **corrigir tela não é tarefa do portão.** Eles
+pertencem às tarefas de retrofit da spec 001, **T021 a T025**, e é contra esta lista que a
+**T025** vai conferir se o retrofit resolveu. O achado da tela de início some junto com o
+scaffold, na T021.
+
 ## E-024 — Python não existe nesta máquina, e a busca sem filtro estourou o tempo (2026-09-10)
 
 - **Sintoma:** um comando que ia editar o `data-model.md` e conferir o resultado ficou 120s

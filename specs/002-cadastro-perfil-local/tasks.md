@@ -70,10 +70,10 @@ independente do front inteiro.
 
 ### Camada 4 — Portão de conformidade de tela (primeiro)
 
-- [ ] T005 Escrever o portão de conformidade de tela em `web/tests/e2e/gate/screen-conformance.spec.ts`, asserindo por tela, em **360 e 1280**: alvo de toque ≥ 44px, fonte base ≥ 16px, ausência de rolagem horizontal a 360px, `axe` **sem nenhuma violação**, nenhum ícone sem rótulo de texto, nenhuma informação só por cor e foco visível
-- [ ] T006 Acrescentar dois projetos em `web/playwright.config.ts`, além dos `celular-360` e `computador-1280` que já existem: `celular-390` (faixa 390–430, exigida no Detalhe por ser a tela mais densa) e `fonte-ampliada-360` (viewport 360 com a fonte do sistema ampliada) — zoom de navegador e fonte do sistema são mecanismos diferentes, e o segundo não dispara `media query` (D12)
-- [ ] T007 Acrescentar ao portão a passagem com **fonte do sistema ampliada** em `web/tests/e2e/gate/screen-conformance.spec.ts`, cobrindo o ponto cego que a D12 registrou — reduzir a largura não é o mesmo cenário
-- [ ] T008 Rodar o portão contra as **telas já validadas da spec 001** e registrar em `docs/logs/error-log.md` **o que ele acusou**. Portão que não acusa nada é portão fraco, e isso precisa ser descoberto agora (E-012)
+- [x] T005 Escrever o portão de conformidade de tela em `web/tests/e2e/gate/screen-conformance.spec.ts`, asserindo por tela, em **360 e 1280**: alvo de toque ≥ 44px, fonte base ≥ 16px, ausência de rolagem horizontal a 360px, `axe` **sem nenhuma violação**, nenhum ícone sem rótulo de texto, nenhuma informação só por cor e foco visível
+- [x] T006 Acrescentar dois projetos em `web/playwright.config.ts`, além dos `celular-360` e `computador-1280` que já existem: `celular-390` (faixa 390–430, exigida no Detalhe por ser a tela mais densa) e `fonte-ampliada-360` (viewport 360 com a fonte do sistema ampliada) — zoom de navegador e fonte do sistema são mecanismos diferentes, e o segundo não dispara `media query` (D12)
+- [x] T007 Acrescentar ao portão a passagem com **fonte do sistema ampliada** em `web/tests/e2e/gate/screen-conformance.spec.ts`, cobrindo o ponto cego que a D12 registrou — reduzir a largura não é o mesmo cenário
+- [x] T008 Rodar o portão contra as **telas já validadas da spec 001** e registrar em `docs/logs/error-log.md` **o que ele acusou**. Portão que não acusa nada é portão fraco, e isso precisa ser descoberto agora (E-012)
 - [ ] T009 [P] Proibir cor literal em tela por regra de lint em `web/eslint.config.mjs` — hoje `page.tsx` e `alert.tsx` já quebram a regra "nenhuma tela escreve cor literal, só token"
 
 ### Camada 1 — Kit de UI e tema (paralelo à camada 2)

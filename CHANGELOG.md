@@ -8,6 +8,23 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Phase 1 Setup da spec 002 concluída** (T001–T004, 2026-09-12) e **T157–T159 marcadas**
+  depois de os testes finalmente rodarem — o MySQL local estava parado quando foram
+  escritas. `GrantOperatorRoleTest` passa nos quatro casos (16 asserções), e a **suíte
+  inteira da API passa em 189 de 189**, 589 asserções. A suíte completa foi rodada de
+  propósito: as T157–T159 tocaram três pontos compartilhados com a spec 001 —
+  `api/bootstrap/app.php`, `RolesSeeder` e `AuditLog`.
+  **Linha de base das três suítes registrada** em `docs/logs/error-log.md` (T003): API
+  189/189 · componente 43/43 · e2e 82/82. A metade de front é **pristina**; a de API é
+  **pós-T159** e está rotulada como tal — a base "antes de qualquer mudança" que a T003
+  pedia não existe mais, e fingir que existe estragaria a comparação da T025.
+  **A T004 já estava feita** desde a spec 001, e melhor do que a tarefa pedia: o
+  `allowedDevOrigins` do `web/next.config.ts` **descobre os IPs em tempo de execução**, em
+  vez de fixar um, que era a armadilha do E-013 repetida de outro jeito. Verificada, não
+  presumida.
+  **As pastas das T001 e T002 não aparecem no commit**: o Git não versiona diretório vazio,
+  e o repositório não tem convenção de `.gitkeep` (não existe nenhum). Elas existem em disco
+  e se materializam sozinhas quando as tarefas seguintes gravarem arquivo dentro.
 - **`RN-PLAT-007` — papel de operação da plataforma** (2026-09-10), em
   `docs/domain/plataforma.md`. Abriu a **BORA-53**: a regra define a **concessão** do papel e
   **não** a revogação — não existe `bora:revoke-operator`, e o catálogo não diz se revogar

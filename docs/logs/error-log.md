@@ -3,6 +3,37 @@
 Registro de erros no formato `E-NNN` (sintoma, causa, resolução, status), mantido pela
 skill `doc-sync`.
 
+## Linha de base das suítes — T003 da spec 002 (2026-09-12)
+
+Não é erro: é o registro que a **T003** pede, guardado aqui por determinação da própria
+tarefa. É contra estes números que a **T025** confere o retrofit das telas da spec 001.
+
+| Suíte | Comando | Resultado |
+|---|---|---|
+| API | `cd api && php artisan test` | **189 de 189**, 589 asserções (21,2s) |
+| Front — componente | `cd web && npm test` | **43 de 43**, em 8 arquivos (33,7s) |
+| Front — e2e | `cd web && npm run test:e2e` | **82 de 82** (35,2s) — 41 por projeto, `celular-360` e `computador-1280` |
+
+**Ressalva sobre a metade de API: esta NÃO é a base "antes de qualquer mudança" que a T003
+pede.** A API já havia mudado nas **T157–T159** (papel de operação, commit `df9d1af`), que
+tocaram três pontos compartilhados com a spec 001 — `api/bootstrap/app.php`, o
+`RolesSeeder` e o `AuditLog`. Os 189/589 são, portanto, a base **pós-T159**, e é assim que
+devem ser lidos. Não os trate como base pristina: a diferença entre o estado anterior às
+T157–T159 e este **não foi medida e não é mais mensurável** sem voltar no histórico.
+
+Para a T025, essa ressalva não estraga nada — ao contrário. O que a T025 precisa comparar é
+o antes e o depois do **retrofit**, e o "antes" do retrofit é exatamente este estado, com as
+T157–T159 já dentro.
+
+**As duas metades de front SÃO pristinas.** Foram tiradas agora, antes de o kit (T010–T015)
+e o shell (T016–T023) tocarem qualquer componente — que é o único momento em que ainda
+existia algo contra o que comparar.
+
+**Dependência que a T003 não menciona e que vale registrar:** a suíte e2e precisa da **API
+ouvindo em `localhost:8000`**. O `webServer` do `playwright.config.ts` sobe só o `next dev`;
+sem `php artisan serve` em paralelo, as telas que falam com a API reprovam. Foi subida à mão
+para esta medição.
+
 ## E-024 — Python não existe nesta máquina, e a busca sem filtro estourou o tempo (2026-09-10)
 
 - **Sintoma:** um comando que ia editar o `data-model.md` e conferir o resultado ficou 120s

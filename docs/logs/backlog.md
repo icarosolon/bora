@@ -11,6 +11,8 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 
 | Item | Bloqueia | Fonte |
 |---|---|---|
+| **Severidade da regra de lint que proíbe cor literal em tela (T009 da spec 002)**: entra como **erro agora**, ou como **aviso agora promovido a erro na T021**? Medido em 2026-09-12 com a regra montada e descartada: ela pega **10 ocorrências** — 9 em `web/src/app/page.tsx` (o scaffold) e 1 em `web/src/components/ui/alert.tsx:23` (o `emerald` do `kind="success"`). As correções desses dois arquivos são a **T013** e a **T021**, posteriores. **Contexto que muda a pergunta:** o `npm run lint` **já está vermelho** hoje, por 7 erros de `react-hooks/set-state-in-effect` — não é a T009 que o deixa vermelho, é a **BORA-42**, e ele continuará vermelho depois da T021 enquanto a BORA-42 não for tratada | **T009, e com ela o resto da Phase 2 da spec 002** | `specs/002-cadastro-perfil-local/tasks.md`, BORA-42 |
+| **Convenção para diretório vazio no Git** (`.gitkeep` ou nada): as pastas criadas nas T001/T002 da spec 002 não entram em commit nenhum, porque o Git não versiona diretório vazio e o repositório **não tem nenhum `.gitkeep`** hoje. Elas existem em disco e se materializam quando as tarefas seguintes gravarem arquivo dentro | nada hoje; afeta quem clonar o repositório antes da T010 | `specs/002-cadastro-perfil-local/tasks.md` |
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento, **envio real de e-mail (SPF/DKIM — spec 001)** | `brand.md` |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
 | Hospedagem (agora precisa hospedar **também um processo Node**, além do PHP) | deploy | constituição, ADR-0003 |
@@ -139,7 +141,8 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
 | item | estado verificado | por que não foi feito agora |
 |---|---|---|
 | **A home é o scaffold do Next** — BORA-43 | `web/src/app/page.tsx` ainda é a página de `create-next-app` — logo do Vercel, "To get started, edit the page.tsx file", tudo em inglês. É o destino do login (`router.replace('/')`) | a home de produto ("O que temos para hoje?") é spec futura; trocá-la agora seria abrir feature fora de spec |
-| **`npm run lint` falha** — BORA-42 | 7 erros, todos `react-hooks/set-state-in-effect`, em `lib/hydration.ts`, `verificar-email`, `unir-contas`, `unir-contas/confirmar` e `entrar/google/retorno`. Pré-existentes: nenhum nos arquivos tocados em 2026-09-01 | mexer em `useEffect` de cinco telas já validadas, sem teste que prove o ganho, arrisca regressão de hidratação (E-015) para resolver aviso de estilo |
+| **`npm run lint` falha** — BORA-42 | 7 erros, todos `react-hooks/set-state-in-effect`, em `lib/hydration.ts`, `verificar-email`, `unir-contas`, `unir-contas/confirmar` e `entrar/google/retorno`. Pré-existentes: nenhum nos arquivos tocados em 2026-09-01. **Reconferido em 2026-09-12: os mesmos 7, nos mesmos arquivos** | mexer em `useEffect` de cinco telas já validadas, sem teste que prove o ganho, arrisca regressão de hidratação (E-015) para resolver aviso de estilo |
+| **As telas validadas da spec 001 reprovam no portão de conformidade** — aberto em 2026-09-12 pela T008 | 32 das 36 combinações reprovadas. Alvo de toque abaixo de 44px (o `a "Bora"` do cabeçalho, 38×28px, nas nove telas; e `a "Ir para o Bora"` e `a "Voltar para entrar"`, com 17px de altura, sendo a **única saída** da tela em que aparecem); texto de ajuda a 14px; link distinguido só por cor; e **contraste de 4:1 contra os 4,5:1 exigidos** no `Alert` de erro (`#e7000b` sobre `#fde6e7`). Lista completa em `error-log.md`, seção "T008" | **não é dívida a tratar avulsa**: já tem dono na própria spec 002 — o retrofit **T021–T025**, com a T025 conferindo contra esta lista. Corrigir tela não é tarefa do portão |
 | **Não existe "excluir minha conta"** — BORA-41 | `AuditLog` tem seis eventos (`account_created`, `credentials_merged`, `password_set`, `password_reset`, `email_verified`, `session_ended`) e **nenhum** de exclusão; não há rota de exclusão em `api/routes/api.php` | nunca esteve no escopo da 001. Mas **direito de eliminação é LGPD**, que a constituição invoca — precisa de spec própria, com decisão sobre anonimizar vs. apagar e o que acontece com histórico |
 | **O `spec-check` não cobra o caminho até a tela nem os campos do payload** — BORA-40 | é a causa raiz do E-019: a spec listava cinco telas e o portão conferiu as cinco; a tela sem porta não estava na lista, então não havia o que cobrar | mexer no portão é mudança de método, não de código — decisão do Ícaro |
 | ~~`SKILL.md` do `doc-sync` pedia trailer `Claude Fable 5`~~ | **RESOLVIDO em 2026-09-02**, autorizado pelo Ícaro: a skill passou a pedir `Claude Opus 5`, que é o que os commits do repositório já usavam. Era o único lugar do `.claude/` com o nome antigo | — |
@@ -435,18 +438,27 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      `data-model.md`, `contracts/locais-api.md` e `quickstart.md`. `/speckit-tasks` rodado em
      2026-09-09: **`tasks.md` com 159 tarefas** em sete fases (as T157–T159 entraram em
      2026-09-10, com o papel de operação).
-     **Próximo passo: implementar, começando pela T001** (Phase 1 — Setup). A **Phase 2
-     Foundational bloqueia todas as histórias**, e dentro dela o **portão de conformidade de
-     tela é a primeira coisa** (D4/D6): rodá-lo contra as telas já validadas da spec 001 é o
-     teste do próprio portão — se não acusar nada, ele é fraco, e isso precisa aparecer no
-     dia um (E-012).
+     **EM IMPLEMENTAÇÃO desde 2026-09-12.** Feito: **T157–T159** (papel de operação — os
+     testes, que nunca haviam rodado por o MySQL local estar parado, rodaram e passaram:
+     quatro casos, 16 asserções); **Phase 1 Setup inteira** (T001–T004); e **a camada 4 da
+     Phase 2, o portão de conformidade de tela** (T005–T008).
+     **Parado na T009**, que é decisão do Ícaro — ver "Decisões pendentes que bloqueiam
+     spec", no topo deste arquivo.
+     **O portão fez o que devia: reprovou 32 das 36 combinações** das telas já validadas da
+     spec 001. Relatório item por item em `docs/logs/error-log.md`, seção "T008". Os achados
+     pertencem ao retrofit **T021–T025** — corrigir tela não é tarefa do portão. Dois achados
+     confirmam dívidas já conhecidas por outro caminho: a tela de início é a **BORA-43** (o
+     scaffold) e o `Alert` de erro tem contraste de 4:1 contra os 4,5:1 exigidos.
+     **O próprio portão tinha dois furos, achados por rodá-lo** — que é para isso que a T008
+     existe. Corrigidos; ver `E-025`.
+     **Uma asserção do portão continua NÃO PROVADA:** a de "ícone sem rótulo de texto". Em
+     toda a spec 001 existe um único controle com ícone, e ele tem texto — então a asserção
+     nunca teve o que reprovar, e rodá-la não é evidência de que funciona. **Conferir de novo
+     na T016–T023**, quando o shell trouxer a barra de navegação com ícone + rótulo.
      **Quatro paradas obrigatórias, uma por história** (Princípio XI): validação visual do
      Ícaro em **T074, T087, T123 e T140**. A história seguinte **não abre** antes da parada
      da atual, mesmo onde a dependência técnica permitiria paralelo — é a mitigação escrita
      na D6 para o risco de a spec 002 acumular fundação mais quatro histórias.
-     **O que já tem código, fora da ordem das fases:** T157, T158 e T159 (papel de operação),
-     escritas em 2026-09-10 junto da decisão que as gerou. **Os testes delas nunca rodaram**
-     — o MySQL local estava parado. Rodar antes de seguir.
      **As duas pendências que a geração das tarefas abriu foram decididas** em 2026-09-10 —
      ver "Abertas pela spec 002", abaixo.
    - **Ordem das histórias** (revisada): **P1** cadastro + página pública · **P2** lista e

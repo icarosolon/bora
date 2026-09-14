@@ -154,8 +154,7 @@ contra tela real. Ambos **corrigidos** antes deste registro:
    achado nº 3 acima — antes dela, o portão dizia que a tela de início estava limpa.
 
 *Isto é E-012 acontecendo de novo, em escala menor: rede de proteção não verificada dá
-falsa confiança.* **Proposta de registrar como `E-025` no próximo `/doc-sync`** — não
-numerado aqui para não atropelar a skill que cuida da numeração.
+falsa confiança.* **Registrado como `E-025`** no `/doc-sync` de 2026-09-14.
 
 ### O que o portão não cobre, e continua sendo olho humano
 
@@ -172,6 +171,39 @@ Nenhum destes achados foi corrigido aqui — **corrigir tela não é tarefa do p
 pertencem às tarefas de retrofit da spec 001, **T021 a T025**, e é contra esta lista que a
 **T025** vai conferir se o retrofit resolveu. O achado da tela de início some junto com o
 scaffold, na T021.
+
+## E-025 — O portão de conformidade nasceu com dois furos, e só a T008 os mostrou (2026-09-12)
+
+- **Sintoma:** dois, e o segundo é o que assusta. **(1)** Na primeira execução do portão de
+  tela, as 36 combinações acusaram "foco sem indicação visível" — todas no mesmo elemento,
+  `nextjs-portal`. **(2)** A asserção de "informação nunca transmitida só por cor" **não
+  acusou nada** e a tela de início foi dada como limpa nesse quesito. Ela não estava.
+- **Causa:** **(1)** `<nextjs-portal>` é a sobreposição de erro do `next dev`. Ela entra no
+  DOM e na ordem de tabulação, não existe no site construído, e o portão a media como se
+  fosse produto: 32 achados de ruído que afogariam os reais. **(2)** A asserção de cor tinha
+  duas condições erradas escritas juntas: só entrava quando `textoProprio(pai)` não era
+  vazio — o que exclui todo link que é **filho direto** de um contêiner, sem texto solto ao
+  lado — e aceitava `fontWeight` **diferente** como distinção suficiente, o que deixa passar
+  500 contra 400, uma diferença que a olho nu não separa nada.
+- **Resolução:** **(1)** a sobreposição foi filtrada em três lugares — na função de medição,
+  na varredura de teclado (pulando a parada, e **não** interrompendo o laço: interromper
+  faria o portão nunca chegar a um controle de verdade e passar por não ter olhado) e no
+  `axe`, por `.exclude('nextjs-portal')`. **(2)** a asserção de cor foi refeita: compara a
+  cor do link com a do entorno e, **só quando elas diferem**, exige sublinhado, borda, fundo
+  próprio ou salto de peso de pelo menos 200. Com isso ela passou a acusar `a "Templates"` e
+  `a "Learning"` na tela de início, que antes passavam.
+- **Status:** resolvido em 2026-09-12, no commit `67d8883`, antes de o portão ser dado como
+  pronto.
+- **Lição:** **é o E-012 acontecendo de novo, e dessa vez dentro da própria ferramenta que
+  existe para evitá-lo.** A D4 mandou escrever o portão antes do kit e rodá-lo contra tela
+  já validada justamente porque *rede de proteção não verificada é rede que dá falsa
+  confiança, pior que não ter*. Os dois furos não apareceram lendo o código do portão: o
+  primeiro apareceu na primeira execução, e o segundo **só apareceu porque a ausência de
+  achado foi tratada como suspeita** e sondada, em vez de lida como "a tela está boa". Fica
+  a regra de uso do portão, que vale para todo teste novo: **asserção que nunca disparou não
+  está provada** — antes de confiar nela, é preciso saber se ela chegou a ter o que
+  reprovar. No próprio relatório da T008 sobrou uma nessa condição, a de "ícone sem rótulo",
+  e ela está marcada como não provada em vez de contada como aprovação.
 
 ## E-024 — Python não existe nesta máquina, e a busca sem filtro estourou o tempo (2026-09-10)
 

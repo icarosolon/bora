@@ -172,6 +172,33 @@ pertencem às tarefas de retrofit da spec 001, **T021 a T025**, e é contra esta
 **T025** vai conferir se o retrofit resolveu. O achado da tela de início some junto com o
 scaffold, na T021.
 
+## E-026 — O exemplo "corrigido" do screen-help ensinou papéis que não existem (2026-09-27)
+
+- **Sintoma:** a auditoria de prompts trocou o exemplo de `papeis_que_acessam` no
+  `screen-help` ("recepção, gerente da clínica", herdado do Nexa) por
+  `rolezeiro, estabelecimento, artista`. Na sonda A/B do `/screen-help cadastrar local`, a
+  versão nova copiou os três papéis **palavra por palavra** em 2 de 2 execuções. A versão
+  antiga, com o exemplo "errado", tinha acertado em 2 de 2 ("qualquer pessoa com conta").
+- **Causa:** exemplo concreto é o sinal mais forte de um prompt. O de clínica era tão
+  estranho ao Bora que o modelo o ignorava e ia à spec; o novo parecia plausível e foi
+  copiado. E estava errado de fato: os papéis do sistema são `rolezeiro` e `operator`
+  (`api/config/bora.php`), mais o gestor da spec 002. "estabelecimento" e "artista" são
+  vocabulário de produto, não papéis.
+- **Resolução:** o exemplo virou uma instrução sem lista para copiar,
+  `[<quem a spec da tela autoriza, nos termos da spec>]`. Nova sonda: 3 de 3 com
+  "qualquer conta autenticada", o texto do FR-001.
+- **Status:** resolvido em 2026-09-27, antes do commit.
+- **Lição:** **mudança em prompt é hipótese até ser medida**, e a direção do erro pode ser
+  a oposta da prevista: a correção que parecia óbvia piorou o resultado, e o texto que
+  parecia defeito era inofensivo. Exemplo em skill só entra se puder ser copiado sem erro,
+  porque vai ser copiado.
+- **Como as sondas rodaram:** `claude -p` em duas cópias do repositório (`git archive HEAD`
+  no scratchpad), uma com e outra sem a mudança, só com ferramentas de leitura
+  (`--permission-mode dontAsk --strict-mcp-config` e allowlist sem Write/Edit). Foi usado
+  o executável que vem com o app (`$CLAUDE_CODE_EXECPATH`), porque o `claude` do PATH
+  (2.1.278) não reconhece `claude-opus-5-5`: com `--model opus`, ele roda o Opus 5. Custo
+  estimado: US$ 0,30 a 0,90 por execução.
+
 ## E-025 — O portão de conformidade nasceu com dois furos, e só a T008 os mostrou (2026-09-12)
 
 - **Sintoma:** dois, e o segundo é o que assusta. **(1)** Na primeira execução do portão de

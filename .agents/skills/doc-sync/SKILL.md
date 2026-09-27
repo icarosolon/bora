@@ -36,9 +36,11 @@ Com base no que mudou nesta sessão, verifique e atualize:
      pergunta nova, e ela nasce sem dono;
    - registre a sincronização em `docs/logs/linear-import.md`.
 
-   Confira o quadro contra o catálogo mesmo quando a decisão não foi sua: a decisão tomada
-   em sessão paralela é o caso comum, e é ela que o quadro deixa para trás (`RN-PLAT-002`,
-   `RN-DESC-003` — ver `docs/logs/linear-import.md`).
+   **Isto já falhou duas vezes**, e nas duas a decisão tinha sido tomada em sessão paralela:
+   `RN-PLAT-002` (sincronização de 2026-08-29→09-01) e `RN-DESC-003` (2026-09-02, em que a
+   BORA-9 seguia em Backlog com o rótulo `decisao-pendente` enquanto
+   `docs/domain/descoberta.md` já registrava a decisão). **Sessão paralela é o caso comum,
+   não a exceção:** confira o quadro contra o catálogo mesmo quando a decisão não foi sua.
 
 Se algo não puder ser determinado com certeza, **pergunte** em vez de assumir.
 
@@ -55,8 +57,7 @@ nunca execute `git push`.
    - Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`).
    - Subject em **ASCII, sem acentos**, no imperativo, até ~72 caracteres.
    - Corpo explicando **o quê e por quê**, com o ID da spec e as `RN-<CTX>-NNN` tocadas.
-   - Trailer `Co-Authored-By:` com o modelo que está rodando a sessão, na forma exata que
-     o Claude Code fornece. O nome do modelo não fica fixado aqui.
+   - Trailer `Co-Authored-By: Codex Opus 5 <noreply@anthropic.com>`.
    - Nunca `--no-verify`; se um hook falhar, investigue a causa em vez de contornar.
 
 Ex.:
@@ -65,7 +66,7 @@ feat: cadastro de local com categorias
 
 Implementa spec 0002. Atualiza CHANGELOG, backlog. Sem regra nova.
 
-Co-Authored-By: <modelo da sessão> <noreply@anthropic.com>
+Co-Authored-By: Codex Opus 5 <noreply@anthropic.com>
 ```
 
 ## Saída

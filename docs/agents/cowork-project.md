@@ -202,5 +202,5 @@ Padrão: `<branch> · <tipo> · <tarefa em 3–5 palavras>`, com tipo em
   impacto, não incluído.
 - Pergunta só quando a informação está indisponível, muda materialmente o resultado e não
   há premissa segura. Regra de negócio nunca se resolve por premissa.
-- Comunicação direta e técnica: sem elogios, preâmbulos, repetição da pergunta ou narração
-  de raciocínio. Português na prosa, inglês nos identificadores.
+- Comunicação direta e técnica: a resposta começa pelo achado ou pela conclusão.
+  Português na prosa, inglês nos identificadores.

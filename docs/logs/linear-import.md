@@ -463,3 +463,20 @@ vez, e isso é decisão do Ícaro sobre como ele quer acompanhar o trabalho, nã
 Enquanto não for feito, **o quadro não mostra o andamento da spec 002** — quem olhar só o
 Linear não vê que T001–T008 estão prontas.
 
+## Sincronização de 2026-09-27 (sábado) — auditoria das instruções dos agentes
+
+**Nenhuma `RN` tocada.** A sessão mexeu só nas instruções dos agentes (`CLAUDE.md`,
+`docs/development-workflow.md`, `docs/agents/cowork-project.md` e as skills `doc-sync`,
+`session-open` e `screen-help`). Nenhum arquivo de `docs/domain/` mudou.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo: **33 issues `decisao-pendente`**, todas em Backlog e as mesmas da sincronização anterior (a última atualização foi a BORA-53, em 2026-09-11) | **nenhuma alteração** |
+| Issue fechada | **nenhuma**, porque nenhuma regra foi decidida |
+| Issue nova | **nenhuma**, porque a sessão não abriu pendência de negócio |
+
+**Verificado, não presumido:** as 33 issues foram listadas pelo conector do Linear (time
+`Bora`, rótulo `decisao-pendente`). O `git log` desde 2026-09-12 não mostra nenhum commit
+em `docs/domain/` nem no `backlog.md` além do `5c845ac`, que é a própria sincronização
+anterior. Não houve decisão em sessão paralela que o quadro tenha deixado para trás.
+

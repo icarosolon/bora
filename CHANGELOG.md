@@ -311,6 +311,25 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Auditoria das instruções dos agentes para o Opus 5.5** (2026-09-27), com cada mudança
+  medida em sondas A/B (`claude -p`, 31 execuções, mesmo pedido com e sem a mudança):
+  - `doc-sync`: o trailer deixa de fixar "Claude Opus 5" e passa a usar o modelo da sessão,
+    como o Claude Code o fornece. **Medido:** o nome fixado venceu em 2 de 3 execuções e
+    atribuía o commit ao modelo errado; sem ele, 3 de 3 saíram certos. A narrativa das duas
+    falhas do Linear virou regra de uma frase, com os IDs; a conferência do quadro se
+    manteve em 6 de 6 execuções.
+  - `screen-help`: o exemplo de papéis herdado do Nexa ("recepção, gerente da clínica") foi
+    trocado por uma instrução que manda usar a spec da tela. O primeiro exemplo proposto
+    **piorou o resultado** (E-026); o que ficou acertou "qualquer conta autenticada"
+    (FR-001 da spec 002) em 3 de 3.
+  - `session-open`: saem os tamanhos em KB dos arquivos de log, que já estavam errados.
+  - `CLAUDE.md` e `development-workflow.md`: "Na dúvida, pare e pergunte" vira "Pergunte
+    quando a resposta mudar o que você vai fazer", alinhado ao `cowork-project.md`.
+    `cowork-project.md`: a lista de proibições de estilo vira "a resposta começa pelo
+    achado". **Medido: nenhuma diferença** entre as versões nessas duas sondas. As mudanças
+    ficam para eliminar a contradição entre os documentos, não por ganho observado. A
+    regra de não inventar regra de negócio se manteve em 4 de 4 (limite do plano grátis
+    tratado como PENDENTE nas duas versões).
 - **As quatro propostas pendentes do `design-system.md` foram despachadas** (2026-09-09) —
   **duas delas emendadas antes de ir à mesa**, porque a releitura mostrou que não estavam
   prontas. **D13 fechou em três arquétipos, não quatro**: "Ferramenta" cobria uma única

@@ -18,7 +18,7 @@ Invocada manualmente (`/screen-help <tela>`) ao criar/documentar uma tela.
    ```
    ---
    titulo: <nome da tela>
-   papeis_que_acessam: [<quem a spec da tela autoriza, nos termos da spec>]
+   papeis_que_acessam: [<ex.: recepção, gerente da clínica>]
    pre_requisitos:
      - <o que precisa existir/estar preenchido antes>
    ---

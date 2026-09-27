@@ -8,10 +8,10 @@ disable-model-invocation: true
 
 Responde uma pergunta só: **onde paramos?**
 
-Contexto e método já chegam pelo `CLAUDE.md`, que carrega sozinho. O que não chega é o
-estado — e ele está espalhado em arquivos que crescem a cada sessão e são grandes demais
-para ler inteiros (`CHANGELOG.md`, `error-log.md`, `backlog.md`). Esta skill vai buscar
-só os trechos que dizem em que ponto o projeto parou.
+Contexto e método já chegam pelo `AGENTS.md`, que carrega sozinho. O que não chega é o
+estado — e ele está espalhado em arquivos grandes demais para ler inteiros (`CHANGELOG.md`
+62 KB, `error-log.md` 39 KB, `backlog.md` 38 KB). Esta skill vai buscar só os trechos que
+dizem em que ponto o projeto parou.
 
 É o par do `/doc-sync`: aquele fecha, este abre.
 

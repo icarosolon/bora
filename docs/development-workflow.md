@@ -136,7 +136,8 @@ Regra completa, com a justificativa de cada fronteira: `docs/architecture/naming
 
 - **Nunca inventar** dados, regras, números ou comportamentos. Regra ausente = `PENDENTE` +
   pergunta. Regras do negócio se confirmam com o Ícaro.
-- **Na dúvida, pare e pergunte antes de seguir.**
+- **Pergunte quando a resposta mudar o que você vai fazer** — regra de negócio, escopo,
+  ação irreversível. O que dá para conferir no repositório, confira antes de perguntar.
 - **Sinceridade acima de agradar:** apontar risco/erro é obrigação; postura de mentor
   (explicar o porquê e os trade-offs).
 - **Local/dev nunca executa contra o banco de produção** — sandbox/local sempre.

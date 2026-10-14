@@ -8,6 +8,65 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Portão de conformidade de tela** (spec 002, **T005–T008**, 2026-09-12), em
+  `web/tests/e2e/gate/`. É a **camada 4** do template e vem **antes do kit** por decisão
+  **D4**: contrato escrito depois do kit nasce moldado ao kit e não reprova ninguém (E-012).
+  Afere a régua **vinculante** `docs/product/ux-requirements.md` — o `design-system.md`
+  **não** é fonte de requisito enquanto se declarar "norma ainda não escrita".
+  Nove telas da spec 001 × quatro configurações, cada tela em **um** teste com asserção leve
+  para o portão dizer tudo o que está errado numa passada, e não parar no primeiro achado.
+  Dois projetos novos no `playwright.config.ts` (**T006**): `celular-390` (faixa 390–430) e
+  `fonte-ampliada-360`. Os dois rodam **só o portão**, não as suítes da spec 001 — soltá-las
+  em quatro configurações redefiniria, no mesmo dia, a linha de base que a T003 acabou de
+  registrar para a T025; e nada de cobertura se perde, porque o portão visita todas aquelas
+  telas.
+  **Fonte do sistema ampliada é mecanismo diferente de zoom de navegador** (**T007**, D12):
+  o zoom encolhe o viewport e deixa a fonte em 16px; a fonte do sistema mantém o viewport em
+  360 e leva a fonte a 32px, **sem disparar nenhuma media query de largura**. Não há opção do
+  Playwright para isso — vai por `Page.setFontSizes` do protocolo do DevTools, em
+  `web/tests/e2e/gate/fonte.ts`. **Confirmado por medição**, não inferido da ausência de
+  falha: `raiz=32px` com `largura=360` naquele projeto, contra `raiz=16px` nos outros três.
+  Dependência nova: **`@axe-core/playwright`** — só havia `axe-core` como dependência
+  transitiva do `jest-axe`, que serve ao teste de componente e não ao e2e.
+- **O portão reprovou 32 das 36 combinações das telas já validadas da spec 001** (**T008**),
+  e o relatório item por item está em `docs/logs/error-log.md`. Resumo: alvo de toque abaixo
+  de 44px em 32 combinações (o `a "Bora"` do cabeçalho, 38×28px, nas nove telas; e — pior —
+  `a "Ir para o Bora"` e `a "Voltar para entrar"`, com 17px de altura, sendo a **única saída**
+  das telas em que aparecem); texto de ajuda a 14px em 12 combinações; link distinguido só
+  por cor na tela de início; e **contraste de 4:1 contra os 4,5:1 exigidos** no `Alert` de
+  erro (`#e7000b` sobre `#fde6e7`), medido pelo `axe`. Nada disso foi corrigido aqui:
+  corrigir tela não é tarefa do portão, e pertence ao retrofit **T021–T025**.
+  **As quatro combinações que passaram não são boa notícia:** são todas de
+  `fonte-ampliada-360`, e passaram porque a 32px o texto de 14px vira 28px e o alvo de 28px
+  passa de 44px — o cenário que a D12 mandou criar para achar problema é, nessas duas regras,
+  o **mais permissivo**.
+  **Duas asserções que não acusaram nada foram sondadas antes de se concluir qualquer coisa**
+  (E-002): a de **foco visível** passou legitimamente — o portão percorre 5 a 7 paradas de
+  teclado por tela e cada controle tem anel próprio; já a de **ícone sem rótulo** está
+  **NÃO PROVADA**, porque em toda a spec 001 existe um único controle com ícone, e ele tem
+  texto. Ela só será exercitada de verdade quando o shell trouxer a barra de navegação.
+  **O próprio portão tinha dois furos, encontrados por rodá-lo** — que é para isso que a T008
+  existe: a sobreposição do `next dev` entrava na medição e produzia um achado falso de foco
+  em cada uma das 36 combinações; e a asserção de "informação só por cor" só olhava link cujo
+  pai tivesse texto solto e aceitava peso 500 contra 400 como distinção. Os dois corrigidos;
+  foi a segunda correção que revelou o achado da tela de início.
+- **Phase 1 Setup da spec 002 concluída** (T001–T004, 2026-09-12) e **T157–T159 marcadas**
+  depois de os testes finalmente rodarem — o MySQL local estava parado quando foram
+  escritas. `GrantOperatorRoleTest` passa nos quatro casos (16 asserções), e a **suíte
+  inteira da API passa em 189 de 189**, 589 asserções. A suíte completa foi rodada de
+  propósito: as T157–T159 tocaram três pontos compartilhados com a spec 001 —
+  `api/bootstrap/app.php`, `RolesSeeder` e `AuditLog`.
+  **Linha de base das três suítes registrada** em `docs/logs/error-log.md` (T003): API
+  189/189 · componente 43/43 · e2e 82/82. A metade de front é **pristina**; a de API é
+  **pós-T159** e está rotulada como tal — a base "antes de qualquer mudança" que a T003
+  pedia não existe mais, e fingir que existe estragaria a comparação da T025.
+  **A T004 já estava feita** desde a spec 001, e melhor do que a tarefa pedia: o
+  `allowedDevOrigins` do `web/next.config.ts` **descobre os IPs em tempo de execução**, em
+  vez de fixar um, que era a armadilha do E-013 repetida de outro jeito. Verificada, não
+  presumida.
+  **As pastas das T001 e T002 não aparecem no commit**: o Git não versiona diretório vazio,
+  e o repositório não tem convenção de `.gitkeep` (não existe nenhum). Elas existem em disco
+  e se materializam sozinhas quando as tarefas seguintes gravarem arquivo dentro.
 - **`RN-PLAT-007` — papel de operação da plataforma** (2026-09-10), em
   `docs/domain/plataforma.md`. Abriu a **BORA-53**: a regra define a **concessão** do papel e
   **não** a revogação — não existe `bora:revoke-operator`, e o catálogo não diz se revogar
@@ -262,6 +321,25 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   Correspondência completa BORA → ICASST e a sincronização em `docs/logs/linear-import.md`;
   os `BORA-nn` dos registros históricos **não foram reescritos**, porque redirecionam no
   Linear. A T148 da spec 002 passou a citar o time `icasst` e a ICASST-79. Sem regra nova.
+- **Auditoria das instruções dos agentes para o Opus 5.5** (2026-09-27), com cada mudança
+  medida em sondas A/B (`claude -p`, 31 execuções, mesmo pedido com e sem a mudança):
+  - `doc-sync`: o trailer deixa de fixar "Claude Opus 5" e passa a usar o modelo da sessão,
+    como o Claude Code o fornece. **Medido:** o nome fixado venceu em 2 de 3 execuções e
+    atribuía o commit ao modelo errado; sem ele, 3 de 3 saíram certos. A narrativa das duas
+    falhas do Linear virou regra de uma frase, com os IDs; a conferência do quadro se
+    manteve em 6 de 6 execuções.
+  - `screen-help`: o exemplo de papéis herdado do Nexa ("recepção, gerente da clínica") foi
+    trocado por uma instrução que manda usar a spec da tela. O primeiro exemplo proposto
+    **piorou o resultado** (E-026); o que ficou acertou "qualquer conta autenticada"
+    (FR-001 da spec 002) em 3 de 3.
+  - `session-open`: saem os tamanhos em KB dos arquivos de log, que já estavam errados.
+  - `CLAUDE.md` e `development-workflow.md`: "Na dúvida, pare e pergunte" vira "Pergunte
+    quando a resposta mudar o que você vai fazer", alinhado ao `cowork-project.md`.
+    `cowork-project.md`: a lista de proibições de estilo vira "a resposta começa pelo
+    achado". **Medido: nenhuma diferença** entre as versões nessas duas sondas. As mudanças
+    ficam para eliminar a contradição entre os documentos, não por ganho observado. A
+    regra de não inventar regra de negócio se manteve em 4 de 4 (limite do plano grátis
+    tratado como PENDENTE nas duas versões).
 - **As quatro propostas pendentes do `design-system.md` foram despachadas** (2026-09-09) —
   **duas delas emendadas antes de ir à mesa**, porque a releitura mostrou que não estavam
   prontas. **D13 fechou em três arquétipos, não quatro**: "Ferramenta" cobria uma única

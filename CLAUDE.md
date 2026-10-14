@@ -85,7 +85,8 @@ Nada é "pronto só no backend".
   que o modelo mental usado nas próximas decisões está errado.
 - **Separar fato de julgamento** em documento que será relido meses depois (ADR, spec):
   o que foi medido/verificado, o que é opinião do assistente, o que falta medir.
-- **Na dúvida, pare e pergunte antes de seguir.**
+- **Pergunte quando a resposta mudar o que você vai fazer** — regra de negócio, escopo,
+  ação irreversível. O que dá para conferir no repositório, confira antes de perguntar.
 - **Sinceridade acima de agradar:** aponte risco/erro mesmo que contrarie; postura de mentor.
 - **Local/dev nunca executa contra banco de produção.**
 - **Toda alteração atualiza a documentação no mesmo commit.**

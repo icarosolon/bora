@@ -483,6 +483,75 @@ A linha entrou também na tabela "Decisões pendentes" do `backlog.md`.
 `docs/domain/`. Foi verificado o que **esta** regra nova toca. A auditoria completa segue
 por fazer.
 
+## Sincronização de 2026-09-14 (sexta) — portão de conformidade de tela (T001–T008)
+
+**Nenhuma `RN` tocada.** A sessão implementou a Phase 1 e a camada 4 da Phase 2 da spec 002:
+árvore de pastas, linha de base das suítes, e o portão de conformidade de tela rodado contra
+as telas da spec 001. É infraestrutura de teste — nenhum catálogo de `docs/domain/` mudou, e
+o `git diff` dos dois commits não toca `api/`, `docs/domain/`, `contracts/` nem
+`data-model.md`.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo — **33 issues `decisao-pendente`**, todas em Backlog (as 32 da sincronização anterior mais a **BORA-53**, criada nela) | **nenhuma alteração** |
+| Issue fechada | **nenhuma** — nenhuma regra foi decidida |
+| Issue nova | **nenhuma criada** — duas propostas, abaixo |
+
+**Verificado, não presumido:** as 33 foram listadas pelo conector do Linear (time `Bora`,
+rótulo `decisao-pendente`) e conferidas contra o que esta sessão produziu. Nenhuma trata de
+portão de tela, severidade de lint ou convenção de diretório vazio.
+
+### Duas pendências novas ficaram sem issue — de novo por escolha, não por esquecimento
+
+1. **Severidade da regra de lint da T009** — a regra que proíbe cor literal em tela entra
+   como **erro agora**, aceitando o lint vermelho por cor até a T021, ou como **aviso agora,
+   promovido a erro na T021**? **Esta bloqueia o resto da Phase 2 da spec 002**, e com ela
+   as quatro histórias. Já está na tabela de decisões pendentes do `backlog.md`, com a
+   medição: a regra pega 10 ocorrências, 9 em `page.tsx` e 1 em `alert.tsx:23`.
+2. **Convenção para diretório vazio no Git** (`.gitkeep` ou nada). Não bloqueia nada hoje.
+
+**Por que não viraram issue.** É a terceira sincronização seguida em que a mesma pergunta
+aparece, e ela continua sem resposta do Ícaro: *pergunta aberta vira issue, ou só decisão
+tomada vira?* O padrão observado no quadro é que a issue de decisão nasce com o **enunciado
+da escolha**, não com a descoberta — e as duas acima já têm enunciado. A de 2026-09-09
+deixou registrado que "o que bloqueia spec deveria virar issue"; a de 2026-09-11 observou o
+inverso, que decisão de vida curta talvez não precise de issue. **Nas duas o critério ficou
+como proposta e o Ícaro não o ratificou**, então continuo sem executá-lo por conta própria.
+
+**A diferença desta vez é o custo de errar.** A pendência nº 1 **para o trabalho**: sem ela
+não há T009, e sem T009 não há kit, shell, retrofit nem história. Se o critério for "o que
+bloqueia spec vira issue", ela é o exemplo mais claro que já apareceu. **Fica proposta;
+basta o Ícaro dizer "cria" e ela entra com o rótulo `decisao-pendente`.**
+
+**O que esta conferência não fez, de novo:** auditar as 33 issues contra os sete catálogos
+de `docs/domain/`. Foi verificado que nada **desta** sessão deveria fechar issue — o que é
+barato, porque esta sessão não decidiu regra nenhuma. A auditoria completa, que é a que
+pegaria um caso como o do `RN-DESC-003`, **segue por fazer**.
+
+**As 159 tarefas da spec 002 continuam sem virar issue.** A convenção do topo deste arquivo
+diz que cada spec aprovada gera issues a partir do `tasks.md` com título `T001: <descrição>`;
+para a spec 002 isso **nunca foi feito**. Não foi feito agora também: são 159 issues de uma
+vez, e isso é decisão do Ícaro sobre como ele quer acompanhar o trabalho, não do assistente.
+Enquanto não for feito, **o quadro não mostra o andamento da spec 002** — quem olhar só o
+Linear não vê que T001–T008 estão prontas.
+
+## Sincronização de 2026-09-27 (sábado) — auditoria das instruções dos agentes
+
+**Nenhuma `RN` tocada.** A sessão mexeu só nas instruções dos agentes (`CLAUDE.md`,
+`docs/development-workflow.md`, `docs/agents/cowork-project.md` e as skills `doc-sync`,
+`session-open` e `screen-help`). Nenhum arquivo de `docs/domain/` mudou.
+
+| Ação | Issue |
+|---|---|
+| Conferência do quadro contra o catálogo: **33 issues `decisao-pendente`**, todas em Backlog e as mesmas da sincronização anterior (a última atualização foi a BORA-53, em 2026-09-11) | **nenhuma alteração** |
+| Issue fechada | **nenhuma**, porque nenhuma regra foi decidida |
+| Issue nova | **nenhuma**, porque a sessão não abriu pendência de negócio |
+
+**Verificado, não presumido:** as 33 issues foram listadas pelo conector do Linear (time
+`Bora`, rótulo `decisao-pendente`). O `git log` desde 2026-09-12 não mostra nenhum commit
+em `docs/domain/` nem no `backlog.md` além do `5c845ac`, que é a própria sincronização
+anterior. Não houve decisão em sessão paralela que o quadro tenha deixado para trás.
+
 ## Sincronização de 2026-10-14 — migração de time e issues da spec 002
 
 **Nenhuma `RN` tocada.** A sessão registrou a migração de time (ver "Migração BORA → BAIANO

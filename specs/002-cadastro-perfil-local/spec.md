@@ -8,13 +8,25 @@
 `/spec-check`: **SIM** (2026-09-08, depois de cinco bloqueantes corrigidos). Revisada com o
 Ícaro em 2026-09-09, que encontrou cinco problemas que o portão não pega; os cinco estão
 resolvidos e a ordem das histórias mudou. `/speckit-plan` em 2026-09-09; `/speckit-tasks` em
-2026-09-09 → **`tasks.md` com 159 tarefas**. **Pronta para implementação, começando pela
-Phase 1 (T001).**
+2026-09-09 → **`tasks.md` com 159 tarefas**. **EM IMPLEMENTAÇÃO desde 2026-09-12.**
 
-**Já implementado, fora da ordem das fases** (2026-09-10): as **T157, T158 e T159** — papel
-de operação, comando `bora:grant-operator` e teste. Saíram na frente porque a decisão que as
-gerou (`RN-PLAT-007`) veio junto com o código que a exercita. **Os testes ainda não rodaram**
-— o MySQL local estava parado. Todo o resto da spec segue sem uma linha de código.
+**Feito até aqui:**
+
+- **T157 a T159** (papel de operação, comando `bora:grant-operator` e teste), escritas em
+  2026-09-10 fora da ordem das fases, porque a decisão que as gerou (`RN-PLAT-007`) veio
+  junto com o código que a exercita. **Testes rodados e verdes em 2026-09-12** — quatro
+  casos, 16 asserções; o MySQL local estava parado quando foram escritas.
+- **Phase 1 Setup completa** (T001–T004, 2026-09-12), com a linha de base das três suítes
+  registrada em `docs/logs/error-log.md`.
+- **Phase 2, camada 4 — o portão de conformidade de tela** (T005–T008, 2026-09-12), em
+  `web/tests/e2e/gate/`. Escrito **antes** do kit por decisão D4. **Rodado contra as nove
+  telas já validadas da spec 001: reprovou 32 das 36 combinações**, e o relatório item por
+  item está no `error-log.md`. Os achados pertencem ao retrofit **T021–T025**, não ao portão.
+
+**Bloqueada na T009**, à espera de decisão do Ícaro sobre a severidade da regra de lint que
+proíbe cor literal em tela — ver `docs/logs/backlog.md`, "Decisões pendentes". O resto da
+Phase 2 (kit, shell, retrofit, modelo de local) segue sem código, e **nenhuma história abre
+antes de a Phase 2 inteira terminar**.
 
 **Input**: Cadastro e perfil de estabelecimento (local). Segunda spec do Bora; destrava o
 catálogo. Recorte acordado com o Ícaro em 2026-09-06 (`docs/logs/backlog.md` → "Próximo

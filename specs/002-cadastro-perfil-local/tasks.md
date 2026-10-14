@@ -39,10 +39,10 @@ português (`docs/architecture/naming-conventions.md`).
 
 **Purpose**: abrir espaço para a feature sem mudar comportamento, e fixar a linha de base.
 
-- [ ] T001 [P] Criar a árvore de pastas do contexto Venue na API: `api/app/Domain/Venue/`, `api/app/UseCases/Venue/`, `api/app/Http/Requests/Venue/`, `api/tests/Feature/Venue/`, `api/tests/Unit/Domain/Venue/`
-- [ ] T002 [P] Criar a árvore de pastas do front: `web/src/components/shell/`, `web/src/components/venue/`, `web/src/app/locais/`, `web/tests/e2e/gate/`
-- [ ] T003 [P] Registrar a linha de base verde das três suítes antes de qualquer mudança (`cd api && php artisan test`, `cd web && npm test`, `cd web && npm run test:e2e`) em `docs/logs/error-log.md` — é contra ela que o retrofit da spec 001 será conferido
-- [ ] T004 [P] Configurar `allowedDevOrigins` com o IP da máquina na rede em `web/next.config.ts`, para a validação no aparelho não travar (E-013)
+- [x] T001 [P] Criar a árvore de pastas do contexto Venue na API: `api/app/Domain/Venue/`, `api/app/UseCases/Venue/`, `api/app/Http/Requests/Venue/`, `api/tests/Feature/Venue/`, `api/tests/Unit/Domain/Venue/`
+- [x] T002 [P] Criar a árvore de pastas do front: `web/src/components/shell/`, `web/src/components/venue/`, `web/src/app/locais/`, `web/tests/e2e/gate/`
+- [x] T003 [P] Registrar a linha de base verde das três suítes antes de qualquer mudança (`cd api && php artisan test`, `cd web && npm test`, `cd web && npm run test:e2e`) em `docs/logs/error-log.md` — é contra ela que o retrofit da spec 001 será conferido
+- [x] T004 [P] Configurar `allowedDevOrigins` com o IP da máquina na rede em `web/next.config.ts`, para a validação no aparelho não travar (E-013)
 
 ---
 
@@ -70,10 +70,10 @@ independente do front inteiro.
 
 ### Camada 4 — Portão de conformidade de tela (primeiro)
 
-- [ ] T005 Escrever o portão de conformidade de tela em `web/tests/e2e/gate/screen-conformance.spec.ts`, asserindo por tela, em **360 e 1280**: alvo de toque ≥ 44px, fonte base ≥ 16px, ausência de rolagem horizontal a 360px, `axe` **sem nenhuma violação**, nenhum ícone sem rótulo de texto, nenhuma informação só por cor e foco visível
-- [ ] T006 Acrescentar dois projetos em `web/playwright.config.ts`, além dos `celular-360` e `computador-1280` que já existem: `celular-390` (faixa 390–430, exigida no Detalhe por ser a tela mais densa) e `fonte-ampliada-360` (viewport 360 com a fonte do sistema ampliada) — zoom de navegador e fonte do sistema são mecanismos diferentes, e o segundo não dispara `media query` (D12)
-- [ ] T007 Acrescentar ao portão a passagem com **fonte do sistema ampliada** em `web/tests/e2e/gate/screen-conformance.spec.ts`, cobrindo o ponto cego que a D12 registrou — reduzir a largura não é o mesmo cenário
-- [ ] T008 Rodar o portão contra as **telas já validadas da spec 001** e registrar em `docs/logs/error-log.md` **o que ele acusou**. Portão que não acusa nada é portão fraco, e isso precisa ser descoberto agora (E-012)
+- [x] T005 Escrever o portão de conformidade de tela em `web/tests/e2e/gate/screen-conformance.spec.ts`, asserindo por tela, em **360 e 1280**: alvo de toque ≥ 44px, fonte base ≥ 16px, ausência de rolagem horizontal a 360px, `axe` **sem nenhuma violação**, nenhum ícone sem rótulo de texto, nenhuma informação só por cor e foco visível
+- [x] T006 Acrescentar dois projetos em `web/playwright.config.ts`, além dos `celular-360` e `computador-1280` que já existem: `celular-390` (faixa 390–430, exigida no Detalhe por ser a tela mais densa) e `fonte-ampliada-360` (viewport 360 com a fonte do sistema ampliada) — zoom de navegador e fonte do sistema são mecanismos diferentes, e o segundo não dispara `media query` (D12)
+- [x] T007 Acrescentar ao portão a passagem com **fonte do sistema ampliada** em `web/tests/e2e/gate/screen-conformance.spec.ts`, cobrindo o ponto cego que a D12 registrou — reduzir a largura não é o mesmo cenário
+- [x] T008 Rodar o portão contra as **telas já validadas da spec 001** e registrar em `docs/logs/error-log.md` **o que ele acusou**. Portão que não acusa nada é portão fraco, e isso precisa ser descoberto agora (E-012)
 - [ ] T009 [P] Proibir cor literal em tela por regra de lint em `web/eslint.config.mjs` — hoje `page.tsx` e `alert.tsx` já quebram a regra "nenhuma tela escreve cor literal, só token"
 
 ### Camada 1 — Kit de UI e tema (paralelo à camada 2)
@@ -362,9 +362,9 @@ ela é parte da tela"*. Foi ignorar isso que produziu o **E-019**.
 recriação do esquema durante o desenvolvimento. Concessão manual não sobrevive ao próprio
 fluxo da feature.
 
-- [ ] T157 [P] Acrescentar a chave `account.operation_role` em `api/config/bora.php`, ao lado de `account.initial_role`, com o valor `operator` — **em inglês**, porque papel de operação **não é vocabulário do produto** (o comentário do próprio arquivo explica por que `rolezeiro` é a exceção) e chave de config é identificador, que a nomenclatura manda em inglês. Semear o papel em `api/database/seeders/RolesSeeder.php` com `Role::findOrCreate(...)`, que já é idempotente por desenho. **Pertence à Phase 2**, bloco de dados: junto do T035, antes do T037
-- [ ] T158 Comando artisan que concede o papel de operação a uma conta pelo e-mail, em `api/app/Console/Commands/GrantOperatorRole.php` (assinatura `bora:grant-operator {email}`). Idempotente; recusa e-mail inexistente com mensagem em português do dia a dia; registra a concessão na auditoria (**Princípio VIII** — a quem, quando, por onde). **Não tem tela e não precisa ter**: conceder papel de operação é ato de plataforma do Ícaro, não funcionalidade de usuário, então o Princípio XI não se aplica — a tela de gestão de papéis é assunto da spec de operação, quando houver. **Pertence à Phase 2**, bloco de dados, depois do T157. **Exige `->withCommands()` em `api/bootstrap/app.php`**: sem isso o comando não é descoberto — verificado no fonte do framework, `withRouting(commands: ...)` registra o **arquivo** `routes/console.php` e nunca o **diretório** `app/Console/Commands`
-- [ ] T159 [P] Teste do comando em `api/tests/Feature/Console/GrantOperatorRoleTest.php`: concede o papel; rodar duas vezes não duplica nem falha; e-mail inexistente é recusado com mensagem clara e **sem efeito colateral**; a concessão gera **registro de auditoria recuperável** e sem nada sensível. É o teste da **`RN-PLAT-007`** — inclusive que o nome do papel vem de **configuração**, não de literal em código (Princípio VII). **Pertence à Phase 2**, junto do T158
+- [x] T157 [P] Acrescentar a chave `account.operation_role` em `api/config/bora.php`, ao lado de `account.initial_role`, com o valor `operator` — **em inglês**, porque papel de operação **não é vocabulário do produto** (o comentário do próprio arquivo explica por que `rolezeiro` é a exceção) e chave de config é identificador, que a nomenclatura manda em inglês. Semear o papel em `api/database/seeders/RolesSeeder.php` com `Role::findOrCreate(...)`, que já é idempotente por desenho. **Pertence à Phase 2**, bloco de dados: junto do T035, antes do T037
+- [x] T158 Comando artisan que concede o papel de operação a uma conta pelo e-mail, em `api/app/Console/Commands/GrantOperatorRole.php` (assinatura `bora:grant-operator {email}`). Idempotente; recusa e-mail inexistente com mensagem em português do dia a dia; registra a concessão na auditoria (**Princípio VIII** — a quem, quando, por onde). **Não tem tela e não precisa ter**: conceder papel de operação é ato de plataforma do Ícaro, não funcionalidade de usuário, então o Princípio XI não se aplica — a tela de gestão de papéis é assunto da spec de operação, quando houver. **Pertence à Phase 2**, bloco de dados, depois do T157. **Exige `->withCommands()` em `api/bootstrap/app.php`**: sem isso o comando não é descoberto — verificado no fonte do framework, `withRouting(commands: ...)` registra o **arquivo** `routes/console.php` e nunca o **diretório** `app/Console/Commands`
+- [x] T159 [P] Teste do comando em `api/tests/Feature/Console/GrantOperatorRoleTest.php`: concede o papel; rodar duas vezes não duplica nem falha; e-mail inexistente é recusado com mensagem clara e **sem efeito colateral**; a concessão gera **registro de auditoria recuperável** e sem nada sensível. É o teste da **`RN-PLAT-007`** — inclusive que o nome do papel vem de **configuração**, não de literal em código (Princípio VII). **Pertence à Phase 2**, junto do T158
 
 ---
 

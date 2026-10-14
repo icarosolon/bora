@@ -32,7 +32,8 @@ pisariam um no outro. Quem libera a vez é o `tech-lead`.
 
 `REPROVADO` do `qa` ou `PROBLEMA` do `security-reviewer` volta ao `developer` com o
 relatório completo. **Máximo de 2 ciclos por lote**; no terceiro o `tech-lead` para e
-escala ao Ícaro.
+escala ao Ícaro. **No segundo `REPROVADO` do mesmo lote, a nova chamada ao `developer` passa
+`model: opus`.**
 
 ## Paradas do Princípio XI
 
@@ -62,3 +63,11 @@ arquivo depois do "sim" do Ícaro **neste terminal**. A leitura pode começar an
 ## Regra de duas máquinas
 
 Um executor ativo por vez. Antes de começar, `git pull` na máquina em que vai trabalhar.
+
+## Do Project ao executor e de volta
+
+A equipe é **obrigatória** para implementar tarefas do `tasks.md`. A ordem do Project vai
+por mensagem ao `tech-lead` (`bora-exec-uvs` ou `bora-exec-casa`), com o texto mostrado ao
+Ícaro e enviado só após o "sim" dele; o `tech-lead` ainda confirma no terminal antes de
+delegar o que altera arquivo. O relatório volta ao Project, que o revisa com `git diff`.
+O Ícaro roda `/doc-sync` e dá o push. Detalhe em `cowork-project.md` §10.

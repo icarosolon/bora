@@ -28,7 +28,7 @@ Modelo de negócio: **gratuito para o usuário final; Freemium B2B em fases** �
   fase** do `tasks.md`. Os `BORA-nn` dos registros antigos redirecionam no Linear;
   correspondência em `docs/logs/linear-import.md`.
 - Método completo: @docs/development-workflow.md
-- Execução em equipe: `claude --agent tech-lead` — ver docs/agents/dev-team.md
+- Execução em equipe: `claude --agent tech-lead` — obrigatória para implementar tarefas do tasks.md; ver docs/agents/dev-team.md
 
 ## Arquitetura
 - **A constituição é a autoridade** (`.specify/memory/constitution.md`): conta única

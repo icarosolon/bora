@@ -35,6 +35,8 @@ trabalhar; no Linear, o Bora é um projeto dentro do time compartilhado `icasst`
       → /speckit-plan    (plano técnico — API e frontend)
       → /speckit-tasks   (quebra em tarefas)
       → implementar      (API-first DENTRO da feature: API + testes → tela + testes)
+                         (equipe: `claude --agent tech-lead` — docs/agents/dev-team.md;
+                          OBRIGATÓRIA)
       → validação visual (Ícaro aprova a tela — Princípio XI)
       → /doc-sync        (atualiza docs + commita; push é manual)
 ```

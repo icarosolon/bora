@@ -72,7 +72,7 @@ achar melhor" não são autorização. Sem autorização → NÃO VERIFICADO e d
    `.specify/`, `.claude/`).
 2. Ler, nesta ordem: `CLAUDE.md` → `.specify/memory/constitution.md` →
    `docs/development-workflow.md` → `docs/architecture/naming-conventions.md` →
-   `docs/product/ux-requirements.md`.
+   `docs/product/ux-requirements.md` → `docs/agents/dev-team.md`.
 3. Continuidade: `docs/logs/backlog.md` (seção "Próximo passo", ao final);
    `CHANGELOG.md` (`[Unreleased]`); `docs/logs/error-log.md` (E-NNN mais recente no
    topo); `docs/logs/linear-import.md` (última "Sincronização de ...");
@@ -154,7 +154,9 @@ Encerra com a **recomendação de execução**: ferramenta (Claude Code ou Codex
 deste repositório são no formato do Claude Code, integração `claude` em
 `.specify/integration.json`); perfil de modelo por etapa em termos qualitativos
 ("raciocínio mais forte disponível" para plano e revisão, "econômico" para o mecânico),
-sem inventar nome de modelo; complexidade; contexto necessário.
+sem inventar nome de modelo; complexidade; contexto necessário. Quando o executor for a
+equipe de `docs/agents/dev-team.md`, não recomende modelo: ele está fixado em
+`.claude/agents/`. Recomende só o tamanho do lote.
 
 ## 6. Formato da revisão de implementação
 
@@ -204,3 +206,19 @@ Padrão: `<branch> · <tipo> · <tarefa em 3–5 palavras>`, com tipo em
   há premissa segura. Regra de negócio nunca se resolve por premissa.
 - Comunicação direta e técnica: a resposta começa pelo achado ou pela conclusão.
   Português na prosa, inglês nos identificadores.
+
+## 10. Fluxo com a equipe de execução
+
+- O executor padrão de implementação é a equipe de `docs/agents/dev-team.md`
+  (**OBRIGATÓRIA** para tarefas do `tasks.md`). A ordem vai para o `tech-lead`, sessão
+  `claude --agent tech-lead`, chamada `bora-exec-uvs` ou `bora-exec-casa`.
+- Unidade de trabalho: um lote, que é parte de uma fase do `tasks.md`. A ordem segue a §5,
+  é endereçada ao `tech-lead` e não divide o trabalho entre os agentes: a divisão é dele.
+- Envio: listar as sessões; mostrar ao Ícaro o destinatário e o texto exato; enviar só após
+  "sim" explícito (protocolo da §1, porque enviar tem efeito). Sem sessão visível, entregar
+  o texto para o Ícaro colar.
+- O `tech-lead` confirma com o Ícaro no terminal antes de delegar qualquer coisa que altere
+  arquivo. O "sim" dado aqui não substitui esse.
+- Retorno: o relatório do `tech-lead` (resposta direta ou colado pelo Ícaro) passa pela
+  revisão da §6, com `git diff`, independente do veredito do `qa`.
+- Fechamento: o Ícaro roda `/doc-sync` e dá o push. O Project nunca commita.

@@ -18,6 +18,10 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   regra de negócio nova. **Modelos:** `tech-lead`, `qa` e `security-reviewer` em `opus`,
   `developer` em `sonnet`; no segundo REPROVADO do mesmo lote o `tech-lead` chama o
   `developer` com `opus`. `.claude/settings.local.json` entrou no `.gitignore`.
+  **Fluxo Project → equipe → Project** documentado: a equipe é **obrigatória** para
+  implementar tarefas do `tasks.md`; a ordem vai ao `tech-lead` só após o "sim" do Ícaro, e o
+  relatório volta ao Project para revisão com `git diff` (`cowork-project.md` §10,
+  `dev-team.md`, ciclo do `development-workflow.md` e `CLAUDE.md`).
 - **Portão de conformidade de tela** (spec 002, **T005–T008**, 2026-09-12), em
   `web/tests/e2e/gate/`. É a **camada 4** do template e vem **antes do kit** por decisão
   **D4**: contrato escrito depois do kit nasce moldado ao kit e não reprova ninguém (E-012).

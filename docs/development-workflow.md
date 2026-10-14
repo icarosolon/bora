@@ -105,7 +105,8 @@ docs/
 │  ├─ naming-conventions.md              # inglês no código, português na prosa e na URL
 │  └─ api-conventions.md                 # aponta para a constituição
 ├─ agents/
-│  └─ cowork-project.md                  # instruções do Project do Claude Cowork (só leitura)
+│  ├─ cowork-project.md                  # instruções do Project do Claude Cowork (só leitura)
+│  └─ dev-team.md                        # equipe de execução (tech-lead, developer, qa, security-reviewer)
 └─ logs/{backlog.md, error-log.md, linear-import.md}
 CHANGELOG.md                             # raiz, Keep a Changelog + SemVer
 ```

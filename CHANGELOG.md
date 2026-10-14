@@ -8,6 +8,14 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Equipe de execução por subagentes** (2026-10-14), em `.claude/agents/`: `tech-lead`
+  (sessão principal, só lê e delega; único com a ferramenta `Agent`), `developer`, `qa`
+  (só reporta) e `security-reviewer` (só lê). Iniciada com `claude --agent tech-lead`.
+  Regras em `docs/agents/dev-team.md`: duas janelas de trabalho, suíte única
+  (`php artisan test` e Playwright nunca em paralelo), limite de 2 ciclos por lote, paradas
+  do Princípio XI e ninguém commita. `.claude/settings.json` pede confirmação em
+  `git commit` e nega `git push`. `claude plugin validate .claude/agents` passou. Sem
+  regra de negócio nova.
 - **Portão de conformidade de tela** (spec 002, **T005–T008**, 2026-09-12), em
   `web/tests/e2e/gate/`. É a **camada 4** do template e vem **antes do kit** por decisão
   **D4**: contrato escrito depois do kit nasce moldado ao kit e não reprova ninguém (E-012).

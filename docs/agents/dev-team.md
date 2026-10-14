@@ -5,12 +5,12 @@ continua sendo `CLAUDE.md`, a constituição e `docs/development-workflow.md`.
 
 ## Papéis e ferramentas
 
-| Agente | Papel | Ferramentas |
-|---|---|---|
-| `tech-lead` | Lê spec e tasks, delega, confere e relata. Não escreve código nem doc. Roda como sessão principal | `Agent(developer, qa, security-reviewer)`, Read, Grep, Glob, Bash (só leitura), TodoWrite, AskUserQuestion, SendMessage |
-| `developer` | Implementa as tarefas do lote, testes primeiro, em `api/` e `web/` | Read, Edit, Write, Bash, Grep, Glob |
-| `qa` | Escreve o roteiro do que provar e roda as suítes. Nunca altera arquivo | Read, Grep, Glob, Bash |
-| `security-reviewer` | Revisa segurança e conformidade com a constituição. Só lê | Read, Grep, Glob |
+| Agente | Modelo | Papel | Ferramentas |
+|---|---|---|---|
+| `tech-lead` | opus | Lê spec e tasks, delega, confere e relata. Não escreve código nem doc. Roda como sessão principal | `Agent(developer, qa, security-reviewer)`, Read, Grep, Glob, Bash (só leitura), TodoWrite, AskUserQuestion, SendMessage |
+| `developer` | sonnet (opus no 2º REPROVADO do lote) | Implementa as tarefas do lote, testes primeiro, em `api/` e `web/` | Read, Edit, Write, Bash, Grep, Glob |
+| `qa` | opus | Escreve o roteiro do que provar e roda as suítes. Nunca altera arquivo | Read, Grep, Glob, Bash |
+| `security-reviewer` | opus | Revisa segurança e conformidade com a constituição. Só lê | Read, Grep, Glob |
 
 Só o `tech-lead` tem a ferramenta `Agent`: os outros três não delegam.
 

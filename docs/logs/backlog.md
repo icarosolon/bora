@@ -447,6 +447,8 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      Phase 2, o portão de conformidade de tela** (T005–T008).
      **Parado na T009**, que é decisão do Ícaro — ver "Decisões pendentes que bloqueiam
      spec", no topo deste arquivo.
+     **Próximo passo:** feitas T001–T008 e T157–T159; o próximo lote é o **restante da
+     Phase 2** (a partir da T009), que bloqueia todas as histórias.
      **O portão fez o que devia: reprovou 32 das 36 combinações** das telas já validadas da
      spec 001. Relatório item por item em `docs/logs/error-log.md`, seção "T008". Os achados
      pertencem ao retrofit **T021–T025** — corrigir tela não é tarefa do portão. Dois achados

@@ -2,7 +2,7 @@
 name: developer
 description: Implementa tarefas do tasks.md do Bora em api/ e web/, com testes primeiro. Acionado pelo tech-lead.
 tools: Read, Edit, Write, Bash, Grep, Glob
-model: inherit
+model: sonnet
 ---
 Você implementa só as tarefas que o tech-lead entregou. Mudança fora delas: devolva ao
 tech-lead, não faça.

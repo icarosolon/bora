@@ -15,7 +15,9 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   (`php artisan test` e Playwright nunca em paralelo), limite de 2 ciclos por lote, paradas
   do Princípio XI e ninguém commita. `.claude/settings.json` pede confirmação em
   `git commit` e nega `git push`. `claude plugin validate .claude/agents` passou. Sem
-  regra de negócio nova.
+  regra de negócio nova. **Modelos:** `tech-lead`, `qa` e `security-reviewer` em `opus`,
+  `developer` em `sonnet`; no segundo REPROVADO do mesmo lote o `tech-lead` chama o
+  `developer` com `opus`. `.claude/settings.local.json` entrou no `.gitignore`.
 - **Portão de conformidade de tela** (spec 002, **T005–T008**, 2026-09-12), em
   `web/tests/e2e/gate/`. É a **camada 4** do template e vem **antes do kit** por decisão
   **D4**: contrato escrito depois do kit nasce moldado ao kit e não reprova ninguém (E-012).

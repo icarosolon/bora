@@ -332,7 +332,7 @@ sequer oferecidos**.
 - [ ] T145 Medir **SC-006** em rede 3G: nome, endereço, telefone e "Como chegar" visíveis e utilizáveis em até 3 segundos, imagens sem deslocar
 - [ ] T146 Medir **SC-001**: pessoa que nunca usou o Bora cadastra um bar em menos de 2 minutos, pelo celular, sem ajuda
 - [ ] T147 Medir **SC-005**: mostrar a página a 5 pessoas de fora, 30 segundos cada; ao menos 4 explicam a diferença entre perfil gerenciado e não gerenciado
-- [ ] T148 [P] Fechar a documentação da feature com `/doc-sync`: `CHANGELOG.md`, `docs/logs/backlog.md`, `docs/logs/error-log.md` e o quadro do Linear (time `BORA`)
+- [ ] T148 [P] Fechar a documentação da feature com `/doc-sync`: `CHANGELOG.md`, `docs/logs/backlog.md`, `docs/logs/error-log.md` e o quadro do Linear (time `icasst`, projeto Bora — issue ICASST-79)
 - [ ] T149 Rodar o `quickstart.md` inteiro de ponta a ponta, incluindo a fase Foundational
 
 ---

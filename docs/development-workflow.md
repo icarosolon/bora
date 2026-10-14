@@ -1,7 +1,7 @@
 # Bora — Método de Desenvolvimento
 
 Status: ratificado (espelha o método do Nexa — as mesmas pessoas, a mesma maneira de
-trabalhar; no Linear, porém, cada produto tem seu próprio time).
+trabalhar; no Linear, o Bora é um projeto dentro do time compartilhado `icasst`).
 **Spec Kit é a espinha dorsal**; as skills próprias cobrem só as lacunas. A spec tem
 **uma única fonte da verdade: o Spec Kit**.
 
@@ -68,13 +68,18 @@ Uma feature só é dada como pronta quando **tudo** abaixo vale:
 
 ## 4. Rastreio no Linear
 
-O trabalho é rastreado no **Linear**, no **time `Bora` (key `BORA`)**, projeto **Bora**.
-O time é próprio do produto — as issues saem como `BORA-nn`, o que identifica o projeto no
-próprio ID. Convenções:
+O trabalho é rastreado no **Linear**, no workspace `icasst`, **time `icasst` (key
+`ICASST`)**, projeto **Bora**. O time é **um só e compartilhado**: uma issue do time pode
+ser de qualquer projeto, então **o que identifica o produto é o projeto "Bora", não o
+prefixo do ID** — toda consulta ao quadro filtra pelo projeto. Os `BORA-nn` citados em
+registros antigos redirecionam no Linear; a correspondência está em
+`docs/logs/linear-import.md`. Convenções:
 
-- Cada spec do Spec Kit vira um conjunto de issues no Linear a partir do `tasks.md`
-  (título `T001: <descrição>`, como no padrão do Nexa; deduplicar por ID antes de criar).
-- Decisões pendentes que bloqueiam spec (backlog) viram issues rotuladas `decisão`.
+- Cada spec do Spec Kit vira **uma issue por fase** do `tasks.md`, não uma por tarefa.
+  Título no formato `Spec NNN · Phase N — <nome da fase> (<faixa de tarefas>)`; **cada
+  fase bloqueia a seguinte**; tarefas acrescentadas fora da numeração entram na fase que
+  declaram. Exemplo: spec 002 → ICASST-73 a ICASST-79 (sete fases, 159 tarefas).
+- Decisões pendentes que bloqueiam spec (backlog) viram issues rotuladas `decisao-pendente`.
 - Estrutura inicial e itens a importar: `docs/logs/linear-import.md`.
 
 ## 5. Estrutura de documentação

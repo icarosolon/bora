@@ -435,6 +435,9 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      `data-model.md`, `contracts/locais-api.md` e `quickstart.md`. `/speckit-tasks` rodado em
      2026-09-09: **`tasks.md` com 159 tarefas** em sete fases (as T157–T159 entraram em
      2026-09-10, com o papel de operação).
+     **Rastreio no Linear (2026-10-14):** a implementação da spec 002 é acompanhada nas
+     **ICASST-73 a ICASST-79**, uma issue por fase do `tasks.md`, começando pela
+     **ICASST-73** (Phase 1 — Setup).
      **Próximo passo: implementar, começando pela T001** (Phase 1 — Setup). A **Phase 2
      Foundational bloqueia todas as histórias**, e dentro dela o **portão de conformidade de
      tela é a primeira coisa** (D4/D6): rodá-lo contra as telas já validadas da spec 001 é o

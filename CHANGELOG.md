@@ -252,6 +252,16 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Linear: o Bora passa a ser um projeto no time compartilhado `icasst`** (2026-10-14).
+  As issues saíram do time `Bora` (BORA) para `Baiano` (BAIANO) em 2026-09-29, com
+  renumeração, e o time foi renomeado para `icasst` (key `ICASST`) em 2026-10-14. Três
+  decisões do Ícaro registradas em `CLAUDE.md` e `docs/development-workflow.md` §4: **um
+  único time**, em que o **projeto "Bora"** — e não o prefixo do ID — identifica o produto;
+  rótulo das decisões pendentes é `decisao-pendente`; e cada spec vira **uma issue por fase**
+  do `tasks.md` (spec 002 → ICASST-73 a 79, em cadeia de bloqueio, começando pela ICASST-73).
+  Correspondência completa BORA → ICASST e a sincronização em `docs/logs/linear-import.md`;
+  os `BORA-nn` dos registros históricos **não foram reescritos**, porque redirecionam no
+  Linear. A T148 da spec 002 passou a citar o time `icasst` e a ICASST-79. Sem regra nova.
 - **As quatro propostas pendentes do `design-system.md` foram despachadas** (2026-09-09) —
   **duas delas emendadas antes de ir à mesa**, porque a releitura mostrou que não estavam
   prontas. **D13 fechou em três arquétipos, não quatro**: "Ferramenta" cobria uma única

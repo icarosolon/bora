@@ -6,7 +6,8 @@ identificador vem do time, não do projeto; com o Bora dentro do time Nexa as is
 como `NEX-nn` e não dava para saber de qual produto era a tarefa. **Importação executada em
 2026-08-28** e **migrada de time em 2026-08-29** — projeto:
 <https://linear.app/icasst/project/bora-f0ad76fe7e09>. Este arquivo registra a estrutura e
-as convenções contínuas.
+as convenções contínuas. Desde 2026-10-14 o projeto está no time compartilhado `icasst`
+(key `ICASST`) — ver "Migração BORA → BAIANO → ICASST".
 
 ## Migração NEX → BORA (2026-08-29)
 
@@ -15,6 +16,77 @@ marcos, prioridades, status e a label `decisao-pendente`. A numeração foi refe
 Linear **em ordem inversa** à criação: `BORA-n` corresponde a `NEX-(40−n)` — ou seja,
 `BORA-1` = NEX-39 (gateway de pagamento) e `BORA-31` = NEX-9 (setup do repositório). Os
 identificadores antigos continuam resolvendo por redirect do Linear.
+
+## Migração BORA → BAIANO → ICASST (2026-09-29 e 2026-10-14)
+
+**Linha do tempo:**
+
+- **2026-09-29** — as issues do projeto Bora saíram do time `Bora` (key `BORA`) para o time
+  `Baiano` (key `BAIANO`), com renumeração.
+- **2026-10-14** — o time `Baiano` foi renomeado para **`icasst`**, key **`ICASST`**. O time
+  `Bora` não existe mais. O time `icasst` abriga também outros projetos (hoje, "Smart
+  Notifications").
+
+**Decisão do Ícaro (2026-10-14), revendo a de 2026-08-29:** um **único time** no Linear,
+`icasst` (key `ICASST`). Uma issue do time pode ser de qualquer projeto; **o que identifica
+o produto é o projeto "Bora", não o prefixo do ID** — toda consulta ao quadro filtra pelo
+projeto. **Motivo:** um time só, e o projeto identifica o produto. A decisão de 2026-08-29
+punha o produto no prefixo (que vem do time); com um time compartilhado, a fronteira passa a
+ser o projeto e o prefixo deixa de carregar significado de produto.
+
+**Correspondência** — verificada no Linear em 2026-10-14. A tabela lista os `BORA-nn`
+citados no repositório. Regra das BORA-1 a 31: `ICASST-(40 − n)`; das BORA-32 a 53, sem
+regra (a renumeração não seguiu ordem).
+
+| BORA | ICASST | assunto |
+|---|---|---|
+| BORA-1 | ICASST-39 | gateway de pagamento |
+| BORA-4 | ICASST-36 | preço dos planos B2B e limite do plano grátis |
+| BORA-5 | ICASST-35 | divisão de conta |
+| BORA-6 | ICASST-34 | provedor de SMS/voz |
+| BORA-8 | ICASST-32 | provedor de mapas |
+| BORA-9 | ICASST-31 | salvar vs. seguir (`RN-DESC-003`) |
+| BORA-19 | ICASST-21 | lista inicial de gêneros musicais |
+| BORA-20 | ICASST-20 | redes/franquias |
+| BORA-21 | ICASST-19 | categorias de local |
+| BORA-22 | ICASST-18 | verificação de propriedade do estabelecimento |
+| BORA-23 | ICASST-17 | cidade do usuário (`RN-PLAT-006`) |
+| BORA-24 | ICASST-16 | confirmação ao unir credenciais |
+| BORA-25 | ICASST-15 | identidade visual |
+| BORA-26 | ICASST-14 | padrão de documentação OpenAPI por feature (CORS/Sanctum) |
+| BORA-27 | ICASST-13 | hospedagem |
+| BORA-28 | ICASST-12 | framework do frontend |
+| BORA-29 | ICASST-11 | uma das decisões iniciais do backlog — assunto não registrado no repositório |
+| BORA-30 | ICASST-10 | spec 001 — rodar `/specify` |
+| BORA-31 | ICASST-9 | setup do repositório |
+| BORA-32 | ICASST-61 | spike Next.js |
+| BORA-33 | ICASST-55 | tecnologia do app mobile |
+| BORA-34 | ICASST-60 | T118 — validação visual da spec 001 |
+| BORA-35 | ICASST-59 | T119 — fechamento da spec 001 |
+| BORA-36 | ICASST-54 | envio real de e-mail |
+| BORA-37 | ICASST-53 | alarme sobre `failed_jobs` |
+| BORA-38 | ICASST-52 | emenda constitucional do Resend |
+| BORA-39 | ICASST-51 | ratificar o `design-system.md` |
+| BORA-40 | ICASST-50 | `spec-check`: caminho até a tela e campos do payload |
+| BORA-41 | ICASST-49 | excluir minha conta (LGPD) |
+| BORA-42 | ICASST-48 | `npm run lint` com erros |
+| BORA-43 | ICASST-47 | home ainda é o scaffold do Next |
+| BORA-44 | ICASST-58 | T120 — caminho visível para "Definir senha" |
+| BORA-45 | ICASST-46 | cancelamento de evento notifica quem só salvou |
+| BORA-46 | ICASST-45 | túnel HTTPS |
+| BORA-47 | ICASST-44 | contagem em campo de casas com música ao vivo |
+| BORA-48 | ICASST-43 | premissas do orçamento |
+| BORA-49 | ICASST-42 | método automático que sucede a aprovação manual da reivindicação |
+| BORA-50 | ICASST-41 | desempate entre reivindicações do mesmo local |
+| BORA-51 | ICASST-57 | limite de categorias por local |
+| BORA-52 | ICASST-56 | spec 002 |
+| BORA-53 | ICASST-40 | revogar o papel de operação |
+
+**Redirecionamento:** os `BORA-nn` antigos continuam abrindo a issue certa no Linear
+(conferido: BORA-53 abre ICASST-40; BORA-1 abre ICASST-39). Por isso os registros
+históricos do repositório **não foram reescritos** — CHANGELOG, specs, backlog, error-log,
+catálogos, ADRs e as seções abaixo seguem citando `BORA-nn`, que é o identificador que valia
+na data em que foram escritos.
 
 ## Projeto
 
@@ -410,3 +482,43 @@ A linha entrou também na tabela "Decisões pendentes" do `backlog.md`.
 **O que esta conferência não fez:** auditar as 32 issues contra os sete catálogos de
 `docs/domain/`. Foi verificado o que **esta** regra nova toca. A auditoria completa segue
 por fazer.
+
+## Sincronização de 2026-10-14 — migração de time e issues da spec 002
+
+**Nenhuma `RN` tocada.** A sessão registrou a migração de time (ver "Migração BORA → BAIANO
+→ ICASST", acima) e a criação das issues de implementação da spec 002.
+
+| Ação | Issue |
+|---|---|
+| Criada — Phase 1, Setup (T001–T004) | **ICASST-73** |
+| Criada — Phase 2, Foundational (T005–T037, T150, T151, T157–T159) | **ICASST-74** |
+| Criada — Phase 3, US1 (T038–T074, T152) | **ICASST-75** |
+| Criada — Phase 4, US2 (T075–T087, T153) | **ICASST-76** |
+| Criada — Phase 5, US3 (T088–T123, T154) | **ICASST-77** |
+| Criada — Phase 6, US4 (T124–T140, T155, T156) | **ICASST-78** |
+| Criada — Phase 7, Polish (T141–T149) | **ICASST-79** |
+| Issue fechada | **nenhuma** |
+| Issue alterada | **nenhuma** |
+
+As sete estão no projeto Bora, marco **M2 — Catálogo**, em Backlog, todas relacionadas à
+ICASST-56 (spec 002), em **cadeia de bloqueio** 73 → 74 → 75 → 76 → 77 → 78 → 79. Somam as
+159 tarefas do `tasks.md`.
+
+**Decisão do Ícaro (2026-10-14) — granularidade por fase.** Cada spec vira **uma issue por
+fase** do `tasks.md`, com título `Spec NNN · Phase N — <nome da fase> (<faixa de
+tarefas>)`; cada fase bloqueia a seguinte; tarefas acrescentadas fora da numeração entram na
+fase que declaram (por isso as T150–T159 aparecem espalhadas pelas fases 2 a 6). **Motivo:**
+granularidade por fase em vez de 159 issues, uma por tarefa — a lista fina continua no
+`tasks.md`. Para as specs, esta regra toma o lugar da "uma issue por marco de trabalho real"
+da emenda de 2026-09-01.
+
+**Conferência quadro × repositório**, feita no Linear em 2026-10-14:
+
+- **33 issues `decisao-pendente`**, todas em Backlog, todas com entrada no `backlog.md` —
+  31 na tabela "Decisões pendentes", a ICASST-49 (excluir conta, LGPD) em "Dívidas técnicas
+  conhecidas" e a ICASST-54 na seção "Envio real de e-mail".
+- **Nenhuma regra decidida com issue aberta.**
+- **Nenhum movimento** no projeto Bora entre 2026-09-11 e 2026-10-14, além da migração.
+
+**O que esta conferência não fez:** auditar as 33 issues contra os sete catálogos de
+`docs/domain/`. A auditoria completa segue por fazer.

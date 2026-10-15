@@ -325,6 +325,19 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Envio de ordens do Project ao `tech-lead`** (2026-10-14): o Project envia por mensagem
+  entre sessões só ao `tech-lead`, só após "sim" do Ícaro para aquela ordem, e não envia
+  (pergunta) se a sessão não for encontrada ou houver mais de uma ativa; nunca envia a
+  `developer`, `qa`, `security-reviewer` ou sessões comuns. No `tech-lead`, o "sim" que
+  vale é o dado na própria sessão dele (terminal ou Remote Control), pedido pela
+  `AskUserQuestion` e válido só para o plano mostrado — mensagem nova ou mudança de escopo
+  pede novo "sim"; "sim" dado ao Project ou escrito na mensagem não vale. Ferramentas do
+  agente inalteradas. O relatório volta colado pelo Ícaro. **Não verificado:** se esta
+  sessão do Project, que roda na nuvem, enxerga e alcança o `tech-lead` local; se o
+  `tech-lead` consegue responder a ela; se ele distingue mensagem de outra sessão de turno
+  digitado pelo Ícaro; e se a `AskUserQuestion` pode ser respondida pelo Remote Control
+  (`cowork-project.md` §10, `dev-team.md`, `.claude/agents/tech-lead.md`). Ajuste do "sim"
+  saído da revisão de segurança. Sem RN nova.
 - **Linear: o Bora passa a ser um projeto no time compartilhado `icasst`** (2026-10-14).
   As issues saíram do time `Bora` (BORA) para `Baiano` (BAIANO) em 2026-09-29, com
   renumeração, e o time foi renomeado para `icasst` (key `ICASST`) em 2026-10-14. Três

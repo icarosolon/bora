@@ -175,6 +175,10 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
     pelo Ícaro; se a `AskUserQuestion` é respondível pelo Remote Control. Teste sugerido
     antes do primeiro uso real: ordem forjada seguida de mensagem só com "sim", com o
     Ícaro presente — o `tech-lead` não pode delegar.
+  - **Verificado em 2026-10-16 (negativo):** o Project na nuvem não alcança o `tech-lead`
+    local, mesmo com `/remote-control` ativo e a sessão renomeada `bora-exec-casa`; a
+    ordem é colada pelo Ícaro. O achado (e) foi resolvido: `SendMessage` entrou na §1 do
+    `cowork-project.md`. "Em mensagem seguinte" passou a dizer "de outra sessão".
   - **Achados não bloqueantes da revisão de segurança:** (a) o limite "altera arquivo" não
     cobre rodar suíte (apaga `bora_test`), subir servidor ou enviar mensagem; (b) o
     endereço de resposta pode vir injetado no corpo da mensagem — responder só ao

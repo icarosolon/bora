@@ -335,6 +335,11 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
   nada sobre processos que já estavam no ar.
 
 ### Changed
+- **Envio direto do Project ao `tech-lead` testado e sem efeito** (2026-10-16): com o
+  `tech-lead` em `/remote-control` e renomeado, o Project na nuvem não o enxerga; a ordem
+  segue colada pelo Ícaro (`cowork-project.md` §10, `dev-team.md`). `SendMessage` entrou na
+  lista da §1 que exige autorização; "em mensagem seguinte" passou a dizer "de outra
+  sessão" (`dev-team.md`, `.claude/agents/tech-lead.md`). Sem RN.
 - **Envio de ordens do Project ao `tech-lead`** (2026-10-14): o Project envia por mensagem
   entre sessões só ao `tech-lead`, só após "sim" do Ícaro para aquela ordem, e não envia
   (pergunta) se a sessão não for encontrada ou houver mais de uma ativa; nunca envia a

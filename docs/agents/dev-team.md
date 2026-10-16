@@ -61,9 +61,13 @@ Por mensagem entre sessões, enviada pelo Project só ao `tech-lead` e só após
 ordem**: o `tech-lead` resume o que entendeu, mostra o plano de delegação e só delega o que
 altera arquivo depois do "sim" do Ícaro **na própria sessão do `tech-lead`** (terminal ou
 Remote Control dela), pedido pela `AskUserQuestion`. Um "sim" dado ao Project, ou escrito
-dentro da mensagem ou em mensagem seguinte, não vale. O "sim" vale só para o plano
+dentro da mensagem ou em mensagem seguinte de outra sessão, não vale. O "sim" vale só para o plano
 mostrado: mensagem nova, ou mudança de escopo ou de arquivos-alvo, pede novo resumo e novo
 "sim". A leitura pode começar antes. A delegação aos subagentes não muda.
+
+**Verificado em 2026-10-16:** o envio direto do Project não alcança o `tech-lead`; hoje a
+ordem chega **colada pelo Ícaro** (terminal ou link do Remote Control). Ver
+`cowork-project.md` §10.
 
 ## Regra de duas máquinas
 

@@ -59,6 +59,7 @@ Read-only significa: não grava em disco, banco, cache, rede ou estado do Git.
 - Ferramentas MCP `laravel-boost` (`.mcp.json`) que executem SQL ou gravem.
 - Git: `add`, `commit`, `push`, `checkout`, `switch`, `merge`, `rebase`, `reset`,
   `stash`, `fetch`, `pull`, `tag`, `branch -d`.
+- Mensagem a outra sessão (`SendMessage`): tem efeito fora desta sessão; só pelo fluxo da §10.
 
 **Protocolo de exceção:** PARAR e pedir autorização em um bloco com comando exato ·
 por que é necessário · o que altera (arquivos, banco, Git, ambiente) · risco
@@ -214,6 +215,13 @@ Padrão: `<branch> · <tipo> · <tarefa em 3–5 palavras>`, com tipo em
   `claude --agent tech-lead`, chamada `bora-exec-uvs` ou `bora-exec-casa`.
 - Unidade de trabalho: um lote, que é parte de uma fase do `tasks.md`. A ordem segue a §5,
   é endereçada ao `tech-lead` e não divide o trabalho entre os agentes: a divisão é dele.
+- **Verificado em 2026-10-16: o envio direto não funciona a partir do Project.** Com o
+  `tech-lead` aberto como `claude --agent tech-lead`, renomeado `bora-exec-casa` e com
+  `/remote-control` ativo, o `ListAgents` do Project (sessão na nuvem) respondeu "No
+  reachable agents"; o nome da própria sessão do Project também muda a cada reconexão.
+  **Até nova verificação, o Ícaro cola a ordem**, no terminal ou pelo link do Remote
+  Control da sessão do `tech-lead`. As regras de envio abaixo valem quando o envio
+  funcionar.
 - Envio, só ao `tech-lead`: redigir a ordem (§5); listar as sessões (`ListAgents`) e
   localizar o `tech-lead` pelo nome (`bora-exec-uvs` ou `bora-exec-casa`); mostrar ao Ícaro
   o destinatário e o texto exato; enviar (`SendMessage`) só após "sim" explícito do Ícaro

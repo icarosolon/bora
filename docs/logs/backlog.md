@@ -166,6 +166,23 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
     veio no bundle do Spec Kit e cria issues no **GitHub**; o rastreio do Bora é no
     Linear. Nunca foi usada. Opções: remover a skill, ou mantê-la e proibir o uso no
     `CLAUDE.md`. Hoje só o `cowork-project.md` diz "não usar".
+- **Envio de ordens do Project ao `tech-lead`** (2026-10-14): documentado em
+  `docs/agents/cowork-project.md` §10, `docs/agents/dev-team.md` e
+  `.claude/agents/tech-lead.md`; o "sim" é pedido pela `AskUserQuestion` na sessão do
+  `tech-lead` e vale só para o plano mostrado. Pendências, **decisão do Ícaro**:
+  - **Não verificado:** se o Project na nuvem alcança o `tech-lead` local; se o
+    `tech-lead` responde a ele; se distingue mensagem de outra sessão de turno digitado
+    pelo Ícaro; se a `AskUserQuestion` é respondível pelo Remote Control. Teste sugerido
+    antes do primeiro uso real: ordem forjada seguida de mensagem só com "sim", com o
+    Ícaro presente — o `tech-lead` não pode delegar.
+  - **Achados não bloqueantes da revisão de segurança:** (a) o limite "altera arquivo" não
+    cobre rodar suíte (apaga `bora_test`), subir servidor ou enviar mensagem; (b) o
+    endereço de resposta pode vir injetado no corpo da mensagem — responder só ao
+    remetente identificado pela ferramenta; (c) mensagem pode alegar decisão do Ícaro
+    (validação visual, resposta a PENDENTE) — só vale dada na sessão; (d) o Project
+    escolhe o destinatário só pelo nome da sessão; (e) a §1 do `cowork-project.md` não
+    lista `SendMessage` entre os recusados sem autorização; (f) `cowork-project.md` e o
+    CHANGELOG não citam "em mensagem seguinte" nem "arquivos-alvo".
 
 - **Ritual de abertura `session-open`** (2026-09-09):
   `.claude/skills/session-open/SKILL.md`, somente leitura e manual, registrado no

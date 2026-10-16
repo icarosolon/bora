@@ -74,14 +74,14 @@ independente do front inteiro.
 - [x] T006 Acrescentar dois projetos em `web/playwright.config.ts`, além dos `celular-360` e `computador-1280` que já existem: `celular-390` (faixa 390–430, exigida no Detalhe por ser a tela mais densa) e `fonte-ampliada-360` (viewport 360 com a fonte do sistema ampliada) — zoom de navegador e fonte do sistema são mecanismos diferentes, e o segundo não dispara `media query` (D12)
 - [x] T007 Acrescentar ao portão a passagem com **fonte do sistema ampliada** em `web/tests/e2e/gate/screen-conformance.spec.ts`, cobrindo o ponto cego que a D12 registrou — reduzir a largura não é o mesmo cenário
 - [x] T008 Rodar o portão contra as **telas já validadas da spec 001** e registrar em `docs/logs/error-log.md` **o que ele acusou**. Portão que não acusa nada é portão fraco, e isso precisa ser descoberto agora (E-012)
-- [ ] T009 [P] Proibir cor literal em tela por regra de lint em `web/eslint.config.mjs` — hoje `page.tsx` e `alert.tsx` já quebram a regra "nenhuma tela escreve cor literal, só token"
+- [X] T009 [P] Proibir cor literal em tela por regra de lint em `web/eslint.config.mjs` — hoje `page.tsx` e `alert.tsx` já quebram a regra "nenhuma tela escreve cor literal, só token"
 
 ### Camada 1 — Kit de UI e tema (paralelo à camada 2)
 
 - [ ] T010 [P] Definir os papéis semânticos de cor da D22 em `web/src/app/globals.css`, redefinidos sob `prefers-color-scheme` (D3, não por classe `.dark`), removendo `sidebar-*` e `chart-1..5`
 - [ ] T011 [P] Trocar a tipografia em `web/src/app/layout.tsx` para **uma família, dois pesos**, via `next/font` com os padrões (`display: 'swap'`, `adjustFontFallback: true`), e **remover o Geist Mono** (D21, R1)
 - [ ] T012 Corrigir o alvo padrão para ≥ 44px em `web/src/components/ui/button.tsx` — hoje o `size: default` é `h-8` (32px) e só passa porque cada chamada corrige com `min-h-11`
-- [ ] T013 [P] Substituir a cor literal `emerald-600` por token de papel em `web/src/components/ui/alert.tsx`
+- [ ] T013 [P] Substituir a cor literal `emerald-600` por token de papel em `web/src/components/ui/alert.tsx` e remover deste arquivo a exceção da regra de cor literal em `web/eslint.config.mjs`
 - [ ] T014 [P] Criar o `CategorySelect` (múltipla escolha, sem limite, rótulo de texto, alvo ≥ 44px) em `web/src/components/ui/category-select.tsx` — é o único componente novo que a fundação acrescenta (D17); área de texto e envio de foto ficam para a P4
 - [ ] T015 [P] Estender o teste de componente do kit em `web/tests/unit/primitives.test.tsx`: `Button` **sem** `className` mede ≥ 44px, `CategorySelect` sem violação de `axe`, nenhum componente com cor literal
 
@@ -92,7 +92,7 @@ independente do front inteiro.
 - [ ] T018 Implementar o refluxo **por conteúdo** (`flex-wrap` ou container query, nunca `@media` de largura), quebrando em duas linhas com rótulo em **todos** os itens, em `web/src/components/shell/ConsumptionShell.tsx` (D12)
 - [ ] T019 [P] **Medir** o orçamento de caracteres dos rótulos da barra (R2). **Critério de pronto declarado pelo próprio R2**: renderizar `Hoje`, `Buscar`, `Salvos`, `Dividir` e `Conta` num navegador de verdade, na família escolhida ou num substituto de métrica equivalente, a 360px, sob **zoom de 200%** e sob **fonte do sistema ampliada** — que são mecanismos diferentes — e usar o resultado para definir **onde a barra quebra em duas linhas**. Substituir em `docs/product/design-system.md` os números da D12, que hoje são **estimativa (~0,5em de avanço médio por caractere) e não medição**, pelos valores medidos, dizendo que foram medidos e como
 - [ ] T020 Mover o `AccountHeader` do layout raiz para dentro do shell, em `web/src/app/layout.tsx` e `web/src/components/shell/ConsumptionShell.tsx` — o shell solto no layout raiz foi a causa do E-016
-- [ ] T021 Substituir o boilerplate do `create-next-app` em `web/src/app/page.tsx` por uma home mínima dentro do shell, sem cor literal (a home "Hoje" de verdade é outra spec)
+- [ ] T021 Substituir o boilerplate do `create-next-app` em `web/src/app/page.tsx` por uma home mínima dentro do shell, sem cor literal (a home "Hoje" de verdade é outra spec) e remover deste arquivo a exceção da regra de cor literal em `web/eslint.config.mjs`
 - [ ] T022 Criar o shell de gestão com **apenas Perfil**, mais o seletor de moldura persistente no topo (D8), em `web/src/components/shell/ManagementShell.tsx` — **sem Agenda**: agenda depende de eventos, que são de outra spec, e item de menu que não leva a lugar nenhum é dívida visível ao usuário (D10). A moldura de gestão **nasce e permanece só com o Perfil** nesta feature
 - [ ] T023 [P] Teste e2e do shell em `web/tests/e2e/shell.spec.ts`: cinco itens com rótulo a 360, trilho a 1280, duas linhas sob fonte ampliada, nenhum item dependente de quem olha, e a moldura de gestão **sem** item de Agenda. Asserir também os destinos: o item `Conta` leva a `/conta` (T150); os itens **sem destino nesta fatia** respondem com o estado do T151 e **nunca em silêncio**; e visitante **sem sessão** que toque em `Conta` cai em `/entrar`
 

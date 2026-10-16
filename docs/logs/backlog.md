@@ -11,7 +11,6 @@ Cada item abaixo precisa ser decidido **antes** da spec que depender dele.
 
 | Item | Bloqueia | Fonte |
 |---|---|---|
-| **Severidade da regra de lint que proíbe cor literal em tela (T009 da spec 002)**: entra como **erro agora**, ou como **aviso agora promovido a erro na T021**? Medido em 2026-09-12 com a regra montada e descartada: ela pega **10 ocorrências** — 9 em `web/src/app/page.tsx` (o scaffold) e 1 em `web/src/components/ui/alert.tsx:23` (o `emerald` do `kind="success"`). As correções desses dois arquivos são a **T013** e a **T021**, posteriores. **Contexto que muda a pergunta:** o `npm run lint` **já está vermelho** hoje, por 7 erros de `react-hooks/set-state-in-effect` — não é a T009 que o deixa vermelho, é a **BORA-42**, e ele continuará vermelho depois da T021 enquanto a BORA-42 não for tratada | **T009, e com ela o resto da Phase 2 da spec 002** | `specs/002-cadastro-perfil-local/tasks.md`, BORA-42 |
 | **Convenção para diretório vazio no Git** (`.gitkeep` ou nada): as pastas criadas nas T001/T002 da spec 002 não entram em commit nenhum, porque o Git não versiona diretório vazio e o repositório **não tem nenhum `.gitkeep`** hoje. Elas existem em disco e se materializam quando as tarefas seguintes gravarem arquivo dentro | nada hoje; afeta quem clonar o repositório antes da T010 | `specs/002-cadastro-perfil-local/tasks.md` |
 | Registro de marca "Bora" (INPI) + domínio + @ nas redes | material público, lançamento, **envio real de e-mail (SPF/DKIM — spec 001)** | `brand.md` |
 | Teste informal de usabilidade com usuário de baixo letramento digital (idoso) | lançamento Fase 1 | `ux-requirements.md` |
@@ -188,6 +187,29 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
 
 ## Decisões tomadas
 
+- **Regra de lint contra cor literal entra como ERRO já, com exceção nomeada** (decisão do Ícaro,
+  2026-10-14, opção "c", T009 da spec 002). Alternativa descartada: aviso agora, promovido a
+  erro na T021. A regra (D22, "nenhuma tela escreve cor literal, só token") está em
+  `web/eslint.config.mjs`, só com o ESLint nativo (`no-restricted-syntax`, sem plugin), e as
+  **duas exceções são por caminho exato**: `src/app/page.tsx` (sai na **T021**) e
+  `src/components/ui/alert.tsx` (sai na **T013**). Motivo: proteger o kit e o shell enquanto
+  são escritos, sem misturar as 10 ocorrências conhecidas (9 linhas em `page.tsx`, 1 em
+  `alert.tsx:23`). Em seguida o Ícaro decidiu (2026-10-14) **fundir a classe da paleta e a cor
+  arbitrária num seletor só, com uma mensagem por string**, porque a mesma string gerava duas
+  mensagens (11 em vez de 10). Decidiu também (2026-10-14) que **a paleta padrão do Tailwind
+  acessada por variável CSS é cor literal e acusa** (`var(--color-zinc-500)`,
+  `bg-(--color-zinc-500)`, `var(--color-black)`, em classe e em `style`); token de papel
+  (`var(--primary)`, `bg-(--primary)`) continua passando.
+  *Estado medido em 2026-10-14, fora da decisão:* `npm run lint` tem 7 erros
+  `react-hooks/set-state-in-effect` (BORA-42), nenhum da regra de cor.
+  *Lacunas conhecidas, registradas por decisão do Ícaro em 2026-10-16 (não corrigidas):*
+  (a) a regra cobre só `src/**/*.tsx`: cor literal num `.ts`, como mapas de variantes
+  `cva`/`cn`, passa (o qa mediu: `const x='bg-zinc-50'` em `src/lib/x.ts` dá 0 erros);
+  (b) nome de cor do CSS em `style` passa (`style={{ color: "red" }}`), porque o padrão de
+  `style` só pega hex, função de cor e `--color-*`; (c) objeto de `style` montado fora do
+  atributo JSX e passado por variável passa (o seletor exige o literal dentro de
+  `JSXAttribute[name.name='style']`). Observação: o `"off"` das exceções desliga
+  `no-restricted-syntax` inteira em `page.tsx` e `alert.tsx` até a T021/T013.
 - **A entrada para "Definir senha" foi corrigida dentro da spec 001** (decisão do Ícaro,
   2026-09-01, durante a T118). A tela existia e funcionava, mas nada no produto levava até
   ela (E-019). Alternativas oferecidas: corrigir agora, ou registrar e fechar a 001. Ele
@@ -445,10 +467,11 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      testes, que nunca haviam rodado por o MySQL local estar parado, rodaram e passaram:
      quatro casos, 16 asserções); **Phase 1 Setup inteira** (T001–T004); e **a camada 4 da
      Phase 2, o portão de conformidade de tela** (T005–T008).
-     **Parado na T009**, que é decisão do Ícaro — ver "Decisões pendentes que bloqueiam
-     spec", no topo deste arquivo.
-     **Próximo passo:** feitas T001–T008 e T157–T159; o próximo lote é o **restante da
-     Phase 2** (a partir da T009), que bloqueia todas as histórias.
+     **T009 concluída** (decisão de 2026-10-14, qa aprovado e revisão de segurança sem problema em 2026-10-16): a regra de cor literal entrou como erro, com exceção nomeada
+     para `page.tsx` e `alert.tsx` — ver "Decisões tomadas".
+     **Próximo passo:** feitas T001–T009 e T157–T159; o próximo lote é o **kit
+     (T010–T015)** e/ou o **shell (T016–T023, T150, T151)**; a Phase 2 bloqueia todas as
+     histórias.
      **O portão fez o que devia: reprovou 32 das 36 combinações** das telas já validadas da
      spec 001. Relatório item por item em `docs/logs/error-log.md`, seção "T008". Os achados
      pertencem ao retrofit **T021–T025** — corrigir tela não é tarefa do portão. Dois achados

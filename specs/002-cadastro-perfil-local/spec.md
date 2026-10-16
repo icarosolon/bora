@@ -23,8 +23,9 @@ resolvidos e a ordem das histórias mudou. `/speckit-plan` em 2026-09-09; `/spec
   telas já validadas da spec 001: reprovou 32 das 36 combinações**, e o relatório item por
   item está no `error-log.md`. Os achados pertencem ao retrofit **T021–T025**, não ao portão.
 
-**Bloqueada na T009**, à espera de decisão do Ícaro sobre a severidade da regra de lint que
-proíbe cor literal em tela — ver `docs/logs/backlog.md`, "Decisões pendentes". O resto da
+**T009 concluída** (decisão de 2026-10-14, qa aprovado e revisão de segurança sem problema em 2026-10-16): o Ícaro decidiu que a regra de lint que proíbe cor literal em
+tela entra como **erro já**, com exceção nomeada só para `page.tsx` (sai na T021) e
+`alert.tsx` (sai na T013) — ver `docs/logs/backlog.md`, "Decisões tomadas". O resto da
 Phase 2 (kit, shell, retrofit, modelo de local) segue sem código, e **nenhuma história abre
 antes de a Phase 2 inteira terminar**.
 

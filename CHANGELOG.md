@@ -8,6 +8,16 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Regra de lint contra cor literal em tela** (spec 002, **T009**, 2026-10-16), em
+  `web/eslint.config.mjs`, só com o ESLint nativo (`no-restricted-syntax`). Decisão do Ícaro
+  (2026-10-14): entra como **erro já**, com exceção nomeada por caminho exato —
+  `src/app/page.tsx` (sai na T021) e `src/components/ui/alert.tsx` (sai na T013). Paleta
+  padrão do Tailwind por variável CSS (`var(--color-zinc-500)`) conta como cor literal;
+  token de papel (`var(--primary)`) passa. Executada pela equipe de subagentes; qa
+  aprovado e revisão de segurança sem problema. **Lacunas conhecidas, não corrigidas**
+  (decisão do Ícaro, 2026-10-16): a regra só cobre `src/**/*.tsx`; nome de cor CSS em
+  `style` passa; objeto de `style` montado fora do atributo JSX passa. Sem regra de
+  negócio nova.
 - **Equipe de execução por subagentes** (2026-10-14), em `.claude/agents/`: `tech-lead`
   (sessão principal, só lê e delega; único com a ferramenta `Agent`), `developer`, `qa`
   (só reporta) e `security-reviewer` (só lê). Iniciada com `claude --agent tech-lead`.

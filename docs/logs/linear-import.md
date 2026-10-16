@@ -591,3 +591,27 @@ da emenda de 2026-09-01.
 
 **O que esta conferência não fez:** auditar as 33 issues contra os sete catálogos de
 `docs/domain/`. A auditoria completa segue por fazer.
+
+## Sincronização de 2026-10-16 — T009 e ordens do Project ao tech-lead
+
+**Nenhuma `RN` tocada.** O trabalho foi feito pela equipe de subagentes (T009 da spec 002 e
+a documentação do envio de ordens do Project ao `tech-lead`); esta sincronização foi rodada
+por outra sessão, como o próprio `tech-lead` recomendou.
+
+| Ação | Issue |
+|---|---|
+| Criada, `decisao-pendente` — lacunas da regra de lint de cor literal (T009) | **ICASST-87** |
+| Criada, `decisao-pendente` — ordens do Project ao `tech-lead`: canal não verificado e achados da revisão de segurança | **ICASST-88** |
+| Issue fechada | **nenhuma** |
+| Issue alterada | **nenhuma** (ICASST-74 já estava em In Progress) |
+
+**Conferência quadro × repositório**, feita no Linear em 2026-10-16: a decisão da T009
+(severidade da regra de lint) **nunca teve issue**, então não há issue a fechar nem rótulo a
+remover. O quadro e o `backlog.md` concordam. As ICASST-87 e 88 nasceram das pendências que
+as decisões abriram, ambas já registradas em `docs/logs/backlog.md`.
+
+**Graphify:** não há grafo em `graphify-out/` (pasta ignorada pelo Git e ausente), então não
+houve o que atualizar; construí-lo é uma execução completa, não incremental.
+
+**O que esta conferência não fez:** auditar as issues contra os sete catálogos de
+`docs/domain/`.

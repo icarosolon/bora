@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -52,6 +53,32 @@ class User extends Authenticatable
     public function emailTokens(): HasMany
     {
         return $this->hasMany(EmailToken::class);
+    }
+
+    /**
+     * Locais que esta conta criou (`venues.created_by_account_id`). Não muda
+     * quando o perfil é transferido. NÃO concede gestão: quem autoriza é
+     * `managedVenues()`.
+     *
+     * @return HasMany<Venue, $this>
+     */
+    public function venues(): HasMany
+    {
+        return $this->hasMany(Venue::class, 'created_by_account_id');
+    }
+
+    /**
+     * Locais que esta conta gerencia hoje (N:N, RN-LOCAL-004) — a MESMA conta
+     * gerencia vários locais, nunca contas paralelas (Princípio I). Só vínculos
+     * ativos (`revoked_at` nulo); esta é a relação que autoriza.
+     *
+     * @return BelongsToMany<Venue, $this>
+     */
+    public function managedVenues(): BelongsToMany
+    {
+        return $this->belongsToMany(Venue::class, 'venue_managers', 'account_id', 'venue_id')
+            ->withPivot(['granted_at', 'granted_by_claim_id', 'revoked_at'])
+            ->wherePivotNull('revoked_at');
     }
 
     /**

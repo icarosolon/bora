@@ -1,107 +1,95 @@
 {
-  // Tasks do Bora — api/ (Laravel) e web/ (Next.js).
-  // "Run Build Task" executa "Bora: dev": sobe os dois servidores e abre o navegador.
+  // Tasks do Bora — api/ (Laravel), queue (worker) e web/ (Next.js), em Docker.
+  // "Run Build Task" executa "Bora: dev": sobe a stack e abre o navegador.
   //
-  // ATENCAO ao caminho do PHP: aponta para o PHP 8.4 do WAMP de proposito.
-  // Desde 2026-08-29 o PATH da maquina ja aponta para esse mesmo PHP, mas o caminho
-  // absoluto fica para a task nao depender do PATH da janela que a executa.
-  // Se o WAMP atualizar o PHP, este caminho quebra e precisa ser ajustado aqui.
+  // Desde 2026-10-16 (ADR-0004) api, queue e web rodam em containers (compose.yaml,
+  // na raiz) ligados ao MySQL e ao Redis compartilhados, que vivem em outra stack,
+  // fora deste repositório: C:\docker\infra (containers infra-mysql e infra-redis,
+  // com restart unless-stopped). Se "api: migrar banco" falhar por conexão recusada,
+  // confira primeiro se a infra está no ar: `docker ps`.
   //
-  // ATENCAO ao --host=0.0.0.0 da api: e de proposito, nao troque por 127.0.0.1.
-  // O Next ja escuta em todas as interfaces por padrao; com a api presa no
-  // loopback, o celular carregava as telas e NENHUMA acao funcionava (E-011).
-  // A validacao visual e feita no celular (Principio XI), entao os dois lados
-  // precisam estar na rede. Efeito colateral aceito: em rede publica, a api de
-  // desenvolvimento fica visivel na LAN enquanto a task roda.
+  // O IP da LAN e calculado na hora e passado como HOST_LAN_IPS, porque dentro do
+  // container o Next so enxerga o IP do proprio container e recusaria o celular
+  // (E-013). A validacao visual e feita no celular (Principio XI), por isso api e
+  // web publicam 8000 e 3000 em todas as interfaces (E-011). Efeito colateral
+  // aceito: em rede publica, a api de desenvolvimento fica visivel na LAN.
   //
-  // ATENCAO ao "npm.cmd" nas tasks do web/: e de proposito, nao troque por "npm".
+  // `docker compose stop` para de verdade: acabou o servidor orfao que sobrevivia a
+  // "parar a task" (E-010). Reiniciar o worker depois de renomear classe ou mexer
+  // em service provider continua obrigatorio (E-018): task "queue: reiniciar".
+  //
+  // ATENCAO ao "npm.cmd" na task "web: build": e de proposito, nao troque por "npm".
   // Task do tipo "shell" no Windows roda em PowerShell, e a ExecutionPolicy desta
   // maquina e Restricted (LocalMachine), o que bloqueia o npm.ps1 com
   // UnauthorizedAccess. O npm.cmd e batch e nao passa pela ExecutionPolicy.
-  // Ver E-006 no docs/logs/error-log.md.
+  // Ver E-006 no docs/logs/error-log.md. Essa task roda no host (Windows), nao no
+  // container, para nao disputar o .next com o servidor de desenvolvimento.
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "api: serve",
+      "label": "stack: up",
+      "detail": "Sobe api (8000), queue e web (3000) no Docker, com o IP da LAN",
       "type": "shell",
-      "command": "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
-      "args": ["artisan", "serve", "--host=0.0.0.0", "--port=8000"],
-      "options": { "cwd": "${workspaceFolder}/api" },
-      "isBackground": true,
-      "presentation": {
-        "group": "bora-dev",
-        "panel": "dedicated",
-        "reveal": "always"
-      },
-      "problemMatcher": {
-        "owner": "laravel",
-        "pattern": {
-          "regexp": "^(.*)$",
-          "file": 1,
-          "message": 1
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": ".*artisan serve.*|.*Starting.*",
-          "endsPattern": ".*Server running on.*"
-        }
-      }
-    },
-    {
-      "label": "web: dev",
-      "type": "shell",
-      "command": "npm.cmd",
-      "args": ["run", "dev"],
-      "options": { "cwd": "${workspaceFolder}/web" },
-      "isBackground": true,
-      "presentation": {
-        "group": "bora-dev",
-        "panel": "dedicated",
-        "reveal": "always"
-      },
-      "problemMatcher": {
-        "owner": "next",
-        "pattern": {
-          "regexp": "^(.*)$",
-          "file": 1,
-          "message": 1
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": ".*next dev.*|.*Next\\.js.*",
-          "endsPattern": ".*Ready in.*"
-        }
-      }
+      "command": "$env:HOST_LAN_IPS = (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.Status -eq 'Up' } | Select-Object -First 1).IPv4Address.IPAddress; docker compose up -d",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": []
     },
     {
       "label": "abrir navegador",
       "type": "shell",
       "command": "cmd",
       "args": ["/c", "start", "", "http://localhost:3000"],
-      "dependsOn": ["web: dev"],
+      "dependsOn": ["stack: up"],
       "presentation": { "reveal": "silent", "panel": "shared" },
       "problemMatcher": []
     },
     {
       "label": "Bora: dev",
-      "detail": "Sobe api/ (8000) + web/ (3000) e abre o navegador em localhost:3000",
-      "dependsOn": ["api: serve", "abrir navegador"],
-      "dependsOrder": "parallel",
+      "detail": "Sobe a stack Docker (api 8000 + queue + web 3000) e abre o navegador em localhost:3000",
+      "dependsOn": ["abrir navegador"],
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": []
     },
     {
-      "label": "api: migrar banco",
-      "detail": "Roda as migrations no MySQL local (exige o WAMP no ar)",
+      "label": "stack: parar",
+      "detail": "Para api, queue e web (a infra MySQL/Redis continua no ar)",
       "type": "shell",
-      "command": "C:\\wamp64\\bin\\php\\php8.4.15\\php.exe",
-      "args": ["artisan", "migrate"],
-      "options": { "cwd": "${workspaceFolder}/api" },
+      "command": "docker",
+      "args": ["compose", "stop"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "queue: reiniciar",
+      "detail": "Obrigatorio depois de renomear classe ou mexer em service provider (E-018)",
+      "type": "shell",
+      "command": "docker",
+      "args": ["compose", "restart", "queue"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "api: migrar banco",
+      "detail": "Roda as migrations no MySQL da stack infra (exige infra-mysql no ar)",
+      "type": "shell",
+      "command": "docker",
+      "args": ["compose", "exec", "api", "php", "artisan", "migrate"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "api: testes",
+      "detail": "php artisan test no container (usa o banco bora_test)",
+      "type": "shell",
+      "command": "docker",
+      "args": ["compose", "exec", "api", "php", "artisan", "test"],
+      "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": []
     },
     {
       "label": "web: build",
-      "detail": "Build de producao do front — usar para checar se o TypeScript passa",
+      "detail": "Build de producao do front, no host — usar para checar se o TypeScript passa",
       "type": "shell",
       "command": "npm.cmd",
       "args": ["run", "build"],

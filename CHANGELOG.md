@@ -8,6 +8,22 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Ambiente de desenvolvimento em Docker** (2026-10-16, **ADR-0004**, status proposto).
+  `compose.yaml` na raiz com `api` (PHP 8.4.15), `queue` (`queue:work`) e `web` (Node
+  24.19.0), mais `api/Dockerfile`, `web/Dockerfile` e os `.dockerignore`. MySQL 8.4.7 e
+  Redis 7.4.11 ficam numa stack à parte, fora do repositório (`C:\docker\infra`), ligada
+  pela rede externa `dev-net`; o Bora usa o usuário `bora` (bancos `bora` e `bora_test`),
+  `REDIS_PREFIX=bora_`, `REDIS_DB=2` e `REDIS_CACHE_DB=3`. Tasks do `.vscode/tasks.json`
+  reescritas para `docker compose` (`Bora: dev`, `stack: parar`, `queue: reiniciar`,
+  `api: migrar banco`, `api: testes`). `web/next.config.ts` passou a somar
+  `ALLOWED_DEV_ORIGINS` aos IPs descobertos, porque dentro do container o Next só vê o IP
+  do container (E-013). **Verificado:** 189 testes de backend e 43 de componente
+  passando no container; fila executando job do Redis; isolamento de `bora_test` provado
+  com tabela sentinela. **Atenção:** o `php artisan serve` não serve no container (zera as
+  variáveis de ambiente do filho), então a `api` usa `php -S`; o hot reload do Next só
+  funcionou com `--webpack` e polling (2,6 s), não com Turbopack. O banco `bora` da stack
+  nova começa **vazio**: os dados de desenvolvimento do WAMP não foram migrados. Sem regra
+  de negócio nova.
 - **Esquema, models, seeder e factories de local** (spec 002, **T026–T037**, 2026-10-16/17;
   `RN-LOCAL-002`, `RN-LOCAL-004`), código em `3fabcd9`. Cinco tabelas — `venues`,
   `venue_categories`, `venue_venue_category`, `venue_managers`, `venue_claims` — com todas as

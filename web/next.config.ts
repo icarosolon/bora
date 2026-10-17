@@ -6,12 +6,23 @@ import type { NextConfig } from 'next'
  *
  * Descobertos em tempo de execução em vez de fixados: o IP muda com o DHCP, e
  * um valor fixo aqui vira exatamente a armadilha que já custou uma sessão.
+ *
+ * Dentro de um container, `networkInterfaces()` devolve o IP do container, não o
+ * da máquina na rede local. Por isso `ALLOWED_DEV_ORIGINS` (lista separada por
+ * vírgula, preenchida pela task de subida) é somada aos IPs descobertos.
  */
 function ipsDaMaquina(): string[] {
-  return Object.values(os.networkInterfaces())
+  const informados = (process.env.ALLOWED_DEV_ORIGINS ?? '')
+    .split(',')
+    .map((ip) => ip.trim())
+    .filter(Boolean)
+
+  const descobertos = Object.values(os.networkInterfaces())
     .flat()
     .filter((i) => !!i && i.family === 'IPv4' && !i.internal)
     .map((i) => i!.address)
+
+  return [...new Set([...informados, ...descobertos])]
 }
 
 /**

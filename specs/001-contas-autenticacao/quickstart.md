@@ -10,6 +10,12 @@ validação** — o passo a passo de implementação sai no `/speckit-tasks`.
 
 ## Pré-requisitos
 
+> **Nota de 2026-10-16 (ADR-0004):** o ambiente passou a rodar em Docker. Este guia foi
+> escrito e validado sobre o WAMP e **ficou como registro histórico**; para subir hoje, use
+> a task `Bora: dev` (ou `docker compose up -d`), rode os comandos de `php`/`artisan` com
+> `docker compose exec api …` e a fila é o serviço `queue`. As menções ao PATH do WAMP, ao
+> `cacert` (E-014) e ao `queue:work` manual valem só para o PHP do WAMP.
+
 **Já prontos** (verificados em 2026-08-30):
 
 - PHP 8.4.15 (WAMP), MySQL 8.4.7 na 3306 com a base `bora`, Redis 8.2.5 na 6379.

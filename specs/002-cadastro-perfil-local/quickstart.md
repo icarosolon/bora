@@ -14,18 +14,24 @@ para a próxima sessão retomar sem re-explorar.
 
 ## Pré-requisitos
 
-- WAMP com PHP 8.4, MySQL 8 e Redis no ar.
+- Stack infra no ar (`infra-mysql` e `infra-redis`, em `C:\docker\infra`; conferir com
+  `docker ps`) e a stack do Bora subida pela task `Bora: dev` ou por `docker compose up -d`
+  (ADR-0004). Até 2026-10-16, PHP, MySQL e Redis rodavam direto no Windows (WAMP).
 - `api/.env` com `FRONTEND_URL` apontando para o **IP da máquina na rede**, não `localhost`
   — senão o link do e-mail chega inutilizável no celular (**E-011**).
 - **Reiniciar o `queue:work` depois de qualquer renomeação de classe ou mudança de
   binding** — o worker é daemon e carrega o provider antigo em memória (**E-018**). O aviso
-  de reivindicação sai por fila, então isso vale aqui.
-- Servidores: API em `:8000`, front em `:3000`. Conferir por **PID na porta** antes de
-  afirmar que subiu ou caiu.
+  de reivindicação sai por fila, então isso vale aqui. No Docker: `docker compose restart
+  queue` (task `queue: reiniciar`).
+- Servidores: API em `:8000`, front em `:3000`. Conferir com `docker compose ps` antes de
+  afirmar que subiu ou caiu; `docker compose stop` para de fato (E-010).
 
 ```bash
-cd api && php artisan migrate:fresh --seed && php artisan queue:work
+docker compose exec api php artisan migrate:fresh --seed
 ```
+
+A fila já roda como o serviço `queue`; não há `queue:work` manual. O front sobe no serviço
+`web`; o comando antigo era:
 
 ```bash
 cd web && npm run dev

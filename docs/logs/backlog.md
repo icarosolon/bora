@@ -208,6 +208,18 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
 
 ## Decisões tomadas
 
+- **Ambiente de desenvolvimento passa para Docker** (2026-10-16, ADR-0004, proposto).
+  Supera, para o dia a dia, três registros desta seção: o PHP 8.4.15 do WAMP, o Redis 8.2.5
+  com `php_redis.dll` à mão e o `cacert.pem` colocado no PHP do WAMP (E-014). Os riscos
+  "se o WAMP atualizar o PHP, a DLL/o cacert se perdem" deixam de valer **para quem usa a
+  stack Docker**; continuam valendo para o PHP do WAMP enquanto ele existir (é ele que
+  `.mcp.json` e `.codex/config.toml` ainda usam). Os registros antigos abaixo ficam como
+  histórico e **não foram reescritos**. Decisões do Ícaro nesta mudança: fila como serviço
+  fixo; `api` e `web` publicados em todas as interfaces (validação no celular); `.mcp.json`
+  e `.codex/config.toml` ficam como estão por ora; `web` em `--webpack` no Docker. Pendente:
+  migrar os dados de desenvolvimento do WAMP (o banco `bora` da stack começou vazio) e
+  decidir, à parte, o desligamento do WAMP.
+
 - **Regra de lint contra cor literal entra como ERRO já, com exceção nomeada** (decisão do Ícaro,
   2026-10-14, opção "c", T009 da spec 002). Alternativa descartada: aviso agora, promovido a
   erro na T021. A regra (D22, "nenhuma tela escreve cor literal, só token") está em

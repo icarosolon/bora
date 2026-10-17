@@ -100,5 +100,7 @@ Nada é "pronto só no backend".
 - Regras (catálogo): `docs/domain/`
 - Nomenclatura: `docs/architecture/naming-conventions.md`
 - ADRs: `docs/adr/`
+- Ambiente de desenvolvimento (Docker, MySQL/Redis em `C:\docker\infra`): ADR-0004;
+  sobe com a task `Bora: dev` ou `docker compose up -d`
 - Backlog / erros / Linear: `docs/logs/`
 - Telas originais do Figma: `docs/product/design/figma/`

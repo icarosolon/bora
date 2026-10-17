@@ -61,6 +61,8 @@ return [
             // Forcado a InnoDB: o MySQL do WAMP desta maquina tem
             // default_storage_engine=MyISAM, que nao tem transacao nem chave
             // estrangeira e limita indice a 1000 bytes (quebra utf8mb4).
+            // O MySQL em Docker (ADR-0004) ja nasce InnoDB; a linha continua de
+            // proposito, para o projeto nao depender do padrao do servidor.
             'engine' => 'InnoDB',
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),

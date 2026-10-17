@@ -1,0 +1,58 @@
+name: bora
+
+x-api: &api
+  build: ./api
+  image: bora-api:dev
+  working_dir: /var/www/html
+  environment:
+    DB_HOST: infra-mysql
+    DB_PORT: "3306"
+    REDIS_HOST: infra-redis
+    REDIS_PORT: "6379"
+    PHP_CLI_SERVER_WORKERS: "4"
+  volumes:
+    - ./api:/var/www/html
+    - bora-api-vendor:/var/www/html/vendor
+  networks: [dev-net]
+
+services:
+  api:
+    <<: *api
+    # Não usar `php artisan serve` aqui: ele zera as variáveis de ambiente do
+    # container (DB_HOST, REDIS_HOST) no processo filho, e a API cai nos valores
+    # do .env, que apontam para o host. O servidor embutido do PHP é o mesmo que
+    # o `serve` usa, mas herda o ambiente.
+    command: sh -c "cd public && exec php -S 0.0.0.0:8000 ../vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php"
+    ports: ["8000:8000"]
+
+  queue:
+    <<: *api
+    command: php artisan queue:work
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    image: bora-web:dev
+    working_dir: /app
+    # Turbopack (padrão do Next 16) não percebe edição feita pelo Windows num bind
+    # mount; com webpack + polling o hot reload funciona (medido: ~2,6 s).
+    command: npm run dev -- --webpack -H 0.0.0.0
+    ports: ["3000:3000"]
+    environment:
+      ALLOWED_DEV_ORIGINS: ${HOST_LAN_IPS:-}
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./web:/app
+      - bora-web-node-modules:/app/node_modules
+      - bora-web-next:/app/.next
+    networks: [dev-net]
+
+volumes:
+  bora-api-vendor:
+  bora-web-node-modules:
+  bora-web-next:
+
+networks:
+  dev-net:
+    external: true

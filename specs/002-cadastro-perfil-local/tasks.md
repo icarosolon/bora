@@ -103,18 +103,18 @@ independente do front inteiro.
 
 ### Modelo de dados de local
 
-- [ ] T026 [P] Migration da tabela `venues` em `api/database/migrations/`, com `slug` único, `name_normalized` indexada, endereço estruturado, `district`/`city`/`state` indexadas, `latitude`/`longitude` nulas, campos ricos nulos — que são **três e só três**: `description`, `instagram` e `logo_path` —, `active` e `created_by_account_id` (data-model.md). **Não criar coluna de capa:** `cover_path` foi retirado do modelo em 2026-09-10
-- [ ] T027 [P] Migration da tabela `venue_categories` em `api/database/migrations/` (`slug` único, `name`, `active`, `position`)
-- [ ] T028 [P] Migration da tabela pivô `venue_venue_category` em `api/database/migrations/`, com chave única no par e **sem teto** de categorias
-- [ ] T029 [P] Migration da tabela `venue_managers` em `api/database/migrations/` — vínculo **N:N** com `granted_at` e `granted_by_claim_id`
-- [ ] T030 [P] Migration da tabela `venue_claims` em `api/database/migrations/`, com os quatro campos de evidência, `status`, `decided_by_account_id`, `decided_at`, `decision_reason` e `verification_method`
-- [ ] T031 [P] Model `Venue` com `$fillable` explícito e relações em `api/app/Models/Venue.php`
-- [ ] T032 [P] Model `VenueCategory` em `api/app/Models/VenueCategory.php`
-- [ ] T033 [P] Model `VenueClaim` em `api/app/Models/VenueClaim.php`
-- [ ] T034 [P] Relações `venues()` e `managedVenues()` na conta existente, em `api/app/Models/User.php` — **sem** criar conta paralela (Princípio I)
-- [ ] T035 [P] Seeder das três categorias iniciais (bar, restaurante, casa de shows) em `api/database/seeders/VenueCategoriesSeeder.php`, registrado em `api/database/seeders/DatabaseSeeder.php`
-- [ ] T036 [P] Factories `VenueFactory`, `VenueCategoryFactory` e `VenueClaimFactory` em `api/database/factories/`
-- [ ] T037 Rodar `php artisan migrate:fresh --seed` e confirmar que o esquema sobe limpo e a suíte da API segue verde
+- [X] T026 [P] Migration da tabela `venues` em `api/database/migrations/`, com `slug` único, `name_normalized` indexada, endereço estruturado, `district`/`city`/`state` indexadas, `latitude`/`longitude` nulas, campos ricos nulos — que são **três e só três**: `description`, `instagram` e `logo_path` —, `active` e `created_by_account_id` (data-model.md). **Não criar coluna de capa:** `cover_path` foi retirado do modelo em 2026-09-10
+- [X] T027 [P] Migration da tabela `venue_categories` em `api/database/migrations/` (`slug` único, `name`, `active`, `position`)
+- [X] T028 [P] Migration da tabela pivô `venue_venue_category` em `api/database/migrations/`, com chave única no par e **sem teto** de categorias
+- [X] T029 [P] Migration da tabela `venue_managers` em `api/database/migrations/` — vínculo **N:N** com `granted_at` e `granted_by_claim_id`
+- [X] T030 [P] Migration da tabela `venue_claims` em `api/database/migrations/`, com os quatro campos de evidência, `status`, `decided_by_account_id`, `decided_at`, `decision_reason` e `verification_method`
+- [X] T031 [P] Model `Venue` com `$fillable` explícito e relações em `api/app/Models/Venue.php`
+- [X] T032 [P] Model `VenueCategory` em `api/app/Models/VenueCategory.php`
+- [X] T033 [P] Model `VenueClaim` em `api/app/Models/VenueClaim.php`
+- [X] T034 [P] Relações `venues()` e `managedVenues()` na conta existente, em `api/app/Models/User.php` — **sem** criar conta paralela (Princípio I)
+- [X] T035 [P] Seeder das três categorias iniciais (bar, restaurante, casa de shows) em `api/database/seeders/VenueCategoriesSeeder.php`, registrado em `api/database/seeders/DatabaseSeeder.php`
+- [X] T036 [P] Factories `VenueFactory`, `VenueCategoryFactory` e `VenueClaimFactory` em `api/database/factories/`
+- [X] T037 Rodar `php artisan migrate:fresh --seed` e confirmar que o esquema sobe limpo e a suíte da API segue verde
 
 **Checkpoint**: fundação pronta — portão com dente comprovado, kit com a régua embutida,
 shell existindo, spec 001 verde e esquema de local no ar. As histórias podem começar.

@@ -615,3 +615,30 @@ houve o que atualizar; construí-lo é uma execução completa, não incremental
 
 **O que esta conferência não fez:** auditar as issues contra os sete catálogos de
 `docs/domain/`.
+
+## Sincronização de 2026-10-17 — lote A da spec 002 (T026–T037)
+
+**`RN` tocadas:** `RN-LOCAL-002` e `RN-LOCAL-004` (o commit `3fabcd9` diz "Sem RN tocada"; o
+registro correto está no CHANGELOG). Nenhuma regra nova nem alterada: o lote implementou
+regras já catalogadas.
+
+| Ação | Issue |
+|---|---|
+| Alterada — andamento registrado na descrição (T026–T037 feitas; faltam kit, shell e retrofit) | **ICASST-74** |
+| Criada, `decisao-pendente` — LGPD na evidência da reivindicação e telefone público do dono | **ICASST-91** |
+| Criada, `decisao-pendente` — seeder de categorias: `updateOrCreate` ou `firstOrCreate` | **ICASST-92** |
+| Criada, `decisao-pendente` — cinco perguntas antes das histórias (idempotência, `decided_by`, slug, pedido duplicado, papel de gestor) | **ICASST-93** |
+| Criada, **sem** `decisao-pendente` (não é decisão) — Pint da spec 001, atenções de segurança US1+ e testes que faltam | **ICASST-94** |
+| Issue fechada | **nenhuma** |
+
+**Conferência quadro × repositório:** as decisões do Ícaro de 2026-10-16 (esquema) não tinham
+issue, então não há issue a fechar nem rótulo a remover. As pendências que elas geraram nasceram
+sem dono e agora têm: ICASST-91 a 94.
+
+**Registro de um tropeço:** a numeração prevista era ICASST-89 a 92, mas 89 e 90 já existiam
+(ICASST-89, migração da infraestrutura para a Cloudfy, e ICASST-90, monitoramento da VPS — este
+de outro projeto), então as quatro saíram como 91 a 94. A descrição
+da ICASST-74 chegou a citar "89 a 92" e foi corrigida.
+
+**O que esta conferência não fez:** auditar as issues contra os sete catálogos de
+`docs/domain/`.

@@ -490,9 +490,31 @@ inventada: cada uma foi verificada abrindo o arquivo ou rodando o comando citado
      Phase 2, o portão de conformidade de tela** (T005–T008).
      **T009 concluída** (decisão de 2026-10-14, qa aprovado e revisão de segurança sem problema em 2026-10-16): a regra de cor literal entrou como erro, com exceção nomeada
      para `page.tsx` e `alert.tsx` — ver "Decisões tomadas".
-     **Próximo passo:** feitas T001–T009 e T157–T159; o próximo lote é o **kit
-     (T010–T015)** e/ou o **shell (T016–T023, T150, T151)**; a Phase 2 bloqueia todas as
-     histórias.
+     **Lote A concluído (2026-10-17): T026–T037**, o esquema de local (código em `3fabcd9`;
+     toca `RN-LOCAL-002` e `RN-LOCAL-004`, ao contrário do que a mensagem do commit diz).
+     Evidência: 189 testes / 589 asserções no Docker, `pint --test` do lote, `migrate:fresh
+     --seed` limpo, `venue_managers_active_unique` confirmado.
+     **Próximo passo:** feitas T001–T009, T026–T037 e T157–T159; o próximo lote é o **kit
+     (T010–T015)** e/ou o **shell (T016–T023, T150, T151)**, depois o **retrofit
+     (T024–T025)**; a Phase 2 bloqueia todas as histórias.
+     **Pendências abertas pelo lote A** (Linear: ICASST-91 a ICASST-94):
+     - **LGPD (Princípio III)** — retenção e anonimização da evidência em `venue_claims`
+       (inclusive o nome de terceiro em `ask_for`); o telefone público do local pode ser o
+       celular pessoal do dono. O `plan.md` marca o III como ✅ **sem tratar disso**.
+       ICASST-91, **decisão do Ícaro**.
+     - **Seeder:** sobrescreve as categorias a cada execução (`updateOrCreate`, como está)
+       ou usa `firstOrCreate`? ICASST-92, **decisão do Ícaro**.
+     - **Antes das histórias:** onde fica o id de submissão da idempotência (FR-018/T054);
+       quem é `decided_by` nas recusas automáticas (FR-023); slug quando o bairro não
+       desambigua; pedido pendente duplicado da mesma conta; papel de gestor Spatie ×
+       `venue_managers`. ICASST-93, **decisão do Ícaro**.
+     - **Dívidas** (ICASST-94, não são decisão): o Pint do projeto inteiro falha em 17
+       arquivos da spec 001 (anterior ao lote). Atenções de segurança para US1+:
+       `decided_by_account_id` fora do `$hidden`; serializar `managers` vaza e-mail
+       (exigir Resource); `attach` em `venue_managers` precisa de `granted_at`; a factory
+       de local normaliza o nome diferente do domínio; campos ricos no `$fillable` (provar
+       o bloqueio nos testes de FR-002/FR-015). **Nenhum teste do lote exercita o seeder,
+       o `UNIQUE` parcial nem o `restrict`** (cobertura prevista em T044 e T094).
      **O portão fez o que devia: reprovou 32 das 36 combinações** das telas já validadas da
      spec 001. Relatório item por item em `docs/logs/error-log.md`, seção "T008". Os achados
      pertencem ao retrofit **T021–T025** — corrigir tela não é tarefa do portão. Dois achados

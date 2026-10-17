@@ -32,15 +32,15 @@ existente é recriada; `users` ganha apenas as relações.
 | `name_normalized` | string, indexada | minúscula, sem acento, sem pontuação, sem termo genérico inicial — alimenta o aviso de duplicata (FR-020, R4) |
 | `phone` | string | telefone público; é **o número para o qual se liga** ao verificar reivindicação (FR-026) |
 | `postal_code` | string | |
-| `street` / `number` / `complement` | string | |
+| `street` / `number` / `complement` | string | `number` é string **obrigatória** e aceita `"S/N"`; `complement` é nulo |
 | `district` | string, indexada | **bairro** — exibido em listagem (FR-006) e usado na desambiguação |
 | `city` / `state` | string, indexada | |
-| `latitude` / `longitude` | decimal, **nulo** | vazios na Fase 1. Existem para a BORA-8 não exigir migração de tabela depois (R5) |
+| `latitude` / `longitude` | `decimal(10,7)`, **nulo** | vazios na Fase 1. Existem para a BORA-8 não exigir migração de tabela depois (R5) |
 | `description` | text, nulo | **P4** — só para perfil reivindicado |
 | `instagram` | string, nulo | **P4** |
 | `logo_path` | string, nulo | **P4** — logo. **Não há coluna de capa**: `cover_path` foi retirado em 2026-09-10 por não ter destino no contrato, na spec nem em tarefa. Volta por migration quando a capa for pedida |
-| `active` | boolean | Princípio X: inativa, nunca exclui |
-| `created_by_account_id` | fk | quem criou — não se apaga quando o perfil é transferido |
+| `active` | boolean, **default `true`** | Princípio X: inativa, nunca exclui |
+| `created_by_account_id` | fk → `users`, `restrict` | quem criou — não se apaga quando o perfil é transferido |
 | `timestamps` | | |
 
 **Invariantes** (no domínio, não na borda):
@@ -50,6 +50,14 @@ existente é recriada; `users` ganha apenas as relações.
 - `slug` não muda depois de criado (R3).
 - Ao menos **uma** categoria (FR-003).
 
+**Chaves estrangeiras** (decisão do Ícaro, 2026-10-16): todas com tabela referenciada
+explícita (`users` para os `*_account_id`), `restrict` e **sem `cascade`** — nada some por
+exclusão de linha vizinha (Princípio X).
+
+**Atribuição em massa** (`$fillable`/`$hidden` do `Venue`): ficam **fora** do `$fillable`
+`slug`, `name_normalized`, `active` e `created_by_account_id` — só o caso de uso os define.
+Ficam **ocultos** na serialização `created_by_account_id` e `name_normalized`.
+
 ## `venue_categories` — a lista, como dado
 
 | Coluna | Tipo | Notas |
@@ -57,16 +65,18 @@ existente é recriada; `users` ganha apenas as relações.
 | `id` | pk | |
 | `slug` | string, único | `bar`, `restaurante`, `casa-de-shows` |
 | `name` | string | rótulo exibido |
-| `active` | boolean | |
-| `position` | int | ordem de exibição |
+| `active` | boolean, **default `true`** | |
+| `position` | int | ordem de exibição: 1 bar, 2 restaurante, 3 casa de shows |
 
-Semeada com **bar, restaurante, casa de shows** (`RN-LOCAL-002`). Acrescentar categoria é
+Semeada com **bar, restaurante, casa de shows** (`RN-LOCAL-002`), por seeder **idempotente
+por `slug`** (`updateOrCreate`). Acrescentar categoria é
 inserir linha — e existe teste que prova que **não exige mudar código**.
 
 ## `venue_venue_category` — N:N, sem limite
 
 | Coluna | Tipo |
 |---|---|
+| `id` | pk |
 | `venue_id` | fk |
 | `venue_category_id` | fk |
 
@@ -76,10 +86,19 @@ Chave única no par. **Sem teto** de categorias por local (`RN-LOCAL-002`, BORA-
 
 | Coluna | Tipo | Notas |
 |---|---|---|
+| `id` | pk | |
 | `venue_id` | fk | |
-| `account_id` | fk | |
+| `account_id` | fk → `users` | |
 | `granted_at` | timestamp | |
-| `granted_by_claim_id` | fk, nulo | qual reivindicação originou o vínculo |
+| `granted_by_claim_id` | fk, **obrigatório** | qual reivindicação originou o vínculo |
+| `revoked_at` | timestamp, nulo | revogar é preencher esta coluna: **a linha nunca se apaga** (Princípios VIII e X) |
+| `active_marker` | coluna gerada | `IF(revoked_at IS NULL, 1, NULL)` |
+| `timestamps` | | |
+
+**Unicidade do par `(venue_id, account_id)` só entre os vínculos ativos**: índice único
+`venue_managers_active_unique` sobre `(venue_id, account_id, active_marker)`. `NULL` não
+colide em índice único no MySQL, então o histórico de vínculos revogados do mesmo par se
+preserva.
 
 **N:N por decisão explícita** (FR-012, `RN-LOCAL-004`): uma conta gerencia vários locais com
 a **mesma conta**, nunca contas paralelas (Princípio I). Implementar como um-para-um passaria
@@ -92,7 +111,7 @@ despercebido até a primeira rede aparecer — por isso está escrito aqui e tem
 | `id` | pk | |
 | `venue_id` | fk | |
 | `account_id` | fk | quem pediu |
-| `status` | enum | `pending`, `approved`, `rejected` |
+| `status` | `string(16)` | `pending`, `approved`, `rejected` — enum PHP `App\Enums\VenueClaimStatus`, **não** enum MySQL; sem `UNIQUE` |
 | **`requester_name`** | string | evidência (FR-026) |
 | **`requester_role`** | string | função no estabelecimento |
 | **`best_contact_time`** | string | melhor horário para ligar |
@@ -110,6 +129,9 @@ telefone do local), feito à mão: sobrevivem à troca em vez de virar dado órf
 
 **A verificação liga para `venues.phone`**, nunca para um número que o solicitante informe —
 esse provaria apenas que ele tem telefone.
+
+**Atribuição em massa** (`VenueClaim`): o `$fillable` aceita só os **quatro campos de
+evidência**; ficam **ocultos** a evidência e `account_id`.
 
 ### Transições de estado
 
@@ -133,6 +155,15 @@ esse provaria apenas que ele tem telefone.
 - Recusar **permite novo pedido** (FR-021).
 - **O estado do local é derivado** (R6): existe claim `approved` ⇒ reivindicado. Não há
   `enum` de estado no `venues` que possa divergir do histórico.
+
+---
+
+## Relações em `User` (`users`)
+
+- `venues()` = locais **criados** pela conta (`created_by_account_id`); **não concede
+  gestão**.
+- `managedVenues()` = N:N via `venue_managers`, **só com vínculos ativos**
+  (`revoked_at` nulo).
 
 ---
 

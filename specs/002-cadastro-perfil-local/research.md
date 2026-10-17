@@ -120,8 +120,10 @@ de texto, que é frágil.
 ## R6 — Onde vive o estado de reivindicação — decidido
 
 **Decisão**: o estado (`não reivindicado` / `reivindicado`) é **derivado**, não um campo
-solto: existe reivindicação aprovada ⇒ o local é reivindicado. O `Venue` guarda a referência
-ao vínculo de gestão ativo para leitura barata; a verdade é a tabela de pedidos.
+solto: existe reivindicação aprovada ⇒ o local é reivindicado. O `Venue` **não** guarda
+referência ao vínculo ativo: o estado é derivado dos pedidos e de `venue_managers`
+(`data-model.md` vence; corrigido em 2026-10-17, decisão do Ícaro de 2026-10-16). A verdade
+é a tabela de pedidos.
 
 **Por quê**: campo solto e histórico de pedidos podem divergir, e o Princípio VIII depende
 justamente do histórico para arbitrar disputa. Um estado que não pode contradizer o próprio

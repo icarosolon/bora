@@ -8,6 +8,24 @@ e este projeto adere a [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ## [Unreleased]
 
 ### Added
+- **Esquema, models, seeder e factories de local** (spec 002, **T026–T037**, 2026-10-16/17;
+  `RN-LOCAL-002`, `RN-LOCAL-004`), código em `3fabcd9`. Cinco tabelas — `venues`,
+  `venue_categories`, `venue_venue_category`, `venue_managers`, `venue_claims` — com todas as
+  chaves estrangeiras `restrict` e sem `cascade` (Princípio X). `venue_managers` nunca
+  apaga linha: revogar preenche `revoked_at`, e a unicidade do par `(venue_id, account_id)`
+  vale só entre os ativos, pela coluna gerada `active_marker` e o índice
+  `venue_managers_active_unique`. `venue_claims.status` é `string(16)` com o enum PHP
+  `App\Enums\VenueClaimStatus`. Seeder das três categorias, idempotente por `slug`
+  (`updateOrCreate`). `User::venues()` são os locais criados e **não concede gestão**;
+  `managedVenues()` é N:N só com vínculos ativos. **Correção de registro:** a mensagem do
+  commit `3fabcd9` diz "Sem RN tocada", mas o lote toca `RN-LOCAL-002` (categorias como dado)
+  e `RN-LOCAL-004` (vínculo N:N). O mesmo commit levou junto `.codex/agents/` (quatro
+  `.toml`), que não pertence ao lote. **Verificado** (Docker): `php artisan test` = 189
+  passed / 589 assertions; `pint --test` do lote passa; `migrate:fresh --seed` limpo;
+  `venue_managers_active_unique` confirmado. **Não coberto por teste:** o seeder, o `UNIQUE`
+  parcial e o `restrict` (previsto em T044 e T094). Decisões do Ícaro (2026-10-16) em
+  `specs/002-cadastro-perfil-local/data-model.md`; `research.md` R6 corrigido (o `Venue` não
+  guarda referência ao vínculo ativo).
 - **Regra de lint contra cor literal em tela** (spec 002, **T009**, 2026-10-16), em
   `web/eslint.config.mjs`, só com o ESLint nativo (`no-restricted-syntax`). Decisão do Ícaro
   (2026-10-14): entra como **erro já**, com exceção nomeada por caminho exato —
